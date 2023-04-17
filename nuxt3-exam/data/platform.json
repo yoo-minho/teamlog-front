@@ -1,0 +1,82 @@
+[
+  {
+    "name": "brunch",
+    "type": "BRUNCH",
+    "label": "Brunch",
+    "version": "",
+    "description": "글이 작품이 되는 공간, 브런치",
+    "path": "platform/brunch.png",
+    "url": "https://brunch.co.kr",
+    "githubStar": ""
+  },
+  {
+    "name": "medium",
+    "type": "MEDIUM",
+    "label": "Medium",
+    "version": "",
+    "description": "Where good ideas find you",
+    "path": "platform/medium.png",
+    "url": "https://medium.com/",
+    "githubStar": ""
+  },
+  {
+    "name": "naver",
+    "type": "NAVER",
+    "label": "Naver Blog",
+    "version": "",
+    "description": "Lifelog.Blog",
+    "path": "platform/naver.png",
+    "url": "https://blog.naver.com/",
+    "githubStar": ""
+  },
+  {
+    "name": "tistory",
+    "type": "TISTORY",
+    "label": "Tistory",
+    "version": "",
+    "description": "나를 가장 잘 표현하는 곳, 티스토리 | 카카오",
+    "path": "platform/tistory.png",
+    "url": "https://www.tistory.com/",
+    "githubStar": ""
+  },
+  {
+    "name": "velog",
+    "type": "VELOG",
+    "label": "Velog",
+    "version": "",
+    "description": "개발자들을 위한 블로그 서비스. 어디서 글 쓸지 고민하지 말고 벨로그에서 시작하세요.",
+    "path": "platform/velog.png",
+    "url": "https://velog.io/",
+    "githubStar": ""
+  },
+  {
+    "name": "youtube",
+    "type": "YOUTUBE",
+    "label": "Youtube",
+    "version": "",
+    "description": "YouTube에서 마음에 드는 동영상과 음악을 감상하고, 직접 만든 콘텐츠를 업로드",
+    "path": "platform/youtube.png",
+    "url": "https://www.youtube.com/",
+    "githubStar": ""
+  },
+  {
+    "name": "twitch",
+    "type": "TWITCH",
+    "label": "Twitch",
+    "version": "",
+    "description": "Twitch is an interactive livestreaming service for content spanning gaming, entertainment, sports, music, and more.",
+    "path": "platform/twitch.png",
+    "url": "https://www.twitch.tv/",
+    "githubStar": ""
+  },
+  {
+    "name": "rss",
+    "type": "RSS",
+    "label": "RSS",
+    "version": "",
+    "description": "Rich Site Summary Or Really Simple Syndication.",
+    "path": "platform/rss.png",
+    "url": "https://namu.wiki/w/RSS",
+    "githubStar": ""
+  }
+]

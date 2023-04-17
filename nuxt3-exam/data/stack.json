@@ -1,0 +1,102 @@
+[
+  {
+    "name": "Vue",
+    "label": "Vue",
+    "version": "3",
+    "description": "An approachable, performant and versatile framework for building web user interfaces.",
+    "path": "stacks/vue.png",
+    "url": "https://vuejs.org/",
+    "githubStar": "⭐ 202k"
+  },
+  {
+    "name": "Typescript",
+    "label": "Typescript",
+    "version": "",
+    "description": "TypeScript is a language for application scale JavaScript development",
+    "path": "stacks/typescript.png",
+    "url": "https://www.typescriptlang.org/",
+    "githubStar": "⭐ 88.9k"
+  },
+
+  {
+    "name": "nestjs",
+    "label": "nestjs",
+    "version": "",
+    "description": " A progressive Node.js framework for building efficient and scalable server-side applications.",
+    "path": "stacks/nestjs.png",
+    "url": "https://nestjs.com",
+    "githubStar": "⭐ 54.6k"
+  },
+  {
+    "name": "Vite",
+    "label": "Vite",
+    "version": "",
+    "description": "Next Generation Frontend Tooling",
+    "path": "stacks/vite.png",
+    "url": "https://vitejs.dev/",
+    "githubStar": "⭐ 53.4k"
+  },
+  {
+    "name": "Day.js",
+    "label": "Day.js",
+    "version": "",
+    "description": "2KB immutable date time library alternative to Moment.js with the same modern API",
+    "path": "stacks/dayjs.png",
+    "url": "https://day.js.org/",
+    "githubStar": "⭐ 42.3k"
+  },
+  {
+    "name": "Prisma",
+    "label": "Prisma",
+    "version": "",
+    "description": "Build data-driven JavaScript & TypeScript apps in less time",
+    "path": "stacks/prisma.png",
+    "url": "www.prisma.io",
+    "githubStar": "⭐ 29.4k"
+  },
+  {
+    "name": "cheerio",
+    "label": "cheerio",
+    "version": "",
+    "description": "The fast, flexible, and elegant library for parsing and manipulating HTML and XML.",
+    "path": "stacks/cheerio.png",
+    "url": "https://cheerio.js.org/",
+    "githubStar": "⭐ 26k"
+  },
+  {
+    "name": "Quasar",
+    "label": "Quasar",
+    "version": "",
+    "description": "Build high-performance VueJS user interfaces (SPA, PWA, SSR, Mobile and Desktop) in record time",
+    "path": "stacks/quasar.png",
+    "url": "https://quasar.dev/",
+    "githubStar": "⭐ 22.9k"
+  },
+  {
+    "name": "ESLint",
+    "label": "ESLint",
+    "version": "",
+    "description": "The pluggable linting utility for JavaScript and JSX.",
+    "path": "stacks/eslint.png",
+    "url": "https://eslint.org/",
+    "githubStar": "⭐ 22.3k"
+  },
+  {
+    "name": "Vue Router",
+    "label": "Vue Router",
+    "version": "4",
+    "description": "The official router for Vue.js.",
+    "path": "stacks/vue.png",
+    "url": "https://router.vuejs.org/",
+    "githubStar": "⭐ 19k"
+  },
+  {
+    "name": "Pinia",
+    "label": "Pinia",
+    "version": "",
+    "description": "The Vue Store that you will enjoy using",
+    "path": "stacks/pinia.png",
+    "url": "https://pinia.vuejs.org/",
+    "githubStar": "⭐ 9.9k"
+  }
+]
