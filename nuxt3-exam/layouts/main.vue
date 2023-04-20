@@ -69,8 +69,8 @@ onActivated(() => {
           align="justify"
         >
           <q-route-tab to="/" label="Team" style="flex: 1" no-caps />
-          <q-route-tab to="/blogs" label="Blog" style="flex: 1" no-caps />
-          <q-route-tab to="/posts" label="Post" style="flex: 1" no-caps />
+          <q-route-tab to="/blog" label="Blog" style="flex: 1" no-caps />
+          <q-route-tab to="/post" label="Post" style="flex: 1" no-caps />
           <q-route-tab
             to="/noti"
             icon="notifications"

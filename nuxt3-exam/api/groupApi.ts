@@ -1,87 +1,77 @@
-// import { Group, Link } from "../types/common";
-// // import axiosClient, { useAxiosGet } from './base';
-// // import { AxiosError } from 'axios';
+import { Group, Link } from "../types/common";
 
-// export default {
-//   async findAll(props: { tag?: string; page?: number; sort?: string } = {}) {
-//     const { tag, page, sort } = props;
-//     try {
-//       return await useAxiosGet("group", { params: { tag, page, sort } });
-//     } catch (err) {
-//       const { message } = err as AxiosError;
-//       throw new Error(message);
-//     }
-//   },
-//   async count() {
-//     try {
-//       return await useAxiosGet("group/counts");
-//     } catch (err) {
-//       const { message } = err as AxiosError;
-//       throw new Error(message);
-//     }
-//   },
-//   async findAllTag() {
-//     try {
-//       return await useAxiosGet("tag");
-//     } catch (err) {
-//       const { message } = err as AxiosError;
-//       throw new Error(message);
-//     }
-//   },
-//   async findById(domain: string) {
-//     try {
-//       return await useAxiosGet(`group/${domain}`);
-//     } catch (err) {
-//       const { message } = err as AxiosError;
-//       throw new Error(message);
-//     }
-//   },
-//   async create(group: Group, tags: string[], links: Link[]) {
-//     const { domain, title, description } = group;
-//     try {
-//       await axiosClient.post("group", {
-//         domain,
-//         title,
-//         description,
-//         links,
-//         tags,
-//       });
-//     } catch (axiosError) {
-//       const err = axiosError as AxiosError<{ res: { message: string } }>;
-//       const message = err.response?.data?.res?.message || err.message;
-//       throw new Error(message);
-//     }
-//   },
-//   async update(id: number, group: Group, tags: string[], links: Link[]) {
-//     const { domain, title, description } = group;
-//     try {
-//       await axiosClient.put("group", {
-//         id,
-//         domain,
-//         title,
-//         description,
-//         links,
-//         tags,
-//       });
-//     } catch (axiosError) {
-//       const err = axiosError as AxiosError<{ res: { message: string } }>;
-//       const message = err.response?.data?.res?.message || err.message;
-//       throw new Error(message);
-//     }
-//   },
-//   async updateLastPostCreateAt(
-//     groupId?: number
-//   ): Promise<{ lastPostCreatedAt: Date }> {
-//     if (!groupId) throw new Error("No Group Id");
-//     try {
-//       const { data } = await axiosClient.patch(`group/last-post-create-at`, {
-//         groupId,
-//       });
-//       return { lastPostCreatedAt: new Date(data.lastPostCreatedAt) };
-//     } catch (axiosError) {
-//       const err = axiosError as AxiosError<{ res: { message: string } }>;
-//       const message = err.response?.data?.res?.message || err.message;
-//       throw new Error(message);
-//     }
-//   },
-// };
+export default {
+  async findAll(props: { tag?: string; page?: number; sort?: string } = {}) {
+    const config = useRuntimeConfig();
+    const { tag, page, sort } = props;
+    try {
+      const { data } = await useFetch("group", {
+        baseURL: config.public.apiBase,
+        params: { tag, page, sort },
+      });
+      return data.value;
+    } catch (err) {}
+  },
+  async count() {
+    try {
+      return await useFetch("group/counts");
+    } catch (err) {}
+  },
+  async findAllTag() {
+    const config = useRuntimeConfig();
+    try {
+      return await useFetch("tag", {
+        baseURL: config.public.apiBase,
+      });
+    } catch (err) {}
+  },
+  async findById(domain: string) {
+    try {
+      return await useFetch(`group/${domain}`);
+    } catch (err) {}
+  },
+  async create(group: Group, tags: string[], links: Link[]) {
+    const { domain, title, description } = group;
+    try {
+      await useFetch("group", {
+        method: "post",
+        body: {
+          domain,
+          title,
+          description,
+          links,
+          tags,
+        },
+      });
+    } catch (axiosError) {}
+  },
+  async update(id: number, group: Group, tags: string[], links: Link[]) {
+    const { domain, title, description } = group;
+    try {
+      await useFetch("group", {
+        method: "put",
+        body: {
+          id,
+          domain,
+          title,
+          description,
+          links,
+          tags,
+        },
+      });
+    } catch (axiosError) {}
+  },
+  async updateLastPostCreateAt(groupId?: number) {
+    if (!groupId) throw new Error("No Group Id");
+    try {
+      const { data } = await useFetch("group/last-post-create-at", {
+        method: "patch",
+        body: {
+          groupId,
+        },
+      });
+      //   return { lastPostCreatedAt: new Date(data.lastPostCreatedAt) };
+      return { lastPostCreatedAt: new Date() };
+    } catch (axiosError) {}
+  },
+};

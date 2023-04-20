@@ -60,9 +60,9 @@ onMounted(() => {
   font-family: "Pretendard-Regular";
   font-style: normal;
   font-weight: 400;
-  src: url("./assets/fonts/Pretendard-Regular.woff2") format("woff2"),
-    url("./assets/fonts/Pretendard-Regular.woff") format("woff"),
-    url("./assets/fonts/Pretendard-Regular.ttf") format("truetype");
+  src: url("@/assets/fonts/Pretendard-Regular.woff2") format("woff2"),
+    url("@/assets/fonts/Pretendard-Regular.woff") format("woff"),
+    url("@/assets/fonts/Pretendard-Regular.ttf") format("truetype");
 }
 
 body {
@@ -74,7 +74,7 @@ ul {
   list-style-type: none;
 }
 
-#app {
+body {
   font-family: "Pretendard-Regular", "Noto Sans KR", Avenir, Helvetica, Arial,
     sans-serif;
   color: #2c3e50;

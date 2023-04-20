@@ -1,12 +1,12 @@
-import { defineStore, storeToRefs } from 'pinia';
-import { Tag } from '../types/common';
-import GroupApi from '../api/groupApi';
-import { POST_TAG, BLOG_TAG } from '@/constants';
-import { useGroupStore } from './group';
+import { defineStore, storeToRefs } from "pinia";
+import { Tag } from "../types/common";
+import GroupApi from "../api/groupApi";
+import { POST_TAG, BLOG_TAG } from "@/constants";
+import { useGroupStore } from "./group";
 
-const totalTag = 'All';
+const totalTag = "All";
 
-export const useTagStore = defineStore('tag', {
+export const useTagStore = defineStore("tag", {
   state: () => ({
     tagsLoading: true,
     tags: [] as Tag[],
@@ -22,9 +22,12 @@ export const useTagStore = defineStore('tag', {
       this.currentTag = totalTag;
     },
     async fetchTag(name: string) {
-      const plusAll = (tags: Tag[]) => [{ id: totalTag, name: totalTag }, ...tags];
+      const plusAll = (tags: Tag[]) => [
+        { id: totalTag, name: totalTag },
+        ...(tags as []),
+      ];
       switch (name) {
-        case 'Team':
+        case "Team":
           this.tags = this.teamTags;
           if (this.tags.length === 0) {
             const { data } = await GroupApi.findAllTag();
@@ -32,16 +35,23 @@ export const useTagStore = defineStore('tag', {
             this.teamTags = this.tags;
           }
           break;
-        case 'Blog':
-          this.tags = plusAll(BLOG_TAG.map((v) => ({ id: v.type, name: v.type })));
+        case "Blog":
+          this.tags = plusAll(
+            BLOG_TAG.map((v) => ({ id: v.type, name: v.type }))
+          );
           break;
-        case 'Post':
-          this.tags = plusAll(POST_TAG.map((v) => ({ id: v.label, name: v.label })));
+        case "Post":
+          this.tags = plusAll(
+            POST_TAG.map((v) => ({ id: v.label, name: v.label }))
+          );
           break;
-        case 'InTeam':
+        case "InTeam":
           const groupStore = useGroupStore();
           const { currentGroup } = storeToRefs(groupStore);
-          this.tags = currentGroup.value.tags?.map(({ tag }) => ({ id: String(tag.id), name: tag.name })) as Tag[];
+          this.tags = currentGroup.value.tags?.map(({ tag }) => ({
+            id: String(tag.id),
+            name: tag.name,
+          })) as Tag[];
           break;
         default:
           break;
