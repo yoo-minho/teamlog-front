@@ -90,15 +90,14 @@ export const useGroupStore = defineStore("group", {
       const tagStore = useTagStore();
       const { currentTag, isTotalTag } = storeToRefs(tagStore);
       const isFirstPage = !page || page === 1;
-      // const { data } = await GroupApi.findAll({
-      //   page: page || 1,
-      //   sort: this.groupSort,
-      //   ...(isTotalTag.value ? {} : { tag: currentTag.value }),
-      // });
-      const data = ref([]);
-      this.groups = isFirstPage ? data.value : [...this.groups, ...data.value];
+      const data = (await GroupApi.findAll({
+        page: page || 1,
+        sort: this.groupSort,
+        ...(isTotalTag.value ? {} : { tag: currentTag.value }),
+      })) as [];
+      this.groups = isFirstPage ? data : [...this.groups, ...data];
       this.groupsLoading = false;
-      return data.value.length > 0;
+      return data.length > 0;
     },
     async fetchGroup(domain: string) {
       if (this.currentGroup.domain === domain) {
