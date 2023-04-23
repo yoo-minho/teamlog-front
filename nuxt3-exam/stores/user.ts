@@ -11,7 +11,6 @@ export const useUserStore = defineStore("user", {
     email: "",
     name: "",
     profileImage: "",
-    mainTab: "" as MainTabType,
     isSearchMode: false,
     searchWord: "",
     mainScrollAreaRef: null as unknown as QScrollArea,
@@ -50,7 +49,6 @@ export const useUserStore = defineStore("user", {
       } else if (direction === "right") {
         nextTab = tabs[(idx + tabs.length - 1) % tabs.length];
       }
-      this.mainTab = nextTab as MainTabType;
     },
   },
 });

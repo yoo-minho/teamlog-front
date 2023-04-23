@@ -16,6 +16,7 @@ export default defineNuxtConfig({
       "LoadingBar",
       "Notify",
       "Dark",
+      "LocalStorage",
     ],
     extras: {
       fontIcons: ["material-icons"],
@@ -24,7 +25,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: "https://teamlog.team/api/",
+      apiBase: "http://localhost:5000/api/",
     },
   },
   vite: {

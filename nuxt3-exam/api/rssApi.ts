@@ -2,9 +2,6 @@ import { Link, RssItem, ScrapItem } from "../types/common";
 import PostAPI from "./postApi";
 import { pipe } from "@/util/CommUtil";
 
-const config = useRuntimeConfig();
-const baseURL = config.public.apiBase;
-
 export default {
   async scrap(_link: Link) {
     const scrapUrl = _link.rssUrl || _link.url;
@@ -15,6 +12,8 @@ export default {
       throw Error("링크 유알엘이 유효하지 않습니다!");
     }
 
+    const config = useRuntimeConfig();
+    const baseURL = config.public.apiBase;
     const res = await useFetch<any>("rss", {
       baseURL,
       body: {

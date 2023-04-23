@@ -3,7 +3,6 @@ import { Group, Link, TabType } from "../types/common";
 import GroupApi from "../api/groupApi";
 import { getDateString, isSameDate } from "@/plugin/dayjs";
 import { scrapOGS } from "@/hooks/useOgs";
-import { useTagStore } from "@/stores/tag";
 import { LocalStorage } from "quasar";
 
 export const useGroupStore = defineStore("group", {
@@ -35,6 +34,14 @@ export const useGroupStore = defineStore("group", {
     },
   },
   actions: {
+    addTeams(props: { teams: Group[]; init: boolean }) {
+      const { teams, init = false } = props;
+      if (init) {
+        this.groups = teams;
+      } else {
+        this.groups = [...this.groups, ...teams];
+      }
+    },
     handleSwipeTab(direction: "left" | "right", currentTab: TabType) {
       // if (!this.isOrginalHeader) return; //스크롤 내렸을땐 좌우가 안 움직이도록!
       const tabs = [`GroupDetailLink`, `GroupDetailPost`, `GroupDetailStat`];
@@ -81,23 +88,6 @@ export const useGroupStore = defineStore("group", {
     initGroupData() {
       this.groupLoading = true;
       this.currentGroup = {} as Group;
-    },
-    sortGroups(sortValue: string) {
-      this.groupSort = sortValue;
-      this.fetchGroups();
-    },
-    async fetchGroups(page?: number) {
-      const tagStore = useTagStore();
-      const { currentTag, isTotalTag } = storeToRefs(tagStore);
-      const isFirstPage = !page || page === 1;
-      const data = (await GroupApi.findAll({
-        page: page || 1,
-        sort: this.groupSort,
-        ...(isTotalTag.value ? {} : { tag: currentTag.value }),
-      })) as [];
-      this.groups = isFirstPage ? data : [...this.groups, ...data];
-      this.groupsLoading = false;
-      return data.length > 0;
     },
     async fetchGroup(domain: string) {
       if (this.currentGroup.domain === domain) {

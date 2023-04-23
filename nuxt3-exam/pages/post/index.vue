@@ -1,82 +1,86 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { usePostStore } from "@/stores/post";
-import { ref, watch } from "vue";
-import { useTagStore } from "@/stores/tag";
 import ScrollObserver from "@/components/Observer/ScrollObserver.vue";
 import PostListItem from "@/components/PostListItem.vue";
 import PostListSkeletonItem from "@/components/PostListSkeletonItem.vue";
 import PostTagList from "./components/PostTagList.vue";
-import PostEmpty from "./components/PostEmpty.vue";
+import PostApi from "@/api/postApi";
 
 import { POST_TAG } from "@/constants";
 import { useUserStore } from "@/stores/user";
 
-const tagStore = useTagStore();
-const { currentTag, isTotalTag } = storeToRefs(tagStore);
+const route = useRoute();
 
 const userStore = useUserStore();
 const { searchWord } = storeToRefs(userStore);
 
 const postStore = usePostStore();
-const { fetchSearchPosts } = postStore;
-const { posts, postLoading, tagWord } = storeToRefs(postStore);
+const { posts } = storeToRefs(postStore);
 
 const page = ref(1);
+const selectTag = ref(String(route.query.tag || "All"));
+const selectQ = ref(String(route.query.q || ""));
+const isExistsNextPage = ref(false);
 
-const loadMore = async (el: Element) => {
-  const existsPosts = await fetchSearchPosts(page.value);
-  if (existsPosts) {
-    page.value++;
+const tags = ref(POST_TAG.map((v) => ({ id: v.label, name: v.label })));
+const { data: _posts, refresh: refreshPost } = await PostApi.searchPosts({
+  page: page,
+  tag: selectTag,
+  q: selectQ,
+});
+posts.value = _posts.value || [];
+isExistsNextPage.value = posts.value?.length === 10;
+
+const next = () => {
+  if (!isExistsNextPage.value) return;
+  page.value++;
+  refreshPostData({ init: false });
+};
+
+const refresh = (dn: () => void) => refreshPostData({ init: true }).then(dn);
+const filterTag = (tagName: string) => (selectTag.value = tagName);
+
+const refreshPostData = async ({ init = false } = {}) => {
+  if (init) page.value = 1;
+  await refreshPost();
+  if (init) {
+    posts.value = _posts.value || [];
   } else {
-    el.innerHTML = "";
+    posts.value = [...posts.value, ...(_posts.value || [])];
   }
+  isExistsNextPage.value = posts.value?.length === 10;
 };
 
 watch(
-  [() => currentTag.value, () => searchWord.value],
-  () => {
-    postLoading.value = true;
-    page.value = 1;
-    tagWord.value = isTotalTag.value
-      ? ""
-      : POST_TAG.find((v) => v.label === currentTag.value)?.value || "";
-    fetchSearchPosts();
-    page.value++;
-  },
-  { immediate: true }
+  () => searchWord.value,
+  (v) => (selectQ.value = v)
 );
 
-const refresh = async (done: () => void) => {
-  postLoading.value = true;
-  page.value = 1;
-  await fetchSearchPosts();
-  page.value++;
-  done();
-};
+watch([() => selectTag.value, () => selectQ.value], () =>
+  refreshPostData({ init: true })
+);
 </script>
 
 <template>
-  <NuxtLayout name="main" @pull2refresh="refresh">
-    <PostTagList />
-    <template v-if="postLoading">
-      <PostListSkeletonItem v-for="i in 10" :key="i" />
-    </template>
-    <template v-if="posts.length === 0">
-      <PostEmpty />
-    </template>
-    <template v-else>
-      <q-page class="q-mt-sm">
-        <div class="max-width">
-          <PostListItem v-for="(post, i) in posts" :key="i" :post="post" />
-          <ScrollObserver
-            v-if="posts.length >= 10"
-            @trigger-intersected="loadMore"
-          >
+  <div>
+    <q-pull-to-refresh @refresh="refresh">
+      <PostTagList
+        @click-tag="filterTag"
+        :tags="tags"
+        :active-tag-name="selectTag"
+      />
+      <q-separator spaced style="height: 8px" />
+      <q-page class="q-mt-sm" style="min-height: 0">
+        <PostListItem v-for="(post, i) in posts" :key="i" :post="post" />
+      </q-page>
+      <ClientOnly>
+        <template v-if="isExistsNextPage">
+          <ScrollObserver @trigger-intersected="next">
             <PostListSkeletonItem />
           </ScrollObserver>
-        </div>
-      </q-page>
-    </template>
-  </NuxtLayout>
+        </template>
+      </ClientOnly>
+    </q-pull-to-refresh>
+  </div>
 </template>

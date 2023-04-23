@@ -1,12 +1,16 @@
+import { Link } from "~/types/common";
+
 export default {
-  async findAll(props: { tag?: string; page?: number } = {}) {
+  async findAll(props: { tag?: Ref<string>; page?: Ref<number> } = {}) {
     const config = useRuntimeConfig();
     const { tag, page } = props;
     try {
-      return await useFetch("link", {
+      return await useFetch<Link[]>("link", {
         baseURL: config.public.apiBase,
         params: { tag, page },
       });
-    } catch (err) {}
+    } catch (err) {
+      throw new Error("");
+    }
   },
 };

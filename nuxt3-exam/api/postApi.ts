@@ -1,23 +1,22 @@
 import { ref } from "vue";
-import { LastPost, LinkWrap, ScrapItem } from "@/types/common";
+import { LastPost, LinkWrap, Post, ScrapItem } from "@/types/common";
 import { getAgoString, getDateString } from "@/plugin/dayjs";
 
 type SearchParam = {
   links?: LinkWrap[];
-  tag?: string;
-  q?: string;
-  page?: number;
+  tag?: Ref<string>;
+  q?: Ref<string>;
+  page?: Ref<number>;
 };
 
 const getIds = (links?: LinkWrap[]) =>
   links ? links.map(({ link }) => link.id) : [];
 
-const config = useRuntimeConfig();
-const baseURL = config.public.apiBase;
-
 export default {
   async createPosts(linkId?: number, items?: ScrapItem[]) {
     if (items?.length === 0) return;
+    const config = useRuntimeConfig();
+    const baseURL = config.public.apiBase;
 
     try {
       await useFetch("post", {
@@ -27,6 +26,8 @@ export default {
     } catch (e) {}
   },
   async findAllPosts(links?: LinkWrap[], page?: number) {
+    const config = useRuntimeConfig();
+    const baseURL = config.public.apiBase;
     try {
       return await useFetch("post", {
         baseURL,
@@ -36,14 +37,20 @@ export default {
   },
   async searchPosts(props: SearchParam) {
     const { links, tag, q, page } = props;
+    const config = useRuntimeConfig();
+    const baseURL = config.public.apiBase;
     try {
-      return await useFetch("post/search", {
+      return await useFetch<Post[]>("post/search", {
         baseURL,
         params: { linkIds: getIds(links), tag, q, page },
       });
-    } catch (err) {}
+    } catch (err) {
+      throw new Error("");
+    }
   },
   async findLast(links: LinkWrap[]) {
+    const config = useRuntimeConfig();
+    const baseURL = config.public.apiBase;
     try {
       const { data } = await useFetch("post/last", {
         baseURL,

@@ -27,20 +27,24 @@ export const useTagStore = defineStore("tag", {
         ...(tags as []),
       ];
       switch (name) {
-        case "Team":
+        case "team":
           this.tags = this.teamTags;
           if (this.tags.length === 0) {
-            const { data } = await GroupApi.findAllTag();
+            const res = await GroupApi.findAllTag();
+            console.log(res);
+            const { data } = res;
+            console.log("asdsad", data.value);
+            if (!data.value) return;
             this.tags = plusAll(data.value);
             this.teamTags = this.tags;
           }
           break;
-        case "Blog":
+        case "blog":
           this.tags = plusAll(
             BLOG_TAG.map((v) => ({ id: v.type, name: v.type }))
           );
           break;
-        case "Post":
+        case "post":
           this.tags = plusAll(
             POST_TAG.map((v) => ({ id: v.label, name: v.label }))
           );

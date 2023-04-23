@@ -1,27 +1,21 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { useRouter, useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
-import { useQuasar } from "quasar";
-
 import { useGroupStore } from "@/stores/group";
 import { useSubpageStore } from "@/stores/subpage";
 import { useUserStore } from "@/stores/user";
 import { showBottomSheet } from "@/hooks/useSnsBottomSheeet";
-import { MAINTAB_LABEL } from "@/constants";
+import { TAB_LABEL } from "@/constants";
+import { showOrderBottomSheet } from "~/hooks/useOrderBottomSheet";
 
 const groupStore = useGroupStore();
-const { sortGroups } = groupStore;
 const { groupSort } = storeToRefs(groupStore);
 
 const subpageStore = useSubpageStore();
 const { openSettingMain } = subpageStore;
 
 const userStore = useUserStore();
-const { mainTab, isSearchMode, searchWord } = storeToRefs(userStore);
-const { toggleSearchMode } = userStore;
+const { searchWord } = storeToRefs(userStore);
 
-const $q = useQuasar();
 const router = useRouter();
 const route = useRoute();
 
@@ -29,12 +23,8 @@ const _openSettingMain = () => {
   router.push({ hash: "#Setting" });
   openSettingMain();
 };
-const titleByTab = computed(
-  () => MAINTAB_LABEL[+mainTab.value?.replace("t_", "") % 5] || "팀로그"
-);
-const keywordRef = ref();
-const fakeSearchWord = ref();
 
+const keywordRef = ref();
 watch(
   () => keywordRef.value,
   (v) => {
@@ -42,85 +32,81 @@ watch(
     const el = keywordRef.value.getNativeElement();
     el.addEventListener("input", (e: InputEvent) => {
       const eventTarget = e.target as HTMLInputElement;
-      searchWord.value = eventTarget.value;
+      postSearhWord.value = eventTarget.value;
+      router.push({
+        path: "post",
+        query: { ...route.query, q: eventTarget.value },
+      });
     });
   }
 );
 
-const showSortBottomSheet = () => {
-  const checkedIcon = (name: string) =>
-    groupSort.value === name ? "check_box" : "check_box_outline_blank";
-  $q.bottomSheet({
-    message: "정렬",
-    grid: false,
-    actions: [
-      {
-        label: "포스트 최신 작성순",
-        id: "lastPostCreatedAt",
-        icon: checkedIcon("lastPostCreatedAt"),
-      },
-      {
-        label: "주간 게시물 많은 순",
-        id: "weeklyAvgPost",
-        icon: checkedIcon("weeklyAvgPost"),
-      },
-      {
-        label: "투데이 방문자 순",
-        id: "todayViews",
-        icon: checkedIcon("todayViews"),
-      },
-      {
-        label: "누적 방문자 순",
-        id: "totalViews",
-        icon: checkedIcon("totalViews"),
-      },
-    ],
-  }).onOk((action) => {
-    $q.localStorage.set("groupSort", action.id);
-    sortGroups(action.id);
+const showOrderBS = () => {
+  showOrderBottomSheet({
+    order: groupSort.value,
+    okCallback: (v: string) => (groupSort.value = v),
   });
 };
-</script>
 
+const routeName = String(route.name);
+const title = ref(TAB_LABEL[routeName]);
+const isSortable = ref(routeName === "team");
+const isSearchable = ref(routeName === "post");
+const postSearhWord = ref(String(route.query.q || ""));
+const isPostSearchMode = ref("" !== postSearhWord.value);
+const seachIcon = computed(() => (isPostSearchMode.value ? "close" : "search"));
+
+const toggleSearchMode = () => {
+  isPostSearchMode.value && (postSearhWord.value = "");
+  isPostSearchMode.value = !isPostSearchMode.value;
+};
+
+watch(
+  () => postSearhWord.value,
+  (v) => (searchWord.value = v)
+);
+
+watch(
+  () => route.name,
+  (_routeName) => {
+    const routeName = String(_routeName);
+    title.value = TAB_LABEL[routeName];
+    isSortable.value = routeName === "team";
+    isSearchable.value = routeName === "post";
+    postSearhWord.value = "";
+    isPostSearchMode.value = false;
+  }
+);
+</script>
 <template>
   <q-header bordered class="text-white max-width">
     <q-toolbar>
       <q-input
-        v-if="isSearchMode"
+        v-if="isSearchable && isPostSearchMode"
         ref="keywordRef"
-        v-model="fakeSearchWord"
+        v-model="postSearhWord"
         type="search"
         bg-color="grey-2"
         dense
         rounded
         maxlength="20"
-        :debounce="500"
         style="flex: 1"
         :input-style="{ fontSize: '1rem' }"
         class="super-small"
-        :placeholder="`'${titleByTab}'에서 검색`"
+        :placeholder="`'${title}'에서 검색`"
         autofocus
       >
         <template #prepend>
           <q-icon name="search" class="q-ma-sm" />
         </template>
       </q-input>
-      <q-toolbar-title v-else class="name">{{ titleByTab }}</q-toolbar-title>
-      <q-btn
-        :icon="isSearchMode ? 'close' : 'search'"
-        flat
-        round
-        dense
-        @click="toggleSearchMode()"
-      />
-      <q-btn
-        v-if="String(route.name) === 'Team'"
-        icon="sort"
-        flat
-        round
-        dense
-        @click="showSortBottomSheet()"
-      />
+      <q-toolbar-title v-else class="name">{{ title }}</q-toolbar-title>
+      <template v-if="isSearchable">
+        <q-btn :icon="seachIcon" flat round dense @click="toggleSearchMode()" />
+      </template>
+      <template v-if="isSortable">
+        <q-btn icon="filter_alt" flat round dense @click="showOrderBS" />
+      </template>
       <q-btn icon="share" flat round dense @click="showBottomSheet()" />
       <q-btn icon="menu" flat round dense @click="_openSettingMain" />
     </q-toolbar>

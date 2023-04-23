@@ -1,16 +1,21 @@
-import { Group, Link } from "../types/common";
+import { Tag, Group, Link } from "../types/common";
 
 export default {
-  async findAll(props: { tag?: string; page?: number; sort?: string } = {}) {
+  async findAll(props: {
+    tag?: Ref<string>;
+    page: Ref<number>;
+    sort?: Ref<string>;
+  }) {
     const config = useRuntimeConfig();
     const { tag, page, sort } = props;
     try {
-      const { data } = await useFetch("group", {
+      return await useFetch<Group[]>(() => `group`, {
         baseURL: config.public.apiBase,
-        params: { tag, page, sort },
+        params: { page, sort, tag },
       });
-      return data.value;
-    } catch (err) {}
+    } catch (err) {
+      throw new Error("");
+    }
   },
   async count() {
     try {
@@ -20,10 +25,12 @@ export default {
   async findAllTag() {
     const config = useRuntimeConfig();
     try {
-      return await useFetch("tag", {
+      return await useFetch<Tag[]>("tag", {
         baseURL: config.public.apiBase,
       });
-    } catch (err) {}
+    } catch (err) {
+      throw new Error("");
+    }
   },
   async findById(domain: string) {
     try {

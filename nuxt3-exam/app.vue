@@ -35,23 +35,33 @@ onMounted(() => {
     console.log("PWA was installed");
   });
 });
+
+// definePageMeta({
+//   transition: {
+//     name: "page",
+//   },
+//   keepalive: {
+//     exclude: ["modal"],
+//   },
+// });
 </script>
 
 <template>
   <div :class="`max-width ${isDarkActive ? 'bg-grey-9' : 'bg-white'}`">
-    <q-layout style="min-height: 0">
+    <NuxtLayout name="main">
       <!-- <div id="subpage">
         <GroupEditor v-if="isOpenGroupEditor" />
         <LinkEditor v-if="isOpenLinkEditor" />
         <SettingSubpage v-if="isOpenSettingSubpage" />
         <DataSubpage v-if="isOpenDataSubpage" />
       </div> -->
-      <router-view v-slot="{ Component }">
-        <keep-alive include="TeamPage">
+      <!-- <router-view v-slot="{ Component }">
+        <keep-alive>
           <component :is="Component" />
         </keep-alive>
-      </router-view>
-    </q-layout>
+      </router-view> -->
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>
 
