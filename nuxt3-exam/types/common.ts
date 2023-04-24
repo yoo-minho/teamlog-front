@@ -12,6 +12,7 @@ export type Link = {
 };
 export type LinkWrap = { link: Link };
 export type GroupTagWrap = {
+  [x: string]: any;
   tag: {
     id: number;
     name: string;
@@ -108,8 +109,19 @@ export type StackJson = {
   githubStar: string;
 };
 export type OrderType = 1 | -1;
-export type BlogType = string & ('BRUNCH' | 'MEDIUM' | 'NAVER' | 'TISTORY' | 'VELOG' | 'TWIITCH' | 'RSS' | '');
-export type TabType = string & ('GroupDetailLink' | 'GroupDetailPost' | 'GroupDetailStat');
-export type MainTabType = string & (`t_0` | `t_1` | `t_2` | 't_3' | 't_4');
+export type BlogType = string &
+  (
+    | "BRUNCH"
+    | "MEDIUM"
+    | "NAVER"
+    | "TISTORY"
+    | "VELOG"
+    | "TWIITCH"
+    | "RSS"
+    | ""
+  );
+export type TabType = string &
+  ("GroupDetailLink" | "GroupDetailPost" | "GroupDetailStat");
+export type MainTabType = string & (`t_0` | `t_1` | `t_2` | "t_3" | "t_4");
 export type OrderOption = { label: string; value: string; order: OrderType };
 export type linkCount = { linkId: number; count: number };
