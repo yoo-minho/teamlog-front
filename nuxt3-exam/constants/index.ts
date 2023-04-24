@@ -30,3 +30,8 @@ export const TAB_LABEL = {
   noti: "알림",
   my: "나의 공간",
 } as { [key: string]: string };
+export const TAB_LABEL_IN_TEAM = [
+  { name: "blog", label: `블로그` },
+  { name: "post", label: `포스트` },
+  { name: "stat", label: `통계` },
+];

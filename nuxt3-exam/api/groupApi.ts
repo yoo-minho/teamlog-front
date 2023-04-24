@@ -33,9 +33,14 @@ export default {
     }
   },
   async findById(domain: string) {
+    const config = useRuntimeConfig();
     try {
-      return await useFetch(`group/${domain}`);
-    } catch (err) {}
+      return await useFetch<Group>(() => `group/${domain}`, {
+        baseURL: config.public.apiBase,
+      });
+    } catch (err) {
+      throw new Error("");
+    }
   },
   async create(group: Group, tags: string[], links: Link[]) {
     const { domain, title, description } = group;

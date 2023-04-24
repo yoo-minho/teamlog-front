@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useQuasar } from "quasar";
 import { storeToRefs } from "pinia";
-import { ref, watch, onMounted } from "vue";
 // import { showBottomSheet } from '@/hooks/useInstallBottomSheeet';
 // import { useSubpageStore } from '@/stores/subpage';
 import SettingSubpage from "./components/Setting/SettingSubpage.vue";
@@ -36,30 +35,29 @@ onMounted(() => {
   });
 });
 
-// definePageMeta({
-//   transition: {
-//     name: "page",
-//   },
-//   keepalive: {
-//     exclude: ["modal"],
-//   },
-// });
+const route = useRoute();
+const teamId = ref(String(route.params.teamId || ""));
+const isInTeam = computed(() => "" !== teamId.value);
+watch(
+  () => String(route.params.teamId || ""),
+  (id) => (teamId.value = id)
+);
 </script>
 
 <template>
   <div :class="`max-width ${isDarkActive ? 'bg-grey-9' : 'bg-white'}`">
-    <NuxtLayout name="main">
-      <!-- <div id="subpage">
+    <!-- <div id="subpage">
         <GroupEditor v-if="isOpenGroupEditor" />
         <LinkEditor v-if="isOpenLinkEditor" />
         <SettingSubpage v-if="isOpenSettingSubpage" />
         <DataSubpage v-if="isOpenDataSubpage" />
       </div> -->
-      <!-- <router-view v-slot="{ Component }">
+    <!-- <router-view v-slot="{ Component }">
         <keep-alive>
           <component :is="Component" />
         </keep-alive>
       </router-view> -->
+    <NuxtLayout :name="isInTeam ? 'in-team' : 'default'">
       <NuxtPage />
     </NuxtLayout>
   </div>
