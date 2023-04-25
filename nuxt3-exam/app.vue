@@ -99,6 +99,9 @@ body {
 .without-header {
   height: calc(100vh - 51px);
 }
+.without-header.in-team {
+  height: 100vh;
+}
 
 .margin-top-header {
   top: 51px;

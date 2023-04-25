@@ -14,11 +14,9 @@ const { post } = toRefs(props);
   <q-item-label class="cursor-pointer" @click="openUrl(post.url)">
     <q-item>
       <q-item-section>
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <div
-          class="label text-weight-bold ellipsis text-subtitle2"
-          v-html="post.title"
-        ></div>
+        <div class="label text-weight-bold ellipsis text-subtitle2">
+          {{ post.title }}
+        </div>
         <div class="label ellipsis-2-lines">{{ post.description || "ㅤ" }}</div>
         <div class="label text-grey-5 ellipsis">
           {{ getDateString(post.createdAt) }}

@@ -35,7 +35,7 @@ const tab = ref(route.path.replace(`/${route.params.teamId}/`, ""));
     <div :class="`${isDark ? 'bg-grey-9' : 'bg-white'}`">
       <q-scroll-area
         ref="scrollAreaRef"
-        class="max-width without-header"
+        class="max-width without-header in-team"
         :visible="true"
         style="overflow: hidden"
         :thumb-style="{ zIndex: '999999' }"
@@ -65,10 +65,13 @@ const tab = ref(route.path.replace(`/${route.params.teamId}/`, ""));
                 narrow-indicator
               >
                 <template v-for="(tag, i) in TAB_LABEL_IN_TEAM" :key="i">
-                  <q-route-tab :to="tag.name" :label="tag.label" />
+                  <q-route-tab
+                    :to="`/@${teamId}/${tag.name}`"
+                    :label="tag.label"
+                  />
                 </template>
               </q-tabs>
-              <q-separator />
+              <q-separator style="height: 8px" />
               <slot></slot>
             </q-page>
           </q-page-container>

@@ -33,7 +33,7 @@ const _openSettingMain = () => {
         flat
         round
         dense
-        @click="router.push({ name: 'Team' })"
+        @click="router.push({ path: '/team' })"
       />
       <q-input
         v-if="isSearchMode"
