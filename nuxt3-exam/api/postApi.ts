@@ -1,5 +1,12 @@
 import { ref } from "vue";
-import { LastPost, LinkWrap, Post, ScrapItem } from "@/types/common";
+import {
+  DaysAllCounts,
+  DaysCount,
+  LastPost,
+  LinkWrap,
+  Post,
+  ScrapItem,
+} from "@/types/common";
 import { getAgoString, getDateString } from "@/plugin/dayjs";
 
 type SearchParam = {
@@ -76,11 +83,49 @@ export default {
       };
     } catch (err) {}
   },
-  async countByDate(links: LinkWrap[]) {
+  async countByDate(props: { linkIds: Ref<(number | undefined)[]> }) {
+    const config = useRuntimeConfig();
+    const baseURL = config.public.apiBase;
+
     try {
-      return await useFetch("post/count/date", {
-        params: { linkIds: getIds(links) },
+      return await useFetch<
+        DaysAllCounts[], //ResT
+        null, //ErrorT
+        "post/count/date", //ReqT
+        "get", //Method
+        DaysAllCounts[], //_ResT
+        DaysCount[] //DataT
+      >("post/count/date", {
+        baseURL,
+        params: {
+          linkIds: props.linkIds,
+        },
+        transform: (counts) =>
+          counts.map((v) => ({
+            ...v,
+            count: v.count ? v.count.totalCount || 0 : 0,
+          })),
       });
-    } catch (err) {}
+
+      // const convData = ref();
+      // const { data, ...rest } = await useFetch<DaysAllCounts[]>(
+      //   "post/count/date",
+      //   {
+      //     baseURL,
+      //     params: {
+      //       linkIds: computed(() =>
+      //         props.links.value?.map(({ link }) => link.id)
+      //       ),
+      //     },
+      //   }
+      // );
+      // convData.value = (data.value || []).map((v) => ({
+      //   ...v,
+      //   count: v.count ? v.count.totalCount || 0 : 0,
+      // }));
+      // return { data: convData, ...rest };
+    } catch (err) {
+      throw new Error("");
+    }
   },
 };

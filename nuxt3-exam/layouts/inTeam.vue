@@ -13,7 +13,7 @@ const $q = useQuasar();
 const isDark = ref($q.dark.isActive);
 const route = useRoute();
 const router = useRouter();
-const teamId = String(route.params.teamId).replace("@", "");
+const teamId = String(route.params.teamId);
 const groupStore = useGroupStore();
 const { currentGroup } = storeToRefs(groupStore);
 
@@ -28,7 +28,7 @@ watch(
   (val) => (isDark.value = val)
 );
 
-const tab = ref(route.path.replace(`/${route.params.teamId}/`, ""));
+const tab = ref(route.path.replace(`/@${route.params.teamId}/`, ""));
 </script>
 <template>
   <q-layout>

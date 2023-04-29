@@ -14,7 +14,7 @@ const linkCountByPlatform = computed(() =>
 <template>
   <div>
     <div class="max-width">
-      <div class="row q-px-sm">
+      <div class="row q-px-sm q-pt-sm">
         <PlatformStatList :link-count-by-platform="linkCountByPlatform" />
       </div>
       <q-separator spaced style="height: 8px" />

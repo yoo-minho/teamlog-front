@@ -2,7 +2,6 @@
 import { storeToRefs } from "pinia";
 import { usePostStore } from "@/stores/post";
 import { useGroupStore } from "~/stores/group";
-import { Group } from "~/types/common";
 
 import GroupDetailPostLoader from "@/components/Loader/GroupDetailPostLoader.vue";
 import ScrollObserver from "@/components/Observer/ScrollObserver.vue";
@@ -13,8 +12,6 @@ const { posts } = storeToRefs(postStore);
 
 const groupStore = useGroupStore();
 const { currentGroup } = storeToRefs(groupStore);
-
-defineProps<{ team: Group }>();
 
 const page = ref(1);
 const isExistsNextPage = ref(false);

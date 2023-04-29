@@ -93,6 +93,12 @@ export type DaysAllCounts = {
     [key: string]: number;
   };
 };
+export type Jandi = {
+  date: string;
+  day: number;
+  month: string;
+  count: { totalCount: number } | number | undefined;
+};
 export type DaysCounts = {
   date: string;
   day: number;
