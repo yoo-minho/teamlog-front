@@ -3,9 +3,11 @@ import {
   DaysAllCounts,
   DaysCount,
   LastPost,
+  LastPostPlus,
   LinkWrap,
   Post,
   ScrapItem,
+  linkCount,
 } from "@/types/common";
 import { getAgoString, getDateString } from "@/plugin/dayjs";
 
@@ -55,38 +57,46 @@ export default {
       throw new Error("");
     }
   },
-  async findLast(links: LinkWrap[]) {
+  async findCountGroupById(props: { linkIds: Ref<(number | undefined)[]> }) {
     const config = useRuntimeConfig();
     const baseURL = config.public.apiBase;
     try {
-      const { data } = await useFetch("post/last", {
+      return await useFetch<linkCount[]>("post/many", {
         baseURL,
-        params: { linkIds: getIds(links) },
+        params: { linkIds: props.linkIds },
       });
-      const _data = (data.value as []).map((post: LastPost) => ({
-        ...post,
-        dateString: getDateString(post.createdAt),
-        agoString: getAgoString(post.createdAt),
-      }));
-      return {
-        data: ref(_data),
-      };
-    } catch (err) {}
+    } catch (err) {
+      throw new Error("");
+    }
   },
-  async findCountGroupById(links: LinkWrap[]) {
+  async findLast(props: { linkIds: Ref<(number | undefined)[]> }) {
+    const config = useRuntimeConfig();
+    const baseURL = config.public.apiBase;
     try {
-      const { data } = await useFetch("post/many", {
-        params: { linkIds: getIds(links) },
+      return await useFetch<
+        LastPost[], //ResT
+        null, //ErrorT
+        "post/last", //ReqT
+        "get", //Method
+        LastPost[], //_ResT
+        LastPostPlus[] //DataT
+      >("post/last", {
+        baseURL,
+        params: { linkIds: props.linkIds },
+        transform: (lasts) =>
+          lasts.map((v) => ({
+            ...v,
+            dateString: getDateString(v.createdAt),
+            agoString: getAgoString(v.createdAt),
+          })),
       });
-      return {
-        data: ref(data),
-      };
-    } catch (err) {}
+    } catch (err) {
+      throw new Error("");
+    }
   },
   async countByDate(props: { linkIds: Ref<(number | undefined)[]> }) {
     const config = useRuntimeConfig();
     const baseURL = config.public.apiBase;
-
     try {
       return await useFetch<
         DaysAllCounts[], //ResT
@@ -106,24 +116,6 @@ export default {
             count: v.count ? v.count.totalCount || 0 : 0,
           })),
       });
-
-      // const convData = ref();
-      // const { data, ...rest } = await useFetch<DaysAllCounts[]>(
-      //   "post/count/date",
-      //   {
-      //     baseURL,
-      //     params: {
-      //       linkIds: computed(() =>
-      //         props.links.value?.map(({ link }) => link.id)
-      //       ),
-      //     },
-      //   }
-      // );
-      // convData.value = (data.value || []).map((v) => ({
-      //   ...v,
-      //   count: v.count ? v.count.totalCount || 0 : 0,
-      // }));
-      // return { data: convData, ...rest };
     } catch (err) {
       throw new Error("");
     }

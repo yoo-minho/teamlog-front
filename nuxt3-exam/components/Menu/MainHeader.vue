@@ -49,7 +49,7 @@ const showOrderBS = () => {
 };
 
 const routeName = String(route.name);
-const title = ref(TAB_LABEL[routeName]);
+const title = ref(TAB_LABEL[routeName] || "팀로그");
 const isSortable = ref(routeName === "team");
 const isSearchable = ref(routeName === "post");
 const postSearhWord = ref(String(route.query.q || ""));
@@ -70,7 +70,7 @@ watch(
   () => route.name,
   (_routeName) => {
     const routeName = String(_routeName);
-    title.value = TAB_LABEL[routeName];
+    title.value = TAB_LABEL[routeName] || "팀로그";
     isSortable.value = routeName === "team";
     isSearchable.value = routeName === "post";
     postSearhWord.value = "";

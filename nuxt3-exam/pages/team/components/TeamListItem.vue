@@ -6,12 +6,11 @@ import { getFormatString } from "@/plugin/dayjs";
 defineProps<{ group: Group }>();
 
 const router = useRouter();
-const clickGroup = (domain: string) => router.push({ path: `/@${domain}` });
 </script>
 <template>
   <q-item-label
     class="cursor-pointer row q-mx-sm items-center"
-    @click="clickGroup(group.domain)"
+    @click="router.push({ path: `/@${group.domain}/post` })"
   >
     <div class="image_area row justify-center content-center">
       <div

@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { useGroupStore } from "@/stores/group";
-import GroupDetailStatLast from "./components/GroupDetailStatLast/GroupDetailStatLast.vue";
-import GroupDetailStatJandi from "./components/GroupDetailStatJandi/GroupDetailStatJandi.vue";
-import GroupDetailStatDonut from "./components/GroupDetailStatDonut.vue";
-
-const groupStore = useGroupStore();
-const { currentGroup } = storeToRefs(groupStore);
+import Jandi from "./components/Jandi/Jandi.vue";
+import LastRank from "./components/LastRank/LastRank.vue";
+import LotRank from "./components/LotRank/LotRank.vue";
+// import GroupDetailStatDonut from "./components/GroupDetailStatDonut.vue";
 </script>
 
 <template>
@@ -14,20 +10,42 @@ const { currentGroup } = storeToRefs(groupStore);
     <q-item-section>
       <div class="max-width">
         <div class="q-px-md q-pb-md q-mt-sm stat-area">
-          <GroupDetailStatJandi :links="currentGroup?.links || []" />
-
+          <LotRank />
           <q-separator class="q-my-md" />
-
-          <!-- <GroupDetailStatLast :links="currentGroup?.links || []" />
-
+          <LastRank />
           <q-separator class="q-my-md" />
-
-          <GroupDetailStatDonut :links="currentGroup?.links || []" /> -->
+          <Jandi />
         </div>
       </div>
     </q-item-section>
   </q-item>
 </template>
 <style lang="scss">
-@import "./styles/_group-detail-stat.scss";
+@charset "UTF-8";
+
+.stat-area {
+  .jandi {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    outline-offset: -1px;
+  }
+  .jandi-area {
+    padding-top: 20px;
+    height: 160px;
+    width: 300px;
+  }
+  .jandi-wrap {
+    width: auto;
+    height: 14%;
+  }
+  .jandi-month {
+    position: absolute;
+    top: 12px;
+  }
+  .jandi-today {
+    border-color: $grey-1;
+  }
+}
 </style>

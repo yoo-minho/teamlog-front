@@ -4,9 +4,7 @@ const logoPath = new URL(
   import.meta.url
 ).toString();
 const router = useRouter();
-setTimeout(() => {
-  router.push({ path: "/team" });
-}, 2000);
+router.replace({ path: "/team" });
 </script>
 <template>
   <div

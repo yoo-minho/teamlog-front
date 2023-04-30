@@ -77,6 +77,10 @@ export type LastPost = {
   dateString: string;
   agoString: string;
 };
+export type LastPostPlus = LastPost & {
+  dateString: string;
+  agoString: string;
+};
 export type Days = {
   date: string;
   day: number;
