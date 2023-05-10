@@ -39,6 +39,7 @@ export const usePostStore = defineStore("post", {
     lastPosts: [] as LastPost[],
     lastLoading: false,
     countPostGroupByLinkId: [] as linkCount[],
+    lots: [] as linkCount[],
     scrapLoading: false,
     tagWord: "",
   }),

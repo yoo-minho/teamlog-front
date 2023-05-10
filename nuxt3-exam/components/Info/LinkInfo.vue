@@ -1,41 +1,34 @@
 <script setup lang="ts">
 import { Link } from "@/types/common";
 import { getImageByBlogType, isTextImage } from "@/util/ImageUtil";
-import { skipBlogName } from "@/util/NameUtil";
 
 defineProps<{ linkData: Link; links?: boolean; posts?: boolean }>();
 </script>
 
 <template>
   <div>
-    <q-avatar
-      v-if="isTextImage(linkData.imagePath)"
-      color="black"
-      text-color="white"
-      rounded
-    >
-      <div class="text-h6 non-selectable">
-        {{ linkData.title.substring(0, 2) }}
-      </div>
-      <q-tooltip>{{ linkData.title }}<br />{{ linkData.url }}</q-tooltip>
-    </q-avatar>
-    <q-avatar v-else rounded size="48px" class="shadow-1">
-      <q-img
-        :src="linkData.imagePath"
-        :alt="linkData.title"
-        class="image-48"
-        no-spinner
-        loading="eager"
-      >
-        <template #error>{{ linkData.title.substring(0, 1) }}</template>
-      </q-img>
-      <q-tooltip
-        >{{ skipBlogName(linkData.title) }}<br />{{ linkData.url }}</q-tooltip
-      >
-    </q-avatar>
+    <template v-if="isTextImage(linkData.imagePath)">
+      <q-avatar size="64px" color="black" text-color="white">
+        <div class="text-h5 non-selectable">
+          {{ linkData.title.substring(0, 2) }}
+        </div>
+      </q-avatar>
+    </template>
+    <template v-else>
+      <q-avatar size="64px" class="shadow-1">
+        <q-img
+          :src="linkData.imagePath"
+          :alt="linkData.title"
+          class="image-64"
+          no-spinner
+          loading="eager"
+        >
+          <template #error>{{ linkData.title.substring(0, 1) }}</template>
+        </q-img>
+      </q-avatar>
+    </template>
     <q-avatar
       :class="{ 'blog-icon': true, 'shadow-2': true, posts, links }"
-      rounded
       size="18px"
     >
       <q-img
@@ -50,14 +43,17 @@ defineProps<{ linkData: Link; links?: boolean; posts?: boolean }>();
 
 <style scoped>
 .blog-icon.links {
-  position: relative;
+  position: absolute;
+  margin-top: 48px;
+  margin-left: -12px;
+  /* position: relative;
   top: 20px;
-  right: 12px;
+  right: 12px; */
 }
 
 .blog-icon.posts {
   position: relative;
   top: 24px;
-  right: 8px;
+  right: 12px;
 }
 </style>

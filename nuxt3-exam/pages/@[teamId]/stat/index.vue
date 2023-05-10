@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import Jandi from "./components/Jandi/Jandi.vue";
-import LastRank from "./components/LastRank/LastRank.vue";
-import LotRank from "./components/LotRank/LotRank.vue";
-// import GroupDetailStatDonut from "./components/GroupDetailStatDonut.vue";
+import LastRanker from "./components/Ranker/LastRanker.vue";
+import LotRanker from "./components/Ranker/LotRanker.vue";
 </script>
 
 <template>
@@ -10,11 +9,11 @@ import LotRank from "./components/LotRank/LotRank.vue";
     <q-item-section>
       <div class="max-width">
         <div class="q-px-md q-pb-md q-mt-sm stat-area">
-          <LotRank />
-          <q-separator class="q-my-md" />
-          <LastRank />
-          <q-separator class="q-my-md" />
           <Jandi />
+          <q-separator class="q-my-md" />
+          <LotRanker />
+          <q-separator class="q-my-md" />
+          <LastRanker />
         </div>
       </div>
     </q-item-section>
