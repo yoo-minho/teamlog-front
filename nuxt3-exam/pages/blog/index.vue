@@ -44,7 +44,7 @@ const refreshBlogData = async ({ init = false } = {}) => {
   } else {
     blogs.value = [...blogs.value, ...(_blogs.value || [])];
   }
-  isExistsNextPage.value = blogs.value?.length === 10;
+  isExistsNextPage.value = _blogs.value?.length === 10;
 };
 </script>
 
@@ -56,13 +56,15 @@ const refreshBlogData = async ({ init = false } = {}) => {
         @click-tag="filterTag"
         :tags="tags"
       />
-      <q-separator spaced style="height: 8px" />
+      <q-separator spaced />
       <q-page class="q-mt-sm" style="min-height: 0">
         <BlogListItem v-for="(blog, i) in blogs" :key="i" :link="blog" />
       </q-page>
       <ClientOnly>
         <template v-if="isExistsNextPage">
           <ScrollObserver @trigger-intersected="next">
+            123123
+
             <PostListSkeletonItem />
           </ScrollObserver>
         </template>
