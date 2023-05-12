@@ -17,19 +17,18 @@ const tryLogin = (e: MouseEvent, id: string) => {
       message: "잠시만 기다려주세요!",
       messageColor: "white",
     });
-    const w = window.open("/api/auth/kakao", "kakao");
-    const iv = setInterval(async () => {
-      if (!w?.closed) return;
-      $q.loading.hide();
-      $q.notify({ type: "success", message: "로그인 성공" });
-      await delay(500);
-      clearInterval(iv);
-      location.reload();
-    }, 1000);
+    location.href = "http://localhost:5000/api/auth/kakao";
+
+    // const iv = setInterval(async () => {
+    //   if (!w?.closed) return;
+    //   $q.loading.hide();
+    //   $q.notify({ type: "success", message: "로그인 성공" });
+    //   await delay(500);
+    //   clearInterval(iv);
+    //   location.reload();
+    // }, 1000);
     return e;
   }
-
-  $q.notify({ type: "info", message: "준비중입니다!" });
   return e;
 };
 </script>
