@@ -49,7 +49,12 @@ const refreshPostData = async ({ init = false } = {}) => {
   } else {
     posts.value = [...posts.value, ...(_posts.value || [])];
   }
-  isExistsNextPage.value = posts.value?.length === 10;
+  posts.value = posts.value.map((post) => ({
+    ...post,
+    title: post.title.replace(selectQ.value, `<mark>${selectQ.value}</mark>`),
+  }));
+
+  isExistsNextPage.value = _posts.value?.length === 10;
 };
 
 watch(
@@ -70,7 +75,7 @@ watch([() => selectTag.value, () => selectQ.value], () =>
         :tags="tags"
         :active-tag-name="selectTag"
       />
-      <q-separator spaced style="height: 8px" />
+      <q-separator spaced />
       <q-page class="q-mt-sm" style="min-height: 0">
         <PostListItem v-for="(post, i) in posts" :key="i" :post="post" />
       </q-page>

@@ -44,7 +44,7 @@ const refreshPostData = async ({ init = false } = {}) => {
 </script>
 <template>
   <div class="max-width">
-    <q-pull-to-refresh @refresh="refresh">
+    <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
       <PostListItem v-for="(post, i) in posts" :key="i" :post="post" />
       <ClientOnly>
         <template v-if="isExistsNextPage">

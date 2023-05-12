@@ -10,6 +10,6 @@ defineProps<{ link: Link }>();
   <q-item-label class="cursor-pointer" @click="openUrl(link.url)">
     <LinkCard :link="link" icon-name="launch" />
   </q-item-label>
-  <q-separator spaced style="height: 8px" />
+  <q-separator spaced />
 </template>
 <style lang="scss"></style>

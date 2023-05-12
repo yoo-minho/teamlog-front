@@ -62,7 +62,7 @@ watch([() => selectedOrder.value, () => selectedTag.value], () =>
         :tags="tags"
         :active-tag-name="selectedTag"
       />
-      <q-separator spaced style="height: 8px" />
+      <q-separator spaced />
       <q-page class="q-mt-sm" style="min-height: 0">
         <TeamListItem v-for="group in groups" :key="group.id" :group="group" />
       </q-page>

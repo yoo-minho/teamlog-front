@@ -101,7 +101,7 @@ const router = useRouter();
       </q-item-section>
     </q-item>
   </q-item-label>
-  <q-separator spaced style="height: 8px" />
+  <q-separator spaced />
 </template>
 <style scope>
 .views {

@@ -1,23 +1,46 @@
 <script setup lang="ts">
-import { useGroupStore } from "~/stores/group";
 import { storeToRefs } from "pinia";
-import { getPlatformStat } from "@/hooks/usePlatformStat";
-import { LinkWrap } from "~/types/common";
+import { useGroupStore } from "~/stores/group";
+import { getImage } from "@/util/ImageUtil";
+import { BLOG_TAG } from "~/constants";
 
 const groupStore = useGroupStore();
 const { currentGroup } = storeToRefs(groupStore);
 
-const linkCountByPlatform = computed(() =>
-  getPlatformStat(currentGroup.value.links as LinkWrap[])
-);
+//group by count
+const currentBlogs = Object.entries(
+  currentGroup.value.links
+    ?.map((v) => v.link.type)
+    ?.reduce((a, c) => ((a[c] = (a[c] || 0) + 1), a), Object.create(null))
+).map(([key, value]) => ({ id: key, name: key, count: value }));
+
+const getLabel = (type: string) =>
+  BLOG_TAG.find((v) => v.type === type)?.label || "All";
 </script>
 <template>
   <div>
     <div class="max-width">
       <div class="row q-px-sm q-pt-sm">
-        <PlatformStatList :link-count-by-platform="linkCountByPlatform" />
+        <q-chip
+          v-for="(tag, i) in currentBlogs"
+          :key="i"
+          outline
+          square
+          clickable
+          color="dark"
+          style="opacity: 0.8"
+        >
+          <q-avatar size="18px">
+            <q-img
+              :src="getImage(`platform/${tag.name.toLowerCase()}.png`)"
+              :no-transition="true"
+            />
+          </q-avatar>
+          {{ getLabel(tag.name) }}
+          <div class="text-bold q-ml-sm">{{ tag.count }}</div>
+        </q-chip>
       </div>
-      <q-separator spaced style="height: 8px" />
+      <q-separator spaced />
       <BlogListItem
         v-for="({ link }, i) in currentGroup.links"
         :key="i"

@@ -14,9 +14,10 @@ const { post } = toRefs(props);
   <q-item-label class="cursor-pointer" @click="openUrl(post.url)">
     <q-item>
       <q-item-section>
-        <div class="label text-weight-bold ellipsis text-subtitle2">
-          {{ post.title }}
-        </div>
+        <div
+          class="label text-weight-bold ellipsis text-subtitle2"
+          v-html="post.title"
+        ></div>
         <div class="label ellipsis-2-lines">{{ post.description || "ㅤ" }}</div>
         <div class="label text-grey-5 ellipsis">
           {{ getDateString(post.createdAt) }}
@@ -58,7 +59,7 @@ const { post } = toRefs(props);
         </div>
       </q-item-section>
     </q-item>
-    <q-separator spaced style="height: 8px" />
+    <q-separator spaced />
   </q-item-label>
 </template>
 <style lang="scss">

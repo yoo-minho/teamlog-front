@@ -6,7 +6,11 @@
       <q-skeleton type="text" width="90%" height="20px" />
       <q-skeleton type="text" width="60%" height="20px" />
     </q-item-section>
-    <q-item-section avatar class="col-3" style="padding: 0; align-items: center">
+    <q-item-section
+      avatar
+      class="col-3"
+      style="padding: 0; align-items: center"
+    >
       <q-skeleton size="48px" />
     </q-item-section>
   </q-item>

@@ -71,7 +71,7 @@ const tab = ref(route.path.replace(`/@${route.params.teamId}/`, ""));
                   />
                 </template>
               </q-tabs>
-              <q-separator style="height: 8px" />
+              <q-separator />
               <slot></slot>
             </q-page>
           </q-page-container>

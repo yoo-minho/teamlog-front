@@ -8,7 +8,7 @@ defineProps<{ linkData: Link; links?: boolean; posts?: boolean }>();
 <template>
   <div>
     <template v-if="isTextImage(linkData.imagePath)">
-      <q-avatar size="64px" color="black" text-color="white">
+      <q-avatar size="64px" color="black" text-color="white" class="shadow-1">
         <div class="text-h5 non-selectable">
           {{ linkData.title.substring(0, 2) }}
         </div>
@@ -22,8 +22,13 @@ defineProps<{ linkData: Link; links?: boolean; posts?: boolean }>();
           class="image-64"
           no-spinner
           loading="eager"
+          :style="{ height: '100%' }"
         >
-          <template #error>{{ linkData.title.substring(0, 1) }}</template>
+          <template #error>
+            <div class="absolute-full flex flex-center bg-green-4 text-white">
+              {{ linkData.title.substring(0, 1) }}
+            </div>
+          </template>
         </q-img>
       </q-avatar>
     </template>
@@ -36,7 +41,6 @@ defineProps<{ linkData: Link; links?: boolean; posts?: boolean }>();
         :alt="linkData.title"
         :no-transition="true"
       />
-      <q-tooltip>{{ linkData.type }}</q-tooltip>
     </q-avatar>
   </div>
 </template>
@@ -46,9 +50,6 @@ defineProps<{ linkData: Link; links?: boolean; posts?: boolean }>();
   position: absolute;
   margin-top: 48px;
   margin-left: -12px;
-  /* position: relative;
-  top: 20px;
-  right: 12px; */
 }
 
 .blog-icon.posts {
