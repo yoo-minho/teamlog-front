@@ -2,37 +2,23 @@ import { MainTabType } from "@/types/common";
 import { defineStore } from "pinia";
 import { QScrollArea } from "quasar";
 
-import UserApi from "../api/userApi";
+import { User } from "~/types/common";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
-    userLoading: false,
-    id: "",
-    email: "",
-    name: "",
-    profileImage: "",
+    atk: "",
+    user: {} as User,
     isSearchMode: false,
     searchWord: "",
     mainScrollAreaRef: null as unknown as QScrollArea,
   }),
   getters: {
-    isExistsUser: (state) => !!state.id,
+    isExistsUser: (state) => !!state.user?.id,
   },
   actions: {
     initSearchData() {
       this.isSearchMode = false;
       this.searchWord = "";
-    },
-    async fetchUser() {
-      this.userLoading = true;
-      // const { data: user } = await UserApi.findUser();
-      const user = ref([]);
-      this.userLoading = false;
-      // this.id = user.value.id;
-      // this.email = user.value.email;
-      // this.name = user.value.name;
-      // this.profileImage = user.value.profileImage;
-      return;
     },
     toggleSearchMode() {
       this.isSearchMode = !this.isSearchMode;

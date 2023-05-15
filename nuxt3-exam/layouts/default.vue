@@ -7,20 +7,13 @@ import MainHeader from "@/components/Menu/MainHeader.vue";
 const $q = useQuasar();
 const isDarkActive = ref($q.dark.isActive);
 const userStore = useUserStore();
-const { isExistsUser, profileImage, mainScrollAreaRef } =
-  storeToRefs(userStore);
-const { fetchUser } = userStore;
+const { isExistsUser, user, mainScrollAreaRef } = storeToRefs(userStore);
 const route = useRoute();
-
-onMounted(() => {
-  fetchUser();
-});
 
 watch(
   () => $q.dark.isActive,
   (val) => (isDarkActive.value = val)
 );
-
 const tab = ref(String(route.name));
 </script>
 <template>
@@ -51,7 +44,7 @@ const tab = ref(String(route.name));
             <q-route-tab to="/my" style="flex: 1" no-caps>
               <q-btn v-if="isExistsUser" flat round>
                 <q-avatar size="28px">
-                  <img :src="profileImage" />
+                  <img :src="user.profileImage" />
                 </q-avatar>
               </q-btn>
               <q-btn v-else icon="account_circle" flat round />

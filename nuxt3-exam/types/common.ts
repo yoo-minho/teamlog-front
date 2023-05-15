@@ -135,3 +135,9 @@ export type TabType = string &
 export type MainTabType = string & (`t_0` | `t_1` | `t_2` | "t_3" | "t_4");
 export type OrderOption = { label: string; value: string; order: OrderType };
 export type linkCount = { linkId: number; count: number };
+export type User = {
+  id: string;
+  name: string;
+  email?: string;
+  profileImage?: string;
+};

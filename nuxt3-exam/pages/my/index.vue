@@ -5,15 +5,17 @@ import LoginPage from "./components/LoginPage.vue";
 import MyInnerPage from "./components/MyInnerPage.vue";
 
 const userStore = useUserStore();
-const { userLoading, isExistsUser, profileImage, name, email } =
-  storeToRefs(userStore);
+const { isExistsUser, user } = storeToRefs(userStore);
 </script>
 
 <template>
   <q-page class="q-mt-sm">
-    <template v-if="userLoading"></template>
-    <template v-else-if="isExistsUser">
-      <MyInnerPage :name="name" :email="email" :profile-image="profileImage" />
+    <template v-if="isExistsUser">
+      <MyInnerPage
+        :name="user.name"
+        :email="user.email"
+        :profile-image="user.profileImage"
+      />
     </template>
     <template v-else>
       <LoginPage />

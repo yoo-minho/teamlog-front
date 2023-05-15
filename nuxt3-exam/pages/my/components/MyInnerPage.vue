@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import UserApi from "@/api/userApi";
 
-defineProps<{ profileImage: string; name: string; email?: string }>();
+const props = defineProps<{
+  name: string;
+  email?: string;
+  profileImage?: string;
+}>();
 
 const logout = async () => {
   await UserApi.logoutUser();

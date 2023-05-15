@@ -8,9 +8,13 @@ import DataSubpage from "./components/Setting/DataSubpage.vue";
 import GroupEditor from "./components/Editor/GroupEditor.vue";
 import LinkEditor from "./components/Editor/LinkEditor.vue";
 import { useSubpageStore } from "./stores/subpage";
+import { useUserStore } from "./stores/user";
+import UserApi from "@/api/userApi";
 
 const $q = useQuasar();
 const isDarkActive = ref($q.dark.isActive);
+
+const userStore = useUserStore();
 const subpageStore = useSubpageStore();
 const {
   isOpenGroupEditor,
@@ -19,9 +23,35 @@ const {
   isOpenDataSubpage,
 } = storeToRefs(subpageStore);
 
+const [route, router] = [useRoute(), useRouter()];
+const teamId = ref(String(route.params.teamId || ""));
+const isInTeam = computed(() => "" !== teamId.value);
+
+const { user } = storeToRefs(userStore);
+const atk = ref("");
+
+const code = String(route.query.code || "");
+if (!code) {
+  const { data } = await UserApi.reissue();
+  atk.value = data.value?.atk || "";
+} else {
+  atk.value = code;
+  router.replace("my");
+}
+
+const { data: _user } = await UserApi.findUser(atk);
+if (_user.value != null) {
+  user.value = _user.value;
+}
+
 watch(
   () => $q.dark.isActive,
   (val) => (isDarkActive.value = val)
+);
+
+watch(
+  () => String(route.params.teamId || ""),
+  (id) => (teamId.value = id)
 );
 
 onMounted(() => {
@@ -34,14 +64,6 @@ onMounted(() => {
     console.log("PWA was installed");
   });
 });
-
-const route = useRoute();
-const teamId = ref(String(route.params.teamId || ""));
-const isInTeam = computed(() => "" !== teamId.value);
-watch(
-  () => String(route.params.teamId || ""),
-  (id) => (teamId.value = id)
-);
 </script>
 
 <template>
@@ -52,11 +74,6 @@ watch(
         <SettingSubpage v-if="isOpenSettingSubpage" />
         <DataSubpage v-if="isOpenDataSubpage" />
       </div> -->
-    <!-- <router-view v-slot="{ Component }">
-        <keep-alive>
-          <component :is="Component" />
-        </keep-alive>
-      </router-view> -->
     <NuxtLayout :name="isInTeam ? 'in-team' : 'default'">
       <NuxtPage />
     </NuxtLayout>
