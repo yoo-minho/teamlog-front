@@ -12,7 +12,10 @@ export default {
   },
   async reissue() {
     const config = useRuntimeConfig();
-    const rtk = useCookie("refresh-token");
+    const rtk = useCookie("refresh-token", {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 7,
+    });
     const baseURL = config.public.apiBase;
     return await useFetch<{ atk: string }>("auth/refresh", {
       baseURL,
@@ -20,10 +23,16 @@ export default {
       onResponse({ response }) {
         if (!process.server) return;
         const combinedCookie = response.headers.get("set-cookie");
-        if (!combinedCookie) return;
+        if (!combinedCookie) {
+          rtk.value = null;
+          return;
+        }
         const cookies = parse(combinedCookie);
         const cookie = cookies.find((c) => c.name === "refresh-token");
-        if (!cookie) return;
+        if (!cookie) {
+          rtk.value = null;
+          return;
+        }
         rtk.value = cookie.value;
       },
     });
