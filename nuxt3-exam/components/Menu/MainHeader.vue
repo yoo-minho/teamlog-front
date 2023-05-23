@@ -14,15 +14,12 @@ const subpageStore = useSubpageStore();
 const { openSettingMain } = subpageStore;
 
 const userStore = useUserStore();
-const { searchWord } = storeToRefs(userStore);
+const { searchWord, settingTitle } = storeToRefs(userStore);
 
 const router = useRouter();
 const route = useRoute();
 
-const _openSettingMain = () => {
-  router.push({ hash: "#Setting" });
-  openSettingMain();
-};
+const _openSettingMain = () => router.push({ name: "setting" });
 
 const keywordRef = ref();
 watch(

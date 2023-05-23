@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { useQuasar } from 'quasar';
-import { ref } from 'vue';
+import { useQuasar } from "quasar";
 
 const $q = useQuasar();
 const value = ref($q.dark.isActive);
 const toggleDarkMode = () => {
   $q.dark.toggle();
-  $q.localStorage.set('mode', $q.dark.isActive ? 'dark' : 'light');
+  $q.localStorage.set("mode", $q.dark.isActive ? "dark" : "light");
 };
 const clickDarkMode = () => {
   value.value = !value.value;

@@ -7,6 +7,7 @@ import { User } from "~/types/common";
 export const useUserStore = defineStore("user", {
   state: () => ({
     atk: "",
+    settingTitle: "",
     user: {} as User,
     isSearchMode: false,
     searchWord: "",

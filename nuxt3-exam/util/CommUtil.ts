@@ -5,7 +5,8 @@ export function minifyStr(txt = "", n: number) {
 
 type ConvertFunction = (x: string) => string;
 
-export const openUrl = (url: string) => window.open(url);
+export const openUrl = (url: string, target?: string) =>
+  window.open(url, target);
 const timeout = 500;
 export const delay = (delay = timeout) =>
   new Promise((res) => setTimeout(res, delay));

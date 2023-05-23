@@ -2,12 +2,6 @@
 import { useQuasar } from "quasar";
 import { storeToRefs } from "pinia";
 // import { showBottomSheet } from '@/hooks/useInstallBottomSheeet';
-// import { useSubpageStore } from '@/stores/subpage';
-import SettingSubpage from "./components/Setting/SettingSubpage.vue";
-import DataSubpage from "./components/Setting/DataSubpage.vue";
-import GroupEditor from "./components/Editor/GroupEditor.vue";
-import LinkEditor from "./components/Editor/LinkEditor.vue";
-import { useSubpageStore } from "./stores/subpage";
 import { useUserStore } from "./stores/user";
 import UserApi from "@/api/userApi";
 
@@ -15,17 +9,10 @@ const $q = useQuasar();
 const isDarkActive = ref($q.dark.isActive);
 
 const userStore = useUserStore();
-const subpageStore = useSubpageStore();
-const {
-  isOpenGroupEditor,
-  isOpenLinkEditor,
-  isOpenSettingSubpage,
-  isOpenDataSubpage,
-} = storeToRefs(subpageStore);
-
 const [route, router] = [useRoute(), useRouter()];
 const teamId = ref(String(route.params.teamId || ""));
 const isInTeam = computed(() => "" !== teamId.value);
+const isSetting = computed(() => route.name?.toString().includes("setting"));
 
 const { user } = storeToRefs(userStore);
 const atk = ref("");
@@ -68,15 +55,21 @@ onMounted(() => {
 
 <template>
   <div :class="`max-width ${isDarkActive ? 'bg-grey-9' : 'bg-white'}`">
-    <!-- <div id="subpage">
-        <GroupEditor v-if="isOpenGroupEditor" />
-        <LinkEditor v-if="isOpenLinkEditor" />
-        <SettingSubpage v-if="isOpenSettingSubpage" />
-        <DataSubpage v-if="isOpenDataSubpage" />
-      </div> -->
-    <NuxtLayout :name="isInTeam ? 'in-team' : 'default'">
-      <NuxtPage />
-    </NuxtLayout>
+    <template v-if="isSetting">
+      <NuxtLayout name="setting">
+        <NuxtPage />
+      </NuxtLayout>
+    </template>
+    <template v-else-if="isInTeam">
+      <NuxtLayout name="in-team">
+        <NuxtPage />
+      </NuxtLayout>
+    </template>
+    <template v-else>
+      <NuxtLayout name="default">
+        <NuxtPage />
+      </NuxtLayout>
+    </template>
   </div>
 </template>
 

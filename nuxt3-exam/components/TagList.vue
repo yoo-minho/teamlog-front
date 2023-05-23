@@ -13,9 +13,7 @@ const { currentTag, tags, tagsLoading } = storeToRefs(tagStore);
 const router = useRouter();
 const clickTag = (tag: string) => {
   setCurrentTag(tag);
-  // emits("clickTag");
   const name = String(route.name).includes("GroupDetail") ? "Team" : props.name;
-  console.log("xxxxx");
   router.replace({ path: name, query: tag === "All" ? {} : { tag } });
   return;
 };

@@ -2,13 +2,14 @@
 import UserApi from "@/api/userApi";
 
 const props = defineProps<{
+  id: string;
   name: string;
   email?: string;
   profileImage?: string;
 }>();
 
 const logout = async () => {
-  await UserApi.logoutUser();
+  await UserApi.logoutUser(props.id);
   location.href = "/";
 };
 </script>

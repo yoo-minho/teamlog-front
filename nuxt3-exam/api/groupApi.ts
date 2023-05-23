@@ -1,4 +1,4 @@
-import { Tag, Group, Link } from "../types/common";
+import { Tag, Group, Link, BlogType } from "../types/common";
 
 export default {
   async findAll(props: {
@@ -8,19 +8,21 @@ export default {
   }) {
     const config = useRuntimeConfig();
     const { tag, page, sort } = props;
-    try {
-      return await useFetch<Group[]>(() => `group`, {
-        baseURL: config.public.apiBase,
-        params: { page, sort, tag },
-      });
-    } catch (err) {
-      throw new Error("");
-    }
+    return await useFetch<Group[]>(() => `group`, {
+      baseURL: config.public.apiBase,
+      params: { page, sort, tag },
+    });
   },
   async count() {
-    try {
-      return await useFetch("group/counts");
-    } catch (err) {}
+    const config = useRuntimeConfig();
+    return await useFetch<{
+      groupCount: number;
+      linkCount: number;
+      postCount: number;
+      linkCountByPlatform: { _count: number; type: BlogType }[];
+    }>("group/counts", {
+      baseURL: config.public.apiBase,
+    });
   },
   async findAllTag() {
     const config = useRuntimeConfig();

@@ -22,18 +22,25 @@ export default {
       headers: { Authorization: `Bearer ${rtk.value}` },
       onResponse({ response }) {
         if (!process.server) return;
+
+        const { statusCode } = response._data;
+        if (statusCode === 401) {
+          rtk.value = "";
+          return;
+        }
+
         const combinedCookie = response.headers.get("set-cookie");
         if (!combinedCookie) {
-          rtk.value = null;
+          rtk.value = "";
           return;
         }
         const cookies = parse(combinedCookie);
         const cookie = cookies.find((c) => c.name === "refresh-token");
         if (!cookie) {
-          rtk.value = null;
+          rtk.value = "";
           return;
         }
-        rtk.value = cookie.value;
+        rtk.value = cookie.value || "";
       },
     });
   },
@@ -44,11 +51,12 @@ export default {
       throw new Error("");
     }
   },
-  async logoutUser() {
-    try {
-      return await useFetch("auth/logout");
-    } catch (err) {
-      throw new Error("");
-    }
+  async logoutUser(id: string) {
+    const config = useRuntimeConfig();
+    const baseURL = config.public.apiBase;
+    await useFetch("auth/logout", {
+      baseURL,
+      params: { id },
+    });
   },
 };

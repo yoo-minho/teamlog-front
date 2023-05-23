@@ -12,6 +12,7 @@ const { isExistsUser, user } = storeToRefs(userStore);
   <q-page class="q-mt-sm">
     <template v-if="isExistsUser">
       <MyInnerPage
+        :id="user.id"
         :name="user.name"
         :email="user.email"
         :profile-image="user.profileImage"
