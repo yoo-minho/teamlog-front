@@ -147,4 +147,27 @@ body {
 .q-separator--horizontal:last-child {
   margin-bottom: 0 !important;
 }
+
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  position: fixed;
+  top: 100px;
+  left: 0;
+  right: 0;
+  transition: all 1s linear;
+}
+.slide-left-enter-from,
+.slide-right-leave-to {
+  transform: translateX(100%);
+}
+.slide-left-leave-to,
+.slide-right-enter-from {
+  transform: translateX(-100%);
+}
+.slide-left-enter-to,
+.slide-right-enter-to {
+  transform: translateX(0);
+}
 </style>
