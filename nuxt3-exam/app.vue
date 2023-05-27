@@ -149,25 +149,42 @@ body {
 }
 
 .slide-left-enter-active,
-.slide-left-leave-active,
 .slide-right-enter-active,
+.slide-left-leave-active,
 .slide-right-leave-active {
-  position: fixed;
-  top: 100px;
-  left: 0;
-  right: 0;
-  transition: all 1s linear;
+  transition: all 0.3s linear;
 }
-.slide-left-enter-from,
-.slide-right-leave-to {
-  transform: translateX(100%);
-}
-.slide-left-leave-to,
+
 .slide-right-enter-from {
-  transform: translateX(-100%);
+  transform: translateX(50%);
+  opacity: 0.3;
 }
-.slide-left-enter-to,
 .slide-right-enter-to {
   transform: translateX(0);
+  opacity: 1;
+}
+.slide-right-leave-from {
+  transform: translateX(0);
+  opacity: 1;
+}
+.slide-right-leave-to {
+  transform: translateX(50%);
+  opacity: 0.3;
+}
+.slide-left-enter-from {
+  transform: translateX(-50%);
+  opacity: 0.3;
+}
+.slide-left-enter-to {
+  transform: translateX(0);
+  opacity: 1;
+}
+.slide-left-leave-from {
+  transform: translateX(0%);
+  opacity: 1;
+}
+.slide-left-leave-to {
+  transform: translateX(-50%);
+  opacity: 0.3;
 }
 </style>
