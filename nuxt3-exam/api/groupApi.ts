@@ -26,15 +26,11 @@ export default {
   },
   async findAllTag() {
     const config = useRuntimeConfig();
-    try {
-      return await useFetch<Tag[]>("tag", {
-        baseURL: config.public.apiBase,
-      });
-    } catch (err) {
-      throw new Error("");
-    }
+    return await useFetch<Tag[]>("tag", {
+      baseURL: config.public.apiBase,
+    });
   },
-  async findById(domain: string) {
+  async findByDomain(domain: string) {
     const config = useRuntimeConfig();
     try {
       return await useFetch<Group>(() => `group/${domain}`, {
@@ -44,20 +40,26 @@ export default {
       throw new Error("");
     }
   },
-  async create(group: Group, tags: string[], links: Link[]) {
-    const { domain, title, description } = group;
-    try {
-      await useFetch("group", {
-        method: "post",
-        body: {
-          domain,
-          title,
-          description,
-          links,
-          tags,
-        },
-      });
-    } catch (axiosError) {}
+  async create(props: {
+    domain: string;
+    title: string;
+    description: string;
+    tags: string[];
+    links: Link[];
+  }) {
+    const config = useRuntimeConfig();
+    const { domain, title, description, tags, links } = props;
+    await useFetch("group", {
+      baseURL: config.public.apiBase,
+      method: "post",
+      body: {
+        domain,
+        title,
+        description,
+        tags,
+        links,
+      },
+    });
   },
   async update(id: number, group: Group, tags: string[], links: Link[]) {
     const { domain, title, description } = group;
@@ -77,15 +79,13 @@ export default {
   },
   async updateLastPostCreateAt(groupId?: number) {
     if (!groupId) throw new Error("No Group Id");
-    try {
-      const { data } = await useFetch("group/last-post-create-at", {
-        method: "patch",
-        body: {
-          groupId,
-        },
-      });
-      //   return { lastPostCreatedAt: new Date(data.lastPostCreatedAt) };
-      return { lastPostCreatedAt: new Date() };
-    } catch (axiosError) {}
+    const config = useRuntimeConfig();
+    await useFetch("group/last-post-create-at", {
+      baseURL: config.public.apiBase,
+      method: "put",
+      body: {
+        groupId,
+      },
+    });
   },
 };

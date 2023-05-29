@@ -152,7 +152,7 @@ body {
 .slide-right-enter-active,
 .slide-left-leave-active,
 .slide-right-leave-active {
-  transition: all 0.3s linear;
+  transition: all 0.1s linear;
 }
 
 .slide-right-enter-from {
