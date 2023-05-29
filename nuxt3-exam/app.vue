@@ -14,12 +14,12 @@ const teamId = ref(String(route.params.teamId || ""));
 const isInTeam = computed(() => "" !== teamId.value);
 const isSetting = computed(() => route.name?.toString().includes("setting"));
 
-const { user } = storeToRefs(userStore);
-const atk = ref("");
+const { user, atk } = storeToRefs(userStore);
 
 const code = String(route.query.code || "");
 if (!code) {
   const { data } = await UserApi.reissue();
+  console.log("reissue", data.value);
   atk.value = data.value?.atk || "";
 } else {
   atk.value = code;
