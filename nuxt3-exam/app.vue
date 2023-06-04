@@ -15,12 +15,13 @@ const isInTeam = computed(() => "" !== teamId.value);
 const isSetting = computed(() => route.name?.toString().includes("setting"));
 
 const { user, atk } = storeToRefs(userStore);
+const rtk = useCookie("refresh-token", { httpOnly: true });
 
 const code = String(route.query.code || "");
 if (!code) {
   const { data } = await UserApi.reissue();
-  console.log("reissue", data.value);
   atk.value = data.value?.atk || "";
+  rtk.value = data.value?.rtk || "";
 } else {
   atk.value = code;
   router.replace("my");
