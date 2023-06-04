@@ -48,24 +48,13 @@ const refreshBlogData = async ({ init = false } = {}) => {
 };
 
 definePageMeta({
-  pageTransition: {
-    mode: "out-in",
-  },
-  middleware(to, from) {
-    const idx = (n: string) =>
-      ["team", "blog", "post", "noti", "my"].findIndex((v) => v === n);
-    if (!to.meta.pageTransition || to.meta.pageTransition === true) return;
-    const toIdx = idx(String(to.name));
-    const fromIdx = idx(String(from.name));
-    console.log(to.name, from.name, toIdx, fromIdx);
-    to.meta.pageTransition.name =
-      toIdx > fromIdx ? "slide-left" : "slide-right";
-  },
+  pageTransition: { mode: "out-in" },
+  middleware: ["main-slide"],
 });
 </script>
 
 <template>
-  <div>
+  <div class="page">
     <q-pull-to-refresh @refresh="refresh">
       <BlogTagList
         :active-tag-name="selectTag"

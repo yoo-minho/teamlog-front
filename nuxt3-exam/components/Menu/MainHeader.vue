@@ -1,25 +1,28 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useGroupStore } from "@/stores/group";
-import { useSubpageStore } from "@/stores/subpage";
 import { useUserStore } from "@/stores/user";
 import { showBottomSheet } from "@/hooks/useSnsBottomSheeet";
 import { TAB_LABEL } from "@/constants";
 import { showOrderBottomSheet } from "~/hooks/useOrderBottomSheet";
+import { showAuthDialog } from "~/hooks/useAuthDialog";
 
 const groupStore = useGroupStore();
 const { groupSort } = storeToRefs(groupStore);
-
-const subpageStore = useSubpageStore();
-const { openSettingMain } = subpageStore;
-
 const userStore = useUserStore();
-const { searchWord, settingTitle } = storeToRefs(userStore);
+const { searchWord, isExistsUser } = storeToRefs(userStore);
 
 const router = useRouter();
 const route = useRoute();
 
 const _openSettingMain = () => router.push({ name: "setting" });
+const _openNewTeam = () => {
+  if (isExistsUser.value) {
+    router.push({ path: "/new/team" });
+    return;
+  }
+  showAuthDialog({ to: "/new/team" });
+};
 
 const keywordRef = ref();
 watch(
@@ -100,6 +103,9 @@ watch(
       <q-toolbar-title v-else class="name">{{ title }}</q-toolbar-title>
       <template v-if="isSearchable">
         <q-btn :icon="seachIcon" flat round dense @click="toggleSearchMode()" />
+      </template>
+      <template v-if="isSortable">
+        <q-btn icon="add" flat round dense @click="_openNewTeam()" />
       </template>
       <template v-if="isSortable">
         <q-btn icon="filter_alt" flat round dense @click="showOrderBS" />

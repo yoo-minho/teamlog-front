@@ -94,7 +94,7 @@ export const useGroupStore = defineStore("group", {
         this.groupLoading = false;
         return;
       }
-      const { data } = await GroupApi.findById(domain);
+      const { data } = await GroupApi.findByDomain(domain);
       this.groupLoading = false;
       this.currentGroup = data.value;
       this.groups = this.groups.map((v) =>
@@ -103,7 +103,7 @@ export const useGroupStore = defineStore("group", {
     },
     async refreshGroup(domain: string) {
       this.groupLoading = true;
-      const { data } = await GroupApi.findById(domain);
+      const { data } = await GroupApi.findByDomain(domain);
       this.groupLoading = false;
       this.currentGroup = data.value;
       this.groups = [
@@ -135,7 +135,7 @@ export const useGroupStore = defineStore("group", {
       title: string,
       domain: string,
       description: string,
-      tags: string[]
+      tags?: string[]
     ) {
       await GroupApi.create(
         {

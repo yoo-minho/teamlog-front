@@ -13,19 +13,18 @@ export default {
     }
 
     const config = useRuntimeConfig();
-    const baseURL = config.public.apiBase;
-    const res = await useFetch<any>("rss", {
-      baseURL,
+    const data = await $fetch("rss", {
+      baseURL: config.public.apiBase,
+      method: "post",
       body: {
         linkId: _link.id,
         url: scrapUrl,
         lastPostCreatedAt: _link.lastPostCreatedAt,
       },
     });
-    const _items = res.data?.items || [];
-    if (_items.length === 0) return;
-
-    await PostAPI.createPosts(_link.id, convertItem(_items, scrapUrl));
+    const { items } = data as any;
+    if (items.length === 0) return;
+    await PostAPI.createPosts(_link.id, convertItem(items, scrapUrl));
   },
 };
 

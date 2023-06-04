@@ -17,7 +17,7 @@ const selectedTag = ref(String(route.query.tag || "All"));
 const selectedOrder = ref(groupSort.value);
 const isExistsNextPage = ref(false);
 
-const { data: tags = ref([]) } = await GroupApi.findAllTag();
+const { data: tags } = await GroupApi.findAllTag();
 const { data: teams, refresh: refreshTeam } = await GroupApi.findAll({
   page: page,
   tag: selectedTag,
@@ -54,24 +54,12 @@ watch([() => selectedOrder.value, () => selectedTag.value], () =>
 );
 
 definePageMeta({
-  pageTransition: {
-    name: "slide-right",
-    mode: "out-in",
-  },
-  middleware(to, from) {
-    const idx = (n: string) =>
-      ["team", "blog", "post", "noti", "my"].findIndex((v) => v === n);
-    if (!to.meta.pageTransition || to.meta.pageTransition === true) return;
-    const toIdx = idx(String(to.name));
-    const fromIdx = idx(String(from.name));
-    console.log(to.name, from.name, toIdx, fromIdx);
-    to.meta.pageTransition.name =
-      toIdx > fromIdx ? "slide-left" : "slide-right";
-  },
+  pageTransition: { mode: "out-in" },
+  middleware: ["main-slide"],
 });
 </script>
 <template>
-  <div>
+  <div class="page">
     <q-pull-to-refresh @refresh="refresh">
       <TeamTagList
         @click-tag="filterTag"

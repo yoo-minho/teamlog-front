@@ -25,13 +25,11 @@ export default {
     if (items?.length === 0) return;
     const config = useRuntimeConfig();
     const baseURL = config.public.apiBase;
-
-    try {
-      await useFetch("post", {
-        baseURL,
-        body: { linkId, items },
-      });
-    } catch (e) {}
+    await $fetch("post", {
+      baseURL,
+      method: "post",
+      body: { linkId, items },
+    });
   },
   async findAllPosts(links?: LinkWrap[], page?: number) {
     const config = useRuntimeConfig();

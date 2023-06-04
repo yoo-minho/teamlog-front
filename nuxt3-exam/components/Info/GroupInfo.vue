@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
 import { Group } from "@/types/common";
 import { getFormatString } from "@/plugin/dayjs";
-import { usePostStore } from "@/stores/post";
 
-defineProps<{ groupData: Group }>();
-
-const postStore = usePostStore();
-const { scrapLoading } = storeToRefs(postStore);
+defineProps<{ groupData: Group; scrapLoading: boolean }>();
 </script>
 
 <template>

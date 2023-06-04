@@ -16,6 +16,11 @@ const currentBlogs = Object.entries(
 
 const getLabel = (type: string) =>
   BLOG_TAG.find((v) => v.type === type)?.label || "All";
+
+definePageMeta({
+  pageTransition: { mode: "out-in" },
+  middleware: ["team-slide"],
+});
 </script>
 <template>
   <div>

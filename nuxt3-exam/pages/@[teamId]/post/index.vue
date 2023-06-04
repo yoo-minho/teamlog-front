@@ -9,7 +9,6 @@ import PostApi from "@/api/postApi";
 
 const postStore = usePostStore();
 const { posts } = storeToRefs(postStore);
-
 const groupStore = useGroupStore();
 const { currentGroup } = storeToRefs(groupStore);
 
@@ -29,8 +28,6 @@ const next = () => {
   refreshPostData({ init: false });
 };
 
-const refresh = (dn: () => void) => refreshPostData({ init: true }).then(dn);
-
 const refreshPostData = async ({ init = false } = {}) => {
   if (init) page.value = 1;
   await refreshPost();
@@ -41,6 +38,21 @@ const refreshPostData = async ({ init = false } = {}) => {
   }
   isExistsNextPage.value = posts.value?.length === 10;
 };
+
+const refresh = async (done: () => void) => {
+  await refreshPostData({ init: true });
+  done();
+};
+
+definePageMeta({
+  pageTransition: { mode: "out-in" },
+  middleware: ["team-slide"],
+});
+
+watch(
+  () => currentGroup.value.lastPostCreatedAt,
+  () => refreshPostData({ init: true })
+);
 </script>
 <template>
   <div class="max-width">

@@ -2,6 +2,11 @@
 import Jandi from "./components/Jandi/Jandi.vue";
 import LastRanker from "./components/Ranker/LastRanker.vue";
 import LotRanker from "./components/Ranker/LotRanker.vue";
+
+definePageMeta({
+  pageTransition: { mode: "out-in" },
+  middleware: ["team-slide"],
+});
 </script>
 
 <template>

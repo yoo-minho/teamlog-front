@@ -1,4 +1,7 @@
+import { useUserStore } from "~/stores/user";
 import { Tag, Group, Link, BlogType } from "../types/common";
+import { storeToRefs } from "pinia";
+import UserApi from "./userApi";
 
 export default {
   async findAll(props: {
@@ -47,10 +50,13 @@ export default {
     tags: string[];
     links: Link[];
   }) {
+    const userStore = useUserStore();
+    const { user, atk } = storeToRefs(userStore);
     const config = useRuntimeConfig();
     const { domain, title, description, tags, links } = props;
-    await useFetch("group", {
+    await $fetch("group", {
       baseURL: config.public.apiBase,
+      headers: { Authorization: `Bearer ${atk.value}` },
       method: "post",
       body: {
         domain,
@@ -58,6 +64,20 @@ export default {
         description,
         tags,
         links,
+      },
+      onResponse: ({ request, options, response }) => {
+        console.log(
+          "GroupApi.create [fetch response ]",
+          { request },
+          { options },
+          { status: response.status },
+          { body: response.body }
+        );
+      },
+      onResponseError: async ({ request, options, response }) => {
+        const { data } = await UserApi.reissue();
+        atk.value = data.value?.atk || "";
+        console.log("GroupApi.create [fetch response  error]", { response });
       },
     });
   },

@@ -1,7 +1,9 @@
-export default defineNuxtRouteMiddleware((to, from) => {
-  // isAuthenticated() is an example method verifying if a user is authenticated
-  const isAuthenticated = () => true;
-  if (isAuthenticated() === false) {
-    return navigateTo("/login");
-  }
+import { storeToRefs } from "pinia";
+import { useUserStore } from "~/stores/user";
+
+export default defineNuxtRouteMiddleware(async (to) => {
+  const user = useUserStore();
+  const { isExistsUser } = storeToRefs(user);
+  if (isExistsUser.value) return;
+  return navigateTo(`/my?to=${to.path}`);
 });
