@@ -7,6 +7,8 @@ import GroupApi from "@/api/groupApi";
 import { Link } from "~/types/common";
 import { scrapOGS } from "@/hooks/useOgs";
 
+import UserApi from "@/api/userApi";
+
 type SelectedTag =
   | string
   | {
@@ -63,7 +65,8 @@ const refreshLink = async (url: string, stopLoading: () => void) => {
     link.url === url ? { ...link, title, description, imagePath } : link
   );
 };
-const saveGroup = () => {
+const saveGroup = async () => {
+  // await UserApi.reissueTest();
   const domain = id.value;
   if (!domain || domain.length === 0) {
     $q.notify({ type: "negative", message: "도메인을 입력해주세요!" });

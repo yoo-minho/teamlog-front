@@ -1,28 +1,26 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-
-import { useSubpageStore } from "@/stores/subpage";
 import { useUserStore } from "@/stores/user";
 import { showBottomSheet } from "@/hooks/useSnsBottomSheeet";
 import { useGroupStore } from "@/stores/group";
 
 const groupStore = useGroupStore();
 const { currentGroup } = storeToRefs(groupStore);
-
-const subpageStore = useSubpageStore();
-const { openSettingMain } = subpageStore;
-
 const userStore = useUserStore();
 const { isSearchMode, searchWord } = storeToRefs(userStore);
+const { toggleSearchMode, initSearchData } = userStore;
+const [route, router] = [useRoute(), useRouter()];
+const _openSettingMain = () => router.push({ name: "setting" });
+const isPost = ref(false);
 
-const { toggleSearchMode } = userStore;
-
-const router = useRouter();
-
-const _openSettingMain = () => {
-  router.push({ hash: "#Setting" });
-  openSettingMain();
-};
+watch(
+  () => route.name,
+  (rn) => {
+    isPost.value = rn === "@teamId-post";
+    if (!isPost.value) initSearchData();
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -35,34 +33,39 @@ const _openSettingMain = () => {
         dense
         @click="router.push({ path: '/team' })"
       />
-      <q-input
-        v-if="isSearchMode"
-        v-model="searchWord"
-        type="search"
-        bg-color="grey-2"
-        dense
-        rounded
-        maxlength="20"
-        style="flex: 1"
-        :input-style="{ fontSize: '1rem' }"
-        class="super-small"
-        :placeholder="`'123'에서 검색`"
-        autofocus
-      >
-        <template #prepend>
-          <q-icon name="search" class="q-ma-sm" />
-        </template>
-      </q-input>
-      <q-toolbar-title class="name ellipsis">{{
-        currentGroup.title
-      }}</q-toolbar-title>
-      <q-btn
-        :icon="isSearchMode ? 'close' : 'search'"
-        flat
-        round
-        dense
-        @click="toggleSearchMode()"
-      />
+      <template v-if="isSearchMode">
+        <q-input
+          v-model="searchWord"
+          type="search"
+          bg-color="grey-2"
+          dense
+          rounded
+          maxlength="20"
+          style="flex: 1"
+          :input-style="{ fontSize: '1rem' }"
+          class="super-small"
+          :placeholder="`'${currentGroup.title}'에서 검색`"
+          autofocus
+        >
+          <template #prepend>
+            <q-icon name="search" class="q-ma-sm" />
+          </template>
+        </q-input>
+        <q-btn icon="close" flat round dense @click="toggleSearchMode()" />
+      </template>
+      <template v-else>
+        <q-toolbar-title class="name ellipsis">
+          {{ currentGroup.title }}
+        </q-toolbar-title>
+        <q-btn
+          v-if="isPost"
+          icon="search"
+          flat
+          round
+          dense
+          @click="toggleSearchMode()"
+        />
+      </template>
       <q-btn icon="share" flat round dense @click="showBottomSheet()" />
       <q-btn icon="menu" flat round dense @click="_openSettingMain" />
     </q-toolbar>

@@ -101,6 +101,7 @@ const tab = ref(route.path.replace(`/@${route.params.teamId}/`, ""));
                     <q-route-tab
                       :to="`/@${teamId}/${tag.name}`"
                       :label="tag.label"
+                      style="width: 100%"
                     />
                   </template>
                 </q-tabs>

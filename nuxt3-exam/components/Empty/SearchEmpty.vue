@@ -1,12 +1,28 @@
 <script setup lang="ts">
-import { getImage } from '@/util/ImageUtil';
+import { getImage } from "@/util/ImageUtil";
 
-defineProps<{ noResult: boolean }>();
+defineProps<{ mode: "SEARCH" | "LIST" }>();
+
+const getContents = (mode: "SEARCH" | "LIST") => {
+  switch (mode) {
+    case "SEARCH":
+      return "검색결과가 없습니다.";
+    case "LIST":
+      return "데이터가 없습니다.";
+    default:
+      return "";
+  }
+};
 </script>
 <template>
   <div class="column items-center justify-center q-pa-md">
-    <span v-if="noResult">검색결과가 없습니다.</span>
-    <span v-else><b>[검색 Tip]</b> '|'를 활용하면 OR 검색이 가능합니다.</span>
-    <img :src="getImage('undraw_adventure.svg')" style="width: 100%; padding: 30px 60px 0 60px" />
+    <span class="text-weight-bold text-subtitle1">{{ getContents(mode) }}</span>
+    <div class="q-pa-md column items-center" style="height: 100%; width: 100%">
+      <q-img
+        :src="getImage('undraw_void.svg')"
+        :fit="'fill'"
+        style="width: 80%"
+      />
+    </div>
   </div>
 </template>

@@ -4,7 +4,6 @@ import DataCard from "../components/DataCard.vue";
 
 definePageMeta({
   title: "팀로그의 기술 스택",
-  backUrl: "/setting",
 });
 </script>
 

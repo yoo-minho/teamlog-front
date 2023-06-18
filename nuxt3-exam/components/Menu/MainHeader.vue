@@ -11,10 +11,7 @@ const groupStore = useGroupStore();
 const { groupSort } = storeToRefs(groupStore);
 const userStore = useUserStore();
 const { searchWord, isExistsUser } = storeToRefs(userStore);
-
-const router = useRouter();
-const route = useRoute();
-
+const [route, router] = [useRoute(), useRouter()];
 const _openSettingMain = () => router.push({ name: "setting" });
 const _openNewTeam = () => {
   if (isExistsUser.value) {
@@ -48,7 +45,7 @@ const showOrderBS = () => {
   });
 };
 
-const routeName = String(route.name);
+const routeName = String(route.name || "team");
 const title = ref(TAB_LABEL[routeName] || "팀로그");
 const isSortable = ref(routeName === "team");
 const isSearchable = ref(routeName === "post");
@@ -69,7 +66,7 @@ watch(
 watch(
   () => route.name,
   (_routeName) => {
-    const routeName = String(_routeName);
+    const routeName = String(_routeName || "team");
     title.value = TAB_LABEL[routeName] || "팀로그";
     isSortable.value = routeName === "team";
     isSearchable.value = routeName === "post";

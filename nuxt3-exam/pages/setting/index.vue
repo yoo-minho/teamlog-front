@@ -16,7 +16,6 @@ import { BLOG_TAG } from "~/constants";
 
 definePageMeta({
   title: "더보기",
-  backUrl: "/team",
 });
 
 const { data } = await GroupApi.count();

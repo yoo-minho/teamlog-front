@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { toRefs } from "vue";
 import { Post } from "@/types/common";
 import { openUrl } from "@/util/CommUtil";
 import { getDateString } from "@/plugin/dayjs";

@@ -5,10 +5,7 @@ const $q = useQuasar();
 const [route, router] = [useRoute(), useRouter()];
 const isDarkActive = ref($q.dark.isActive);
 
-const back = () => {
-  const { backUrl } = useRoute().meta as { backUrl: string };
-  router.push(backUrl);
-};
+const back = () => router.back();
 
 watch(
   () => $q.dark.isActive,

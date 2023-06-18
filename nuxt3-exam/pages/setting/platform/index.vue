@@ -4,7 +4,6 @@ import DataCard from "../components/DataCard.vue";
 
 definePageMeta({
   title: "허용가능한 플랫폼",
-  backUrl: "/setting",
 });
 </script>
 

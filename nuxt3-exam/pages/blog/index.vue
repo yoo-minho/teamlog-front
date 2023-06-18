@@ -8,10 +8,15 @@ import BlogListItem from "@/components/BlogListItem.vue";
 import BlogApi from "@/api/blogApi";
 import { BLOG_TAG } from "~/constants";
 
+definePageMeta({
+  pageTransition: { mode: "out-in" },
+  middleware: ["main-slide"],
+});
+
 const route = useRoute();
 const blogStore = useBlogStore();
 const { blogs } = storeToRefs(blogStore);
-
+const { saveBlogs } = blogStore;
 const page = ref(1);
 const selectTag = ref(String(route.query.tag || "All"));
 const isExistsNextPage = ref(false);
@@ -24,6 +29,13 @@ const { data: _blogs, refresh: refreshBlog } = await BlogApi.findAll({
 blogs.value = _blogs.value || [];
 isExistsNextPage.value = blogs.value?.length === 10;
 
+const refreshBlogData = async ({ init = false } = {}) => {
+  if (init) page.value = 1;
+  await refreshBlog();
+  saveBlogs(init, _blogs.value);
+  isExistsNextPage.value = _blogs.value?.length === 10;
+};
+
 const next = () => {
   page.value++;
   refreshBlogData({ init: false });
@@ -35,24 +47,7 @@ const filterTag = (tagName: string) => {
   selectTag.value = tagName;
   refreshBlogData({ init: true });
 };
-
-const refreshBlogData = async ({ init = false } = {}) => {
-  if (init) page.value = 1;
-  await refreshBlog();
-  if (init) {
-    blogs.value = _blogs.value || [];
-  } else {
-    blogs.value = [...blogs.value, ...(_blogs.value || [])];
-  }
-  isExistsNextPage.value = _blogs.value?.length === 10;
-};
-
-definePageMeta({
-  pageTransition: { mode: "out-in" },
-  middleware: ["main-slide"],
-});
 </script>
-
 <template>
   <div class="page">
     <q-pull-to-refresh @refresh="refresh">

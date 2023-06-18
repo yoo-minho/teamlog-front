@@ -4,5 +4,5 @@ const router = useRouter();
 router.replace({ path: `/@${route.params.teamId}/post` });
 </script>
 <template>
-  <div>메인이요</div>
+  <div>~</div>
 </template>
