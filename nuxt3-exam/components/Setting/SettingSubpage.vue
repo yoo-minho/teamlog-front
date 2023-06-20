@@ -12,6 +12,7 @@ import {
   openServiceIdentityNotion,
   openRequestTeamMakerForm,
 } from "@/hooks/useOpenWindow";
+import { BlogType } from "~/types/common";
 
 const subpageStore = useSubpageStore();
 const { closeSettingMain, openStackMain, openPlatformMain } = subpageStore;
@@ -49,10 +50,11 @@ const ETC_CATEGORY = [
   },
 ];
 const countArray = ref();
-const linkCountByPlatform = ref([]);
+const linkCountByPlatform = ref([] as { _count: number; type: BlogType }[]);
 
 onMounted(async () => {
   const { data } = await GroupApi.count();
+  if (!data.value) return;
   const {
     groupCount,
     linkCount,

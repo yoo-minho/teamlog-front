@@ -97,7 +97,10 @@ watch(
           <q-icon name="search" class="q-ma-sm" />
         </template>
       </q-input>
-      <q-toolbar-title v-else class="name">{{ title }}</q-toolbar-title>
+      <q-toolbar-title v-else class="name">
+        {{ title }}
+        <q-btn outline dense>앱 다운로드</q-btn>
+      </q-toolbar-title>
       <template v-if="isSearchable">
         <q-btn :icon="seachIcon" flat round dense @click="toggleSearchMode()" />
       </template>

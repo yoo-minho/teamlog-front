@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useQuasar } from "quasar";
 import { storeToRefs } from "pinia";
-// import { showBottomSheet } from '@/hooks/useInstallBottomSheeet';
 import { useUserStore } from "./stores/user";
 import UserApi from "@/api/userApi";
+import { showBottomSheet } from "./hooks/useInstallBottomSheeet";
 
 const $q = useQuasar();
 const isDarkActive = ref($q.dark.isActive);
@@ -43,19 +43,21 @@ watch(
 );
 
 onMounted(() => {
-  if (location.pathname !== "/") return;
+  console.log("beforeinstallprompt 22");
   window.addEventListener("beforeinstallprompt", (e) => {
+    console.log("beforeinstallprompt");
     e.preventDefault();
-    // showBottomSheet(e as BeforeInstallPromptEvent);
+    showBottomSheet(e as BeforeInstallPromptEvent);
   });
   window.addEventListener("appinstalled", () => {
     console.log("PWA was installed");
   });
 });
 </script>
-
 <template>
   <div :class="`max-width ${isDarkActive ? 'bg-grey-9' : 'bg-white'}`">
+    <VitePwaManifest />
+    <NuxtLoadingIndicator />
     <template v-if="isSetting">
       <NuxtLayout name="setting">
         <NuxtPage />
@@ -73,6 +75,31 @@ onMounted(() => {
     </template>
   </div>
 </template>
+
+<style>
+.pwa-toast {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  margin: 16px;
+  padding: 12px;
+  border: 1px solid #8885;
+  border-radius: 4px;
+  z-index: 1;
+  text-align: left;
+  box-shadow: 3px 4px 5px 0 #8885;
+}
+.pwa-toast .message {
+  margin-bottom: 8px;
+}
+.pwa-toast button {
+  border: 1px solid #8885;
+  outline: none;
+  margin-right: 5px;
+  border-radius: 2px;
+  padding: 3px 10px;
+}
+</style>
 
 <style lang="scss">
 @font-face {
