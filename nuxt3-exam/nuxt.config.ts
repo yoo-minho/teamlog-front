@@ -18,7 +18,7 @@ export default defineNuxtConfig({
       // globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
       cleanupOutdatedCaches: true,
     },
-    includeAssets: ["favicon.ico", "favicon.svg"],
+    includeAssets: ["favicon.ico"],
     manifest: {
       name: "teamlog",
       short_name: "teamlog",
@@ -30,29 +30,58 @@ export default defineNuxtConfig({
       lang: "ko",
       icons: [
         {
-          src: "pwa-192x192.png",
+          src: "assets/icons/icon-72x72.png",
+          sizes: "72x72",
+          type: "image/png",
+          purpose: "maskable any",
+        },
+        {
+          src: "assets/icons/icon-96x96.png",
+          sizes: "96x96",
+          type: "image/png",
+          purpose: "maskable any",
+        },
+        {
+          src: "assets/icons/icon-128x128.png",
+          sizes: "128x128",
+          type: "image/png",
+          purpose: "maskable any",
+        },
+        {
+          src: "assets/icons/icon-144x144.png",
+          sizes: "144x144",
+          type: "image/png",
+          purpose: "maskable any",
+        },
+        {
+          src: "assets/icons/icon-152x152.png",
+          sizes: "152x152",
+          type: "image/png",
+          purpose: "maskable any",
+        },
+        {
+          src: "assets/icons/icon-192x192.png",
           sizes: "192x192",
           type: "image/png",
+          purpose: "maskable any",
         },
         {
-          src: "pwa-512x512.png",
-          sizes: "512x512",
+          src: "assets/icons/icon-384x384.png",
+          sizes: "384x384",
           type: "image/png",
+          purpose: "maskable any",
         },
         {
-          src: "pwa-512x512.png",
+          src: "assets/icons/icon-512x512.png",
           sizes: "512x512",
           type: "image/png",
-          purpose: "any maskable",
+          purpose: "maskable any",
         },
       ],
       orientation: "portrait",
     },
     client: {
       installPrompt: true,
-      // you don't need to include this: only for testing purposes
-      // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
-      // periodicSyncForUpdates: 20,
     },
   },
   quasar: {
