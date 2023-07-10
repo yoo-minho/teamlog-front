@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/user";
-import { showBottomSheet } from "@/hooks/useSnsBottomSheeet";
+import { showBottomSheet } from "@/hooks/useSnsBottomSheet";
 import { useGroupStore } from "@/stores/group";
 
 const groupStore = useGroupStore();

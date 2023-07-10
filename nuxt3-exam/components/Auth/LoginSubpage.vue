@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import AuthLayout from '@/layouts/AuthLayout.vue';
-import { useSubpageStore } from '@/stores/subpage';
-import ApiArr from '@/data/login-api.json';
+import AuthLayout from "@/layouts/AuthLayout.vue";
+import { useSubpageStore } from "@/stores/subpage";
+import ApiArr from "@/data/login-api.json";
 
 const subpageStore = useSubpageStore();
 const { closeLoginSubpage } = subpageStore;
 
-const logo = new URL(`../../assets/dark_logo.png`, import.meta.url).toString();
+const logo = new URL(`@/assets/dark_logo.png`, import.meta.url).toString();
 
 const tryLoginKakao = (e: MouseEvent) => {
-  location.href = '/api/auth/kakao';
+  location.href = "/api/auth/kakao";
   // $q.notify({ type: 'info', message: '준비중입니다!' });
   return e;
   // Kakao.Auth.authorize({
@@ -21,7 +21,12 @@ const tryLoginKakao = (e: MouseEvent) => {
   <AuthLayout title="로그인" @close="closeLoginSubpage()">
     <q-page class="q-pa-lg">
       <ul class="q-ma-none">
-        <li v-for="(api, i) in ApiArr" :key="i" class="button-wrap" @click="tryLoginKakao">
+        <li
+          v-for="(api, i) in ApiArr"
+          :key="i"
+          class="button-wrap"
+          @click="tryLoginKakao"
+        >
           <div class="contents" :style="api.style">
             <img width="24" height="24" :src="api.src" :alt="api.alt" />
             <span class="label">{{ api.label }}</span>

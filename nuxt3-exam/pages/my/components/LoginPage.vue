@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { useQuasar, QSpinnerIos } from "quasar";
-
-import { delay } from "@/util/CommUtil";
 import ApiArr from "@/data/login-api.json";
 
 const $q = useQuasar();
-const logo = new URL(`../../assets/dark_logo.png`, import.meta.url).toString();
+const logo = new URL(`@/assets/dark_logo.png`, import.meta.url).toString();
 
 const tryLogin = (e: MouseEvent, id: string) => {
   if (id === "kakao") {

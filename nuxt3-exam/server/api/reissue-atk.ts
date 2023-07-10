@@ -1,5 +1,6 @@
 export default defineEventHandler(async (event) => {
   const currentRtk = getCookie(event, "refresh-token");
+  if (currentRtk === "") return { atk: "" };
   const userAgent = getRequestHeader(event, "user-agent") || "";
   const config = useRuntimeConfig();
   const { statusCode, atk } = await $fetch<{

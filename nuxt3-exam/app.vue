@@ -3,7 +3,7 @@ import { useQuasar } from "quasar";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "./stores/user";
 import UserApi from "@/api/userApi";
-import { showBottomSheet } from "./hooks/useInstallBottomSheeet";
+import { savePrompt } from "@/hooks/useInstallBottomSheet";
 
 const $q = useQuasar();
 const isDarkActive = ref($q.dark.isActive);
@@ -43,11 +43,11 @@ watch(
 );
 
 onMounted(() => {
-  console.log("beforeinstallprompt 22");
+  console.log("beforeinstallprompt2");
   window.addEventListener("beforeinstallprompt", (e) => {
-    console.log("beforeinstallprompt");
+    console.log("beforeinstallprompt", e);
     e.preventDefault();
-    showBottomSheet(e as BeforeInstallPromptEvent);
+    savePrompt(e as BeforeInstallPromptEvent);
   });
   window.addEventListener("appinstalled", () => {
     console.log("PWA was installed");
@@ -57,7 +57,6 @@ onMounted(() => {
 <template>
   <div :class="`max-width ${isDarkActive ? 'bg-grey-9' : 'bg-white'}`">
     <VitePwaManifest />
-    <NuxtLoadingIndicator />
     <template v-if="isSetting">
       <NuxtLayout name="setting">
         <NuxtPage />

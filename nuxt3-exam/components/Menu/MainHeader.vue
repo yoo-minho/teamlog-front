@@ -2,10 +2,14 @@
 import { storeToRefs } from "pinia";
 import { useGroupStore } from "@/stores/group";
 import { useUserStore } from "@/stores/user";
-import { showBottomSheet } from "@/hooks/useSnsBottomSheeet";
 import { TAB_LABEL } from "@/constants";
-import { showOrderBottomSheet } from "~/hooks/useOrderBottomSheet";
-import { showAuthDialog } from "~/hooks/useAuthDialog";
+import { showOrderBottomSheet } from "@/hooks/useOrderBottomSheet";
+import { showBottomSheet } from "@/hooks/useSnsBottomSheet";
+import {
+  showInstallBottomSheet,
+  isExistsPrompt,
+} from "@/hooks/useInstallBottomSheet";
+import { showAuthDialog } from "@/hooks/useAuthDialog";
 
 const groupStore = useGroupStore();
 const { groupSort } = storeToRefs(groupStore);
@@ -97,10 +101,9 @@ watch(
           <q-icon name="search" class="q-ma-sm" />
         </template>
       </q-input>
-      <q-toolbar-title v-else class="name">
-        {{ title }}
-        <q-btn outline dense>앱 다운로드</q-btn>
-      </q-toolbar-title>
+      <template v-else>
+        <q-toolbar-title class="name">{{ title }}</q-toolbar-title>
+      </template>
       <template v-if="isSearchable">
         <q-btn :icon="seachIcon" flat round dense @click="toggleSearchMode()" />
       </template>
@@ -112,6 +115,14 @@ watch(
       </template>
       <q-btn icon="share" flat round dense @click="showBottomSheet()" />
       <q-btn icon="menu" flat round dense @click="_openSettingMain" />
+      <q-btn
+        icon="get_app"
+        flat
+        round
+        dense
+        color="green-5 bounce"
+        @click="showInstallBottomSheet()"
+      />
     </q-toolbar>
   </q-header>
 </template>
@@ -136,6 +147,20 @@ watch(
   .q-field__marginal {
     padding: 0;
     height: 32px !important;
+  }
+}
+
+.bounce {
+  animation: motion 0.3s linear 0s infinite alternate;
+  margin-top: 0;
+}
+
+@keyframes motion {
+  0% {
+    margin-top: -5px;
+  }
+  100% {
+    margin-top: 5px;
   }
 }
 </style>
