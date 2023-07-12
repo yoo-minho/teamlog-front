@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import { Dialog } from "quasar";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/user";
 import { showBottomSheet } from "@/hooks/useSnsBottomSheet";
 import { useGroupStore } from "@/stores/group";
+import GroupApi from "@/api/groupApi";
 
 const groupStore = useGroupStore();
 const { currentGroup } = storeToRefs(groupStore);
 const userStore = useUserStore();
-const { isSearchMode, searchWord } = storeToRefs(userStore);
+const { isSearchMode, searchWord, isMasterUser } = storeToRefs(userStore);
 const { toggleSearchMode, initSearchData } = userStore;
 const [route, router] = [useRoute(), useRouter()];
 const _openSettingMain = () => router.push({ name: "setting" });
@@ -21,18 +23,26 @@ watch(
   },
   { immediate: true }
 );
+
+const goBack = () => router.back();
+const goMain = () => router.push({ path: "/team" });
+const deleteTeam = async () => {
+  Dialog.create({
+    title: "삭제하기",
+    message: "이 팀을 삭제할까요?",
+    ok: "삭제하기",
+    cancel: "취소",
+  }).onOk(async () => {
+    await GroupApi.delete(currentGroup.value.id);
+    goMain();
+  });
+};
 </script>
 
 <template>
   <q-header bordered class="text-white max-width">
     <q-toolbar>
-      <q-btn
-        icon="keyboard_backspace"
-        flat
-        round
-        dense
-        @click="router.push({ path: '/team' })"
-      />
+      <q-btn icon="keyboard_backspace" flat round dense @click="goBack()" />
       <template v-if="isSearchMode">
         <q-input
           v-model="searchWord"
@@ -57,14 +67,12 @@ watch(
         <q-toolbar-title class="name ellipsis">
           {{ currentGroup.title }}
         </q-toolbar-title>
-        <q-btn
-          v-if="isPost"
-          icon="search"
-          flat
-          round
-          dense
-          @click="toggleSearchMode()"
-        />
+        <template v-if="isPost">
+          <q-btn icon="search" flat round dense @click="toggleSearchMode()" />
+        </template>
+      </template>
+      <template v-if="isMasterUser">
+        <q-btn icon="delete" flat round dense @click="deleteTeam" />
       </template>
       <q-btn icon="share" flat round dense @click="showBottomSheet()" />
       <q-btn icon="menu" flat round dense @click="_openSettingMain" />
