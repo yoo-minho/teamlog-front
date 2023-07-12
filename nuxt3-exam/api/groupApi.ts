@@ -81,6 +81,15 @@ export default {
       },
     });
   },
+  async delete(id?: number) {
+    if (!id) throw new Error(`유효한 아이디가 아닙니다. ${id}`);
+    const config = useRuntimeConfig();
+    return await useFetch("group", {
+      baseURL: config.public.apiBase,
+      method: "delete",
+      body: { id },
+    });
+  },
   async update(id: number, group: Group, tags: string[], links: Link[]) {
     const { domain, title, description } = group;
     try {
