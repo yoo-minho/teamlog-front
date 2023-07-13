@@ -10,9 +10,6 @@ const isDarkActive = ref($q.dark.isActive);
 
 const userStore = useUserStore();
 const [route, router] = [useRoute(), useRouter()];
-const teamId = ref(String(route.params.teamId || ""));
-const isInTeam = computed(() => "" !== teamId.value);
-const isSetting = computed(() => route.name?.toString().includes("setting"));
 
 const { user, atk } = storeToRefs(userStore);
 const rtk = useCookie("refresh-token", { httpOnly: true });
@@ -38,8 +35,18 @@ watch(
 );
 
 watch(
-  () => String(route.params.teamId || ""),
-  (id) => (teamId.value = id)
+  () => [String(route.params.teamId || ""), String(route.name || "")],
+  ([_teamId, _name]) => {
+    console.log({ _teamId, _name });
+    if (_teamId !== "") {
+      setPageLayout("in-team");
+    } else if (_name.includes("setting")) {
+      setPageLayout("setting");
+    } else {
+      setPageLayout("default");
+    }
+  },
+  { immediate: true }
 );
 
 onMounted(() => {
@@ -57,21 +64,9 @@ onMounted(() => {
 <template>
   <div :class="`max-width ${isDarkActive ? 'bg-grey-9' : 'bg-white'}`">
     <VitePwaManifest />
-    <template v-if="isSetting">
-      <NuxtLayout name="setting">
-        <NuxtPage />
-      </NuxtLayout>
-    </template>
-    <template v-else-if="isInTeam">
-      <NuxtLayout name="in-team">
-        <NuxtPage />
-      </NuxtLayout>
-    </template>
-    <template v-else>
-      <NuxtLayout name="default">
-        <NuxtPage />
-      </NuxtLayout>
-    </template>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>
 
