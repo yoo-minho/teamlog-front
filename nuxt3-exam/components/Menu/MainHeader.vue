@@ -5,10 +5,7 @@ import { useUserStore } from "@/stores/user";
 import { TAB_LABEL } from "@/constants";
 import { showOrderBottomSheet } from "@/hooks/useOrderBottomSheet";
 import { showBottomSheet } from "@/hooks/useSnsBottomSheet";
-import {
-  showInstallBottomSheet,
-  isExistsPrompt,
-} from "@/hooks/useInstallBottomSheet";
+import { showInstallBottomSheet } from "@/hooks/useInstallBottomSheet";
 import { showAuthDialog } from "@/hooks/useAuthDialog";
 
 const groupStore = useGroupStore();

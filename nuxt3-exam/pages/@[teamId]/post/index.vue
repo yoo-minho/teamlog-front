@@ -26,20 +26,32 @@ const route = useRoute();
 const page = ref(1);
 const isExistsNextPage = ref(false);
 searchWord.value = String(route.query.q || "");
+const teamId = useState<string>("teamId");
 
-const { data: _posts, refresh: refreshPosts } = await PostApi.searchPosts({
+const {
+  data: _posts,
+  refresh: refreshPosts,
+  pending,
+} = await PostApi.findPosts({
   page: page,
-  links: currentGroup.value.links,
+  teamId: teamId,
   q: searchWord,
 });
-savePosts(true, _posts.value);
-isExistsNextPage.value = posts.value?.length === 10;
+
+watch(
+  () => _posts.value,
+  () => {
+    savePosts(true, _posts.value);
+    isExistsNextPage.value = _posts.value?.length === 10;
+  },
+  { immediate: true }
+);
 
 const refreshPostData = async ({ init = false } = {}) => {
   if (init) page.value = 1;
   await refreshPosts();
   savePosts(init, _posts.value);
-  isExistsNextPage.value = posts.value?.length === 10;
+  isExistsNextPage.value = _posts.value?.length === 10;
 };
 
 const next = () => {
@@ -54,14 +66,18 @@ const refresh = async (done: () => void) => {
 };
 
 watch(
-  [() => currentGroup.value.lastPostCreatedAt, () => searchWord.value],
-  () => refreshPostData({ init: true })
+  [() => currentGroup.value?.lastPostCreatedAt, () => searchWord.value],
+  () => {
+    console.log("refreshPostData");
+    refreshPostData({ init: true });
+  }
 );
 </script>
 <template>
   <div class="max-width">
     <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
-      <template v-if="posts.length > 0">
+      <template v-if="pending"> 포스트 로딩중!! </template>
+      <template v-else-if="posts.length > 0">
         <PostListItem v-for="(post, i) in posts" :key="i" :post="post" />
       </template>
       <template v-else>

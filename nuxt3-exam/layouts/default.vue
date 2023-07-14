@@ -8,7 +8,7 @@ const $q = useQuasar();
 const isDarkActive = ref($q.dark.isActive);
 const userStore = useUserStore();
 const { isExistsUser, user, mainScrollAreaRef } = storeToRefs(userStore);
-const route = useRoute();
+const [route] = [useRoute(), useRouter()];
 
 watch(
   () => $q.dark.isActive,
@@ -54,7 +54,7 @@ const tab = ref(String(route.name));
         <q-layout style="min-height: 0" class="max-width">
           <q-page-container style="min-height: 0; padding: 0">
             <q-page style="min-height: 0">
-              <slot></slot>
+              <slot />
             </q-page>
           </q-page-container>
           <q-page-scroller

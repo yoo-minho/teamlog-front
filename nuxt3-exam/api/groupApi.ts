@@ -38,6 +38,7 @@ export default {
     try {
       return await useFetch<Group>(() => `group/${domain}`, {
         baseURL: config.public.apiBase,
+        lazy: true,
       });
     } catch (err) {
       throw new Error("");

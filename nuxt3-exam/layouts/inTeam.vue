@@ -13,9 +13,13 @@ import { delay } from "~/util/CommUtil";
 import { isTodayByDate } from "@/plugin/dayjs";
 
 const $q = useQuasar();
-const route = useRoute();
 const router = useRouter();
-const teamId = String(route.params.teamId); //domain
+const teamId = useState<string>("teamId");
+const tabId = useState<string>("tabId");
+
+console.log("inTeamLayout", teamId.value, tabId.value);
+
+const tab = ref(tabId.value);
 const groupStore = useGroupStore();
 const { currentGroup } = storeToRefs(groupStore);
 
@@ -44,11 +48,20 @@ const refresh = (done: () => void) => {
   scrapPosts(id, links).then(done);
 };
 
-const { data: currentTeam, refresh: refreshTeam } = await GroupApi.findByDomain(
-  teamId
+const {
+  data: currentTeam,
+  refresh: refreshTeam,
+  pending,
+} = await GroupApi.findByDomain(teamId.value);
+
+watch(
+  () => currentTeam.value,
+  () => {
+    currentGroup.value = currentTeam.value as Group;
+  }
 );
-currentGroup.value = currentTeam.value as Group;
-const { id = -1, links = [] } = currentGroup.value;
+
+const { id = -1, links = [] } = currentGroup.value || {};
 const filterLinks = links?.filter(({ link }) => !isTodayByDate(link.scrapAt));
 scrapPosts(id, filterLinks);
 
@@ -56,8 +69,6 @@ watch(
   () => $q.dark.isActive,
   (val) => (isDark.value = val)
 );
-
-const tab = ref(route.path.replace(`/@${route.params.teamId}/`, ""));
 </script>
 <template>
   <q-layout>
@@ -69,11 +80,27 @@ const tab = ref(route.path.replace(`/@${route.params.teamId}/`, ""));
         style="overflow: hidden"
         :thumb-style="{ zIndex: '999999' }"
       >
-        <InTeamHeader style="position: relative" />
+        <template v-if="pending">
+          <InTeamHeader
+            :group-id="-1"
+            :group-title="'로딩중!!!'"
+            style="position: relative"
+          />
+        </template>
+        <template v-else-if="currentTeam">
+          <InTeamHeader
+            :group-id="currentTeam.id || -1"
+            :group-title="currentTeam.title"
+            style="position: relative"
+          />
+        </template>
         <q-layout style="min-height: 0">
           <q-page-container style="min-height: 0; padding: 0">
             <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
-              <q-page v-if="currentTeam">
+              <template v-if="pending">
+                {{ teamId }} - Team Top 로딩중...
+              </template>
+              <q-page v-else-if="currentTeam">
                 <GroupDetailCounter
                   :today-views="currentTeam.todayViews || 0"
                   :total-views="currentTeam.totalViews || 0"

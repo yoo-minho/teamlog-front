@@ -3,11 +3,11 @@ import { Dialog } from "quasar";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/user";
 import { showBottomSheet } from "@/hooks/useSnsBottomSheet";
-import { useGroupStore } from "@/stores/group";
 import GroupApi from "@/api/groupApi";
 
-const groupStore = useGroupStore();
-const { currentGroup } = storeToRefs(groupStore);
+const props = defineProps<{ groupId: number; groupTitle: string }>();
+const { groupId } = toRefs(props);
+
 const userStore = useUserStore();
 const { isSearchMode, searchWord, isMasterUser } = storeToRefs(userStore);
 const { toggleSearchMode, initSearchData } = userStore;
@@ -33,7 +33,7 @@ const deleteTeam = async () => {
     ok: "삭제하기",
     cancel: "취소",
   }).onOk(async () => {
-    await GroupApi.delete(currentGroup.value.id);
+    await GroupApi.delete(groupId.value);
     goMain();
   });
 };
@@ -54,7 +54,7 @@ const deleteTeam = async () => {
           style="flex: 1"
           :input-style="{ fontSize: '1rem' }"
           class="super-small"
-          :placeholder="`'${currentGroup.title}'에서 검색`"
+          :placeholder="`'${groupTitle}'에서 검색`"
           autofocus
         >
           <template #prepend>
@@ -65,7 +65,7 @@ const deleteTeam = async () => {
       </template>
       <template v-else>
         <q-toolbar-title class="name ellipsis">
-          {{ currentGroup.title }}
+          {{ groupTitle }}
         </q-toolbar-title>
         <template v-if="isPost">
           <q-btn icon="search" flat round dense @click="toggleSearchMode()" />

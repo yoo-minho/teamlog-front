@@ -56,8 +56,10 @@ watch([() => selectedOrder.value, () => selectedTag.value], () =>
 definePageMeta({
   pageTransition: { mode: "out-in" },
   middleware: ["main-slide"],
+  // keepalive: true,
 });
 </script>
+
 <template>
   <div class="page">
     <q-pull-to-refresh @refresh="refresh">

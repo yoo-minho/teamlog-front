@@ -1,6 +1,5 @@
-import { defineStore, storeToRefs } from "pinia";
+import { defineStore } from "pinia";
 import { Group, Link, TabType } from "../types/common";
-import GroupApi from "../api/groupApi";
 import { getDateString, isSameDate } from "@/plugin/dayjs";
 import { scrapOGS } from "@/hooks/useOgs";
 import { LocalStorage } from "quasar";
@@ -89,29 +88,6 @@ export const useGroupStore = defineStore("group", {
       this.groupLoading = true;
       this.currentGroup = {} as Group;
     },
-    async fetchGroup(domain: string) {
-      if (this.currentGroup.domain === domain) {
-        this.groupLoading = false;
-        return;
-      }
-      const { data } = await GroupApi.findByDomain(domain);
-      this.groupLoading = false;
-      this.currentGroup = data.value;
-      this.groups = this.groups.map((v) =>
-        v.id === data.value.id ? data.value : v
-      );
-    },
-    async refreshGroup(domain: string) {
-      this.groupLoading = true;
-      const { data } = await GroupApi.findByDomain(domain);
-      this.groupLoading = false;
-      this.currentGroup = data.value;
-      this.groups = [
-        ...this.groups.map((group) =>
-          group.domain === domain ? data.value : group
-        ),
-      ];
-    },
     updateCurrentGroupLinksScrapAt() {
       this.currentGroup.links = this.currentGroup.links?.map(({ link }) => {
         link.scrapAt = new Date();
@@ -129,40 +105,6 @@ export const useGroupStore = defineStore("group", {
       const domain = this.currentGroup.domain;
       this.groups = [...this.groups].map((group) =>
         group.domain === domain ? { ...group, lastPostCreatedAt } : group
-      );
-    },
-    async save(
-      title: string,
-      domain: string,
-      description: string,
-      tags?: string[]
-    ) {
-      await GroupApi.create(
-        {
-          domain,
-          title,
-          description,
-        },
-        tags,
-        this.linksOnEditor
-      );
-    },
-    async fix(
-      id: number,
-      title: string,
-      domain: string,
-      description: string,
-      tags: string[]
-    ) {
-      await GroupApi.update(
-        id,
-        {
-          domain,
-          title,
-          description,
-        },
-        tags,
-        this.linksOnEditor
       );
     },
   },

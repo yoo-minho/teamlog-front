@@ -3,14 +3,17 @@ import { Group } from "@/types/common";
 import { isTextImage } from "@/util/ImageUtil";
 import { getFormatString } from "@/plugin/dayjs";
 
-defineProps<{ group: Group }>();
-
-const router = useRouter();
+const props = defineProps<{ group: Group }>();
+const { group } = toRefs(props);
+const moveTeam = () => {
+  console.log("moveTeam", group.value.domain);
+  navigateTo(`/@${group.value.domain}/post`);
+};
 </script>
 <template>
   <q-item-label
     class="cursor-pointer row q-mx-sm items-center"
-    @click="router.push({ path: `/@${group.domain}/post` })"
+    @click="moveTeam()"
   >
     <div class="image_area row justify-center content-center">
       <div

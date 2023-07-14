@@ -37,7 +37,7 @@ watch(
 watch(
   () => [String(route.params.teamId || ""), String(route.name || "")],
   ([_teamId, _name]) => {
-    console.log({ _teamId, _name });
+    if (process.server) return;
     if (_teamId !== "") {
       setPageLayout("in-team");
     } else if (_name.includes("setting")) {

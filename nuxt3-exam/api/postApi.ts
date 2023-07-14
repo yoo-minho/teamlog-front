@@ -11,7 +11,7 @@ import {
 import { getAgoString, getDateString } from "@/plugin/dayjs";
 
 type SearchParam = {
-  links?: LinkWrap[];
+  teamId?: Ref<string>;
   tag?: Ref<string>;
   q?: Ref<string>;
   page?: Ref<number>;
@@ -41,17 +41,18 @@ export default {
       });
     } catch (err) {}
   },
-  async searchPosts(props: SearchParam) {
-    const { links, tag, q, page } = props;
+  async findPosts(props: SearchParam) {
+    const { teamId, tag, q, page } = props;
     const config = useRuntimeConfig();
     const baseURL = config.public.apiBase;
     try {
-      return await useFetch<Post[]>("post/search", {
+      return await useFetch<Post[]>("post", {
         baseURL,
-        params: { linkIds: getIds(links), tag, q, page },
+        params: { teamId, tag, q, page },
+        lazy: true,
       });
     } catch (err) {
-      throw new Error("");
+      throw err;
     }
   },
   async findCountGroupById(props: { linkIds: Ref<(number | undefined)[]> }) {

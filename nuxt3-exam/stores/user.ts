@@ -15,6 +15,7 @@ export const useUserStore = defineStore("user", {
   }),
   getters: {
     isExistsUser: (state) => !!state.user?.id,
+    isMasterUser: (state) => ["KAKAO_2710302227"].includes(state.user?.id),
   },
   actions: {
     initSearchData() {

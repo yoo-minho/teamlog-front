@@ -26,7 +26,7 @@ const selectTag = ref(String(route.query.tag || "All"));
 searchWord.value = String(route.query.q || "");
 const isExistsNextPage = ref(false);
 const tags = ref(POST_TAG.map((v) => ({ id: v.label, name: v.label })));
-const { data: _posts, refresh: refreshPost } = await PostApi.searchPosts({
+const { data: _posts, refresh: refreshPost } = await PostApi.findPosts({
   page: page,
   tag: selectTag,
   q: searchWord,
