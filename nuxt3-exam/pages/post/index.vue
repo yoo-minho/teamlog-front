@@ -2,7 +2,7 @@
 import { storeToRefs } from "pinia";
 import { usePostStore } from "@/stores/post";
 import ScrollObserver from "@/components/Observer/ScrollObserver.vue";
-import PostListItem from "@/components/PostListItem.vue";
+import PostListItem from "@/components/Post/PostListItem.vue";
 import PostListSkeletonItem from "@/components/PostListSkeletonItem.vue";
 import PostTagList from "./components/PostTagList.vue";
 import PostApi from "@/api/postApi";

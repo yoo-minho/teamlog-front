@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Post } from "@/types/common";
-import { openUrl } from "@/util/CommUtil";
+import { openUrl } from "@/utils/CommUtil";
 import { getDateString } from "@/plugin/dayjs";
-import { skipBlogName } from "@/util/NameUtil";
-import { getImageByBlogType, isTextImage } from "@/util/ImageUtil";
+import { skipBlogName } from "@/utils/NameUtil";
+import { getImageByBlogType, isTextImage } from "@/utils/ImageUtil";
 
 const props = defineProps<{ post: Post }>();
 const { post } = toRefs(props);
@@ -17,7 +17,9 @@ const { post } = toRefs(props);
           class="label text-weight-bold ellipsis text-subtitle2"
           v-html="post.title"
         ></div>
-        <div class="label ellipsis-2-lines">{{ post.description || "ㅤ" }}</div>
+        <div class="label ellipsis-2-lines" style="line-height: 20px">
+          {{ post.description || "ㅤ" }}
+        </div>
         <div class="label text-grey-5 ellipsis">
           {{ getDateString(post.createdAt) }}
         </div>

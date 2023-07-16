@@ -5,7 +5,7 @@ import { useUserStore } from "@/stores/user";
 import { showBottomSheet } from "@/hooks/useSnsBottomSheet";
 import GroupApi from "@/api/groupApi";
 
-const props = defineProps<{ groupId: number; groupTitle: string }>();
+const props = defineProps<{ groupId?: number; groupTitle: string }>();
 const { groupId } = toRefs(props);
 
 const userStore = useUserStore();
@@ -33,7 +33,7 @@ const deleteTeam = async () => {
     ok: "삭제하기",
     cancel: "취소",
   }).onOk(async () => {
-    await GroupApi.delete(groupId.value);
+    await GroupApi.delete(groupId?.value);
     goMain();
   });
 };

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { Group, Link, TabType } from "../types/common";
 import { getDateString, isSameDate } from "@/plugin/dayjs";
-import { scrapOGS } from "@/hooks/useOgs";
+import { scrapOGS } from "~/composables/useOgs";
 import { LocalStorage } from "quasar";
 
 export const useGroupStore = defineStore("group", {

@@ -67,29 +67,30 @@ const refresh = async (done: () => void) => {
 
 watch(
   [() => currentGroup.value?.lastPostCreatedAt, () => searchWord.value],
-  () => {
-    console.log("refreshPostData");
-    refreshPostData({ init: true });
-  }
+  () => refreshPostData({ init: true })
 );
 </script>
 <template>
   <div class="max-width">
     <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
-      <template v-if="pending"> 포스트 로딩중!! </template>
-      <template v-else-if="posts.length > 0">
-        <PostListItem v-for="(post, i) in posts" :key="i" :post="post" />
+      <template v-if="pending">
+        <PostListSkeletonItem v-for="i in 12" :key="i" />
       </template>
       <template v-else>
-        <SearchEmpty mode="SEARCH" />
-      </template>
-      <ClientOnly>
-        <template v-if="isExistsNextPage">
-          <ScrollObserver @trigger-intersected="next">
-            <GroupDetailPostLoader />
-          </ScrollObserver>
+        <template v-if="posts.length > 0">
+          <PostListItem v-for="(post, i) in posts" :key="i" :post="post" />
         </template>
-      </ClientOnly>
+        <template v-else>
+          <SearchEmpty mode="SEARCH" />
+        </template>
+        <ClientOnly>
+          <template v-if="isExistsNextPage">
+            <ScrollObserver @trigger-intersected="next">
+              <GroupDetailPostLoader />
+            </ScrollObserver>
+          </template>
+        </ClientOnly>
+      </template>
     </q-pull-to-refresh>
   </div>
 </template>

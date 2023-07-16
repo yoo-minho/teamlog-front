@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Group } from "@/types/common";
-import { isTextImage } from "@/util/ImageUtil";
+import { isTextImage } from "@/utils/ImageUtil";
 import { getFormatString } from "@/plugin/dayjs";
 
 const props = defineProps<{ group: Group }>();

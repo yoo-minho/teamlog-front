@@ -8,8 +8,8 @@ import {
 import DarkModeCard from "./components/DarkModeCard.vue";
 import SettingCardItem from "./components/SettingCardItem.vue";
 
-import { openUrl } from "@/util/CommUtil";
-import { getImage } from "@/util/ImageUtil";
+import { openUrl } from "@/utils/CommUtil";
+import { getImage } from "@/utils/ImageUtil";
 
 import GroupApi from "@/api/groupApi";
 import { BLOG_TAG } from "~/constants";

@@ -2,8 +2,8 @@ import { defineStore, storeToRefs } from "pinia";
 import { DaysCount, LastPost, linkCount, Post } from "../types/common";
 import { useGroupStore } from "./group";
 import { useUserStore } from "./user";
-import { skipBlogName } from "@/util/NameUtil";
-import { changeMarkContents } from "~/hooks/useHighlight";
+import { skipBlogName } from "~/utils/NameUtil";
+import { changeMarkContents } from "~/composables/useHighlight";
 
 const MMM = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const day = [0, 1, 2, 3, 4, 5, 6];

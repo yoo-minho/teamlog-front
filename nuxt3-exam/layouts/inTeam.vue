@@ -2,6 +2,7 @@
 import { useQuasar } from "quasar";
 import InTeamHeader from "~/components/Menu/InTeamHeader.vue";
 import GroupInfo from "@/components/Info/GroupInfo.vue";
+import GroupInfoSkeleton from "@/components/Info/GroupInfoSkeleton.vue";
 import GroupDetailCounter from "@/components/Counter/GroupDetailCounter.vue";
 import GroupApi from "@/api/groupApi";
 import RssApi from "@/api/rssApi";
@@ -9,7 +10,7 @@ import { TAB_LABEL_IN_TEAM } from "@/constants/";
 import { useGroupStore } from "@/stores/group";
 import { storeToRefs } from "pinia";
 import { Group, LinkWrap } from "~/types/common";
-import { delay } from "~/util/CommUtil";
+import { delay } from "~/utils/CommUtil";
 import { isTodayByDate } from "@/plugin/dayjs";
 
 const $q = useQuasar();
@@ -56,9 +57,8 @@ const {
 
 watch(
   () => currentTeam.value,
-  () => {
-    currentGroup.value = currentTeam.value as Group;
-  }
+  () => (currentGroup.value = currentTeam.value as Group),
+  { immediate: true }
 );
 
 const { id = -1, links = [] } = currentGroup.value || {};
@@ -81,11 +81,7 @@ watch(
         :thumb-style="{ zIndex: '999999' }"
       >
         <template v-if="pending">
-          <InTeamHeader
-            :group-id="-1"
-            :group-title="'로딩중!!!'"
-            style="position: relative"
-          />
+          <InTeamHeader group-title="" style="position: relative" />
         </template>
         <template v-else-if="currentTeam">
           <InTeamHeader
@@ -101,14 +97,21 @@ watch(
                 {{ teamId }} - Team Top 로딩중...
               </template>
               <q-page v-else-if="currentTeam">
-                <GroupDetailCounter
-                  :today-views="currentTeam.todayViews || 0"
-                  :total-views="currentTeam.totalViews || 0"
-                />
-                <GroupInfo
-                  :group-data="currentTeam"
-                  :scrap-loading="scrapLoading"
-                />
+                <template v-if="pending">
+                  <GroupDetailCounter :today-views="0" :total-views="0" />
+                </template>
+                <template v-else-if="currentTeam">
+                  <GroupDetailCounter
+                    :today-views="currentTeam.todayViews || 0"
+                    :total-views="currentTeam.totalViews || 0"
+                  />
+                  <GroupInfoSkeleton />
+                  <GroupInfo
+                    :group-data="currentTeam"
+                    :scrap-loading="scrapLoading"
+                  />
+                </template>
+
                 <div class="tag-scroll row justify-center">
                   <template v-for="({ tag }, i) in currentTeam.tags" :key="i">
                     <div @click="() => goTagTeam(tag.name)">

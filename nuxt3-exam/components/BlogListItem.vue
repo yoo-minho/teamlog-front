@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Link } from "@/types/common";
 import LinkCard from "@/components/Card/LinkCard.vue";
-import { openUrl } from "@/util/CommUtil";
+import { openUrl } from "@/utils/CommUtil";
 
 defineProps<{ link: Link }>();
 </script>
