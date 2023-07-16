@@ -2,7 +2,7 @@
 import { storeToRefs } from "pinia";
 import { useGroupStore } from "@/stores/group";
 import { usePostStore } from "@/stores/post";
-import { skipBlogName } from "@/util/NameUtil";
+import { skipBlogName } from "@/utils/NameUtil";
 import PostAPI from "@/api/postApi";
 
 import JandiBox from "./JandiBox.vue";

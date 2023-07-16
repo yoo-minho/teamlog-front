@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ErrorMessage, Link } from "~/types/common";
 import { useQuasar } from "quasar";
-import { scrapOGS } from "@/hooks/useOgs";
+import { scrapOGS } from "@/composables/useOgs";
 
 const $q = useQuasar();
 const props = defineProps<{ show: boolean }>();

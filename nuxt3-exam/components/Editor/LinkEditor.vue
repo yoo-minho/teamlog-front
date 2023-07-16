@@ -5,8 +5,7 @@ import { useQuasar } from "quasar";
 import { useGroupStore } from "@/stores/group";
 import { useSubpageStore } from "@/stores/subpage";
 import { ErrorMessage } from "@/types/common";
-import EditorLayout from "@/layouts/EditorLayout.vue";
-import { scrapOGS } from "@/hooks/useOgs";
+import { scrapOGS } from "@/composables/useOgs";
 
 const BLOG_EXPRESSION = {
   NAVER: /https:\/\/blog.naver.com\/([0-9a-zA-Z_-]*)(\/)?([0-9a-zA-Z]*)/gi,

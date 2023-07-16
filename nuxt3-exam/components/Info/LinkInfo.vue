@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from "@/types/common";
-import { getImageByBlogType, isTextImage } from "@/util/ImageUtil";
+import { getImageByBlogType, isTextImage } from "@/utils/ImageUtil";
 
 defineProps<{ linkData: Link; links?: boolean; posts?: boolean }>();
 </script>

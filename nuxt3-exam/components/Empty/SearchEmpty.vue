@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getImage } from "@/util/ImageUtil";
+import { getImage } from "@/utils/ImageUtil";
 
 defineProps<{ mode: "SEARCH" | "LIST" }>();
 

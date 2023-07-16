@@ -2,7 +2,7 @@
 import { Dialog } from "quasar";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/user";
-import { showBottomSheet } from "@/hooks/useSnsBottomSheet";
+import { showBottomSheet } from "@/composables/useSnsBottomSheet";
 import GroupApi from "@/api/groupApi";
 
 const props = defineProps<{ groupId?: number; groupTitle: string }>();

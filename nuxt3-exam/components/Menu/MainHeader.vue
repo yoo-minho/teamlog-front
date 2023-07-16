@@ -3,10 +3,10 @@ import { storeToRefs } from "pinia";
 import { useGroupStore } from "@/stores/group";
 import { useUserStore } from "@/stores/user";
 import { TAB_LABEL } from "@/constants";
-import { showOrderBottomSheet } from "@/hooks/useOrderBottomSheet";
-import { showBottomSheet } from "@/hooks/useSnsBottomSheet";
-import { showInstallBottomSheet } from "@/hooks/useInstallBottomSheet";
-import { showAuthDialog } from "@/hooks/useAuthDialog";
+import { showOrderBottomSheet } from "@/composables/useOrderBottomSheet";
+import { showBottomSheet } from "@/composables/useSnsBottomSheet";
+import { showInstallBottomSheet } from "@/composables/useInstallBottomSheet";
+import { showAuthDialog } from "@/composables/useAuthDialog";
 
 const groupStore = useGroupStore();
 const { groupSort } = storeToRefs(groupStore);

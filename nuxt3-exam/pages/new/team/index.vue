@@ -5,7 +5,7 @@ import LinkCard from "@/components/Card/LinkCard.vue";
 import LinkDialog from "./components/LinkDialog.vue";
 import GroupApi from "@/api/groupApi";
 import { Link } from "~/types/common";
-import { scrapOGS } from "@/hooks/useOgs";
+import { scrapOGS } from "@/composables/useOgs";
 
 import UserApi from "@/api/userApi";
 

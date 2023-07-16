@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useGroupStore } from "@/stores/group";
-import { skipBlogName } from "@/util/NameUtil";
+import { skipBlogName } from "@/utils/NameUtil";
 import LinkInfo from "~/components/Info/LinkInfo.vue";
 import { Link } from "~/types/common";
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Link } from "@/types/common";
 import LinkInfo from "../Info/LinkInfo.vue";
-import { skipBlogName } from "@/util/NameUtil";
+import { skipBlogName } from "@/utils/NameUtil";
 import { getFormatString } from "@/plugin/dayjs";
 
 defineProps<{ link: Link; iconName: string }>();

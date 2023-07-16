@@ -3,7 +3,7 @@ import {
   openFeedbackForm,
   openServiceIdentityNotion,
   openRequestTeamMakerForm,
-} from "@/hooks/useOpenWindow";
+} from "@/composables/useOpenWindow";
 
 import DarkModeCard from "./components/DarkModeCard.vue";
 import SettingCardItem from "./components/SettingCardItem.vue";

@@ -3,7 +3,7 @@ import { useQuasar } from "quasar";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "./stores/user";
 import UserApi from "@/api/userApi";
-import { savePrompt } from "@/hooks/useInstallBottomSheet";
+import { savePrompt } from "@/composables/useInstallBottomSheet";
 
 const $q = useQuasar();
 const isDarkActive = ref($q.dark.isActive);
@@ -32,21 +32,6 @@ if (_user.value != null) {
 watch(
   () => $q.dark.isActive,
   (val) => (isDarkActive.value = val)
-);
-
-watch(
-  () => [String(route.params.teamId || ""), String(route.name || "")],
-  ([_teamId, _name]) => {
-    if (process.server) return;
-    if (_teamId !== "") {
-      setPageLayout("in-team");
-    } else if (_name.includes("setting")) {
-      setPageLayout("setting");
-    } else {
-      setPageLayout("default");
-    }
-  },
-  { immediate: true }
 );
 
 onMounted(() => {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { toRaw } from "vue";
 
-import { getImage } from "@/util/ImageUtil";
+import { getImage } from "@/utils/ImageUtil";
 import { StackJson } from "@/types/common";
 
 const props = defineProps<{ stackJson: StackJson }>();

@@ -11,7 +11,7 @@ import {
   openFeedbackForm,
   openServiceIdentityNotion,
   openRequestTeamMakerForm,
-} from "@/hooks/useOpenWindow";
+} from "@/composables/useOpenWindow";
 import { BlogType } from "~/types/common";
 
 const subpageStore = useSubpageStore();

@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { toRaw } from 'vue';
+import { toRaw } from "vue";
 
-import { getImage } from '@/util/ImageUtil';
-import { StackJson } from '@/types/common';
+import { getImage } from "@/utils/ImageUtil";
+import { StackJson } from "@/types/common";
 
 const props = defineProps<{ stackJson: StackJson }>();
-const { label, version, description, path, url, githubStar } = toRaw(props.stackJson);
-const openUrl = (url: string) => window.open(url, 'stack');
+const { label, version, description, path, url, githubStar } = toRaw(
+  props.stackJson
+);
+const openUrl = (url: string) => window.open(url, "stack");
 </script>
 
 <template>
@@ -19,7 +21,9 @@ const openUrl = (url: string) => window.open(url, 'stack');
 
     <q-item-section style="justify-content: flex-start">
       <q-item-label>{{ label }} {{ version }}</q-item-label>
-      <q-item-label caption class="ellipsis-3-lines">{{ description }}</q-item-label>
+      <q-item-label caption class="ellipsis-3-lines">{{
+        description
+      }}</q-item-label>
     </q-item-section>
 
     <q-item-section v-if="githubStar" side top>
