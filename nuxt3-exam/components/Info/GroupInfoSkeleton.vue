@@ -1,18 +1,10 @@
 <template>
-  <q-item class="column" style="padding: 0">
-    <q-item-section class="text-center">
+  <q-item style="padding: 0">
+    <q-item-section class="column text-center items-center">
       <q-item-label class="text-weight-bold text-green-4">@domain</q-item-label>
-      <q-item-label class="text-h6 text-weight-bolder">
-        <q-skeleton type="rect" width="70%" />
-      </q-item-label>
-      <q-item-label style="white-space: pre-wrap">
-        <q-skeleton type="rect" width="70%" />
-      </q-item-label>
-      <div class="q-mt-sm">
-        <q-item-label class="text-grey-5">
-          <q-skeleton type="rect" width="70%" />
-        </q-item-label>
-      </div>
+      <q-skeleton type="rect" width="50%" height="28px" class="q-my-sm" />
+      <q-skeleton type="rect" width="70%" height="16px" class="q-mb-sm" />
+      <q-skeleton type="rect" width="40%" height="16px" class="q-mb-sm" />
     </q-item-section>
   </q-item>
 </template>
