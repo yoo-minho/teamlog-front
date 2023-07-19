@@ -2,7 +2,7 @@
 import { Group } from "@/types/common";
 import { getFormatString } from "@/plugin/dayjs";
 
-defineProps<{ groupData: Group; scrapLoading: boolean }>();
+defineProps<{ groupData: Group }>();
 </script>
 
 <template>
@@ -17,28 +17,16 @@ defineProps<{ groupData: Group; scrapLoading: boolean }>();
       <q-item-label style="white-space: pre-wrap">{{
         groupData.description
       }}</q-item-label>
-      <template v-if="scrapLoading">
-        <q-linear-progress
-          dark
-          rounded
-          indeterminate
-          color="green-4"
-          class="q-mt-sm"
-        />
-        <q-linear-progress dark rounded query color="green-2" class="q-mt-sm" />
-      </template>
-      <template v-else>
-        <div class="q-mt-sm">
-          <q-item-label class="text-grey-5">
-            {{
-              getFormatString(
-                groupData.lastPostCreatedAt,
-                "YYYY-MM-DD HH:mm (ddd)"
-              )
-            }}
-          </q-item-label>
-        </div>
-      </template>
+      <div class="q-mt-sm">
+        <q-item-label class="text-grey-5">
+          {{
+            getFormatString(
+              groupData.lastPostCreatedAt,
+              "YYYY-MM-DD HH:mm (ddd)"
+            )
+          }}
+        </q-item-label>
+      </div>
     </q-item-section>
   </q-item>
 </template>

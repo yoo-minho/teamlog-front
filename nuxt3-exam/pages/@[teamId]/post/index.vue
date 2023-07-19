@@ -1,45 +1,49 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { usePostStore } from "@/stores/post";
-import { useGroupStore } from "~/stores/group";
-import { useUserStore } from "~/stores/user";
+import { useGroupStore } from "@/stores/group";
+import { useUserStore } from "@/stores/user";
 
-import GroupDetailPostLoader from "@/components/Loader/GroupDetailPostLoader.vue";
+import SearchEmpty from "@/components/Empty/SearchEmpty.vue";
 import ScrollObserver from "@/components/Observer/ScrollObserver.vue";
 import PostApi from "@/api/postApi";
-import SearchEmpty from "~/components/Empty/SearchEmpty.vue";
 
 definePageMeta({
   pageTransition: { mode: "out-in" },
   middleware: ["team-slide"],
 });
 
-const postStore = usePostStore();
+const route = useRoute();
+
+const [groupStore, postStore, userStore] = [
+  useGroupStore(),
+  usePostStore(),
+  useUserStore(),
+];
 const { posts } = storeToRefs(postStore);
 const { savePosts } = postStore;
-const groupStore = useGroupStore();
 const { currentGroup } = storeToRefs(groupStore);
-const userStore = useUserStore();
 const { searchWord } = storeToRefs(userStore);
+const { setSearchData } = userStore;
 
-const route = useRoute();
 const page = ref(1);
 const isExistsNextPage = ref(false);
-searchWord.value = String(route.query.q || "");
 const teamId = useState<string>("teamId");
+
+setSearchData(String(route.query.q || ""));
 
 const {
   data: _posts,
   refresh: refreshPosts,
   pending,
 } = await PostApi.findPosts({
-  page: page,
-  teamId: teamId,
+  page,
+  teamId,
   q: searchWord,
 });
 
 watch(
-  () => _posts.value,
+  _posts,
   () => {
     savePosts(true, _posts.value);
     isExistsNextPage.value = _posts.value?.length === 10;
@@ -66,14 +70,17 @@ const refresh = async (done: () => void) => {
 };
 
 watch(
-  [() => currentGroup.value?.lastPostCreatedAt, () => searchWord.value],
-  () => refreshPostData({ init: true })
+  [() => currentGroup.value?.lastPostCreatedAt, searchWord],
+  (_, oldVal) => {
+    if (!oldVal[0]) return; //lastPostCreatedAt 최초 할당시에는 미동작
+    refreshPostData({ init: true });
+  }
 );
 </script>
 <template>
   <div class="max-width">
     <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
-      <template v-if="pending">
+      <template v-if="pending && page === 1">
         <PostListSkeletonItem v-for="i in 12" :key="i" />
       </template>
       <template v-else>
@@ -86,7 +93,7 @@ watch(
         <ClientOnly>
           <template v-if="isExistsNextPage">
             <ScrollObserver @trigger-intersected="next">
-              <GroupDetailPostLoader />
+              <PostListSkeletonItem />
             </ScrollObserver>
           </template>
         </ClientOnly>

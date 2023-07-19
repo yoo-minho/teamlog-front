@@ -22,6 +22,10 @@ export const useUserStore = defineStore("user", {
       this.isSearchMode = false;
       this.searchWord = "";
     },
+    setSearchData(value: string) {
+      this.isSearchMode = "" !== value;
+      this.searchWord = value;
+    },
     toggleSearchMode() {
       this.isSearchMode = !this.isSearchMode;
       if (!this.isSearchMode) {

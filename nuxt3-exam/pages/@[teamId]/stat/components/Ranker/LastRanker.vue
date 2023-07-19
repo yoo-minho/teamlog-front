@@ -1,25 +1,34 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useGroupStore } from "@/stores/group";
-import { usePostStore } from "@/stores/post";
 import PostAPI from "@/api/postApi";
 import Ranker from "./Ranker.vue";
+import { RankerStat } from "~/types/common";
 
-const [groupStore, postStore] = [useGroupStore(), usePostStore()];
-const { lastPosts } = storeToRefs(postStore);
-const { currentGroup } = storeToRefs(groupStore);
+const groupStore = useGroupStore();
+const { currentGroupLinkIds } = storeToRefs(groupStore);
 
 //define
-const linkIds = ref(currentGroup.value.links?.map(({ link: l }) => l.id) || []);
+const transLastPosts = ref([] as RankerStat[]);
+const linkIds = ref(currentGroupLinkIds.value);
 
 //created
-const { data: _lasts } = await PostAPI.findLast({ linkIds });
-lastPosts.value = _lasts.value || [];
-const transLastPosts = lastPosts.value.map((v) => ({
-  ...v,
-  stat: v.agoString,
-}));
+const { data: _lasts, pending } = await PostAPI.findLast({
+  linkIds,
+});
+
+watch(
+  _lasts,
+  () => {
+    transLastPosts.value =
+      _lasts.value?.map((v) => ({
+        linkId: v.linkId,
+        stat: v.agoString,
+      })) || [];
+  },
+  { immediate: true }
+);
 </script>
 <template>
-  <Ranker title="최근작성" :data="transLastPosts" />
+  <Ranker :pending="pending" title="최근작성" :data="transLastPosts" />
 </template>

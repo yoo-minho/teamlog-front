@@ -81,6 +81,7 @@ export type LastPostPlus = LastPost & {
   dateString: string;
   agoString: string;
 };
+export type RankerStat = { linkId: number; stat: string };
 export type Days = {
   date: string;
   day: number;

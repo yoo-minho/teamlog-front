@@ -13,7 +13,7 @@
           <q-skeleton type="text" width="40%" class="dense" />
         </div>
         <q-item-section avatar>
-          <q-skeleton size="24px" class="shadow-2" />
+          <q-skeleton type="QAvatar" size="24px" class="shadow-2" />
         </q-item-section>
       </q-item-section>
     </q-item>

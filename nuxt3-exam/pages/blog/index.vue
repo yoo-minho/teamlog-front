@@ -2,11 +2,12 @@
 import { storeToRefs } from "pinia";
 import { useBlogStore } from "@/stores/blog";
 import ScrollObserver from "@/components/Observer/ScrollObserver.vue";
-import PostListSkeletonItem from "@/components/PostListSkeletonItem.vue";
+import PostListSkeletonItem from "@/components/Post/PostListSkeletonItem.vue";
 import BlogTagList from "./components/BlogTagList.vue";
-import BlogListItem from "@/components/BlogListItem.vue";
+import BlogListItem from "@/components/Blog/BlogListItem.vue";
 import BlogApi from "@/api/blogApi";
 import { BLOG_TAG } from "~/constants";
+import BlogListSkeletonItem from "~/components/Blog/BlogListSkeletonItem.vue";
 
 definePageMeta({
   pageTransition: { mode: "out-in" },
@@ -22,12 +23,22 @@ const selectTag = ref(String(route.query.tag || "All"));
 const isExistsNextPage = ref(false);
 
 const tags = ref(BLOG_TAG.map((v) => ({ id: v.type, name: v.type })));
-const { data: _blogs, refresh: refreshBlog } = await BlogApi.findAll({
+const {
+  data: _blogs,
+  refresh: refreshBlog,
+  pending,
+} = await BlogApi.findAll({
   page: page,
   tag: selectTag,
 });
-blogs.value = _blogs.value || [];
-isExistsNextPage.value = blogs.value?.length === 10;
+watch(
+  _blogs,
+  () => {
+    blogs.value = _blogs.value || [];
+    isExistsNextPage.value = blogs.value?.length === 10;
+  },
+  { immediate: true }
+);
 
 const refreshBlogData = async ({ init = false } = {}) => {
   if (init) page.value = 1;
@@ -58,17 +69,20 @@ const filterTag = (tagName: string) => {
       />
       <q-separator spaced />
       <q-page class="q-mt-sm" style="min-height: 0">
-        <BlogListItem v-for="(blog, i) in blogs" :key="i" :link="blog" />
+        <v-template v-if="pending">
+          <BlogListSkeletonItem v-for="i in 12" :key="i" />
+        </v-template>
+        <v-template v-else>
+          <BlogListItem v-for="(blog, i) in blogs" :key="i" :link="blog" />
+          <ClientOnly>
+            <template v-if="isExistsNextPage">
+              <ScrollObserver @trigger-intersected="next">
+                <BlogListSkeletonItem />
+              </ScrollObserver>
+            </template>
+          </ClientOnly>
+        </v-template>
       </q-page>
-      <ClientOnly>
-        <template v-if="isExistsNextPage">
-          <ScrollObserver @trigger-intersected="next">
-            123123
-
-            <PostListSkeletonItem />
-          </ScrollObserver>
-        </template>
-      </ClientOnly>
     </q-pull-to-refresh>
   </div>
 </template>

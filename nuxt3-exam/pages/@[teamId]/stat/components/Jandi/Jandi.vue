@@ -8,21 +8,32 @@ import PostAPI from "@/api/postApi";
 import JandiBox from "./JandiBox.vue";
 import JandiContents from "./JandiContents.vue";
 import JandiBottomTip from "./JandiBottomTip.vue";
+import { DaysCount } from "~/types/common";
+
+const MMM = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const day = [0, 1, 2, 3, 4, 5, 6];
+const add = (total: number, val: { count: number }) => total + val.count;
+const active = (arr: DaysCount[]) => arr.filter((v) => v.count > 0);
+const targetCount = (arr: DaysCount[], day: number) =>
+  arr.filter((v) => v.day === day).length;
 
 const [groupStore, postStore] = [useGroupStore(), usePostStore()];
 const { jandis } = storeToRefs(postStore);
-const { currentGroup } = storeToRefs(groupStore);
+const { currentGroup, currentGroupLinkIds } = storeToRefs(groupStore);
 
-const defaultOption = { label: "전체 (블로그별 필터 가능)", value: -1 };
+const defaultValue = -1;
+const defaultOption = {
+  label: "전체 (블로그별 필터 가능)",
+  value: defaultValue,
+};
 
 const makeLinkIds = (selectedId: number) =>
-  (currentGroup.value.links || [])
-    ?.map(({ link }) => link.id)
-    .filter((id) =>
-      selectedId === defaultOption.value ? true : id === selectedId
-    );
+  currentGroupLinkIds.value.filter((id) =>
+    selectedId === defaultValue ? true : id === selectedId
+  );
 
-const linkIds = ref(makeLinkIds(defaultOption.value));
+const linkIds = ref(makeLinkIds(defaultValue));
+const [totalJandiCnt, nextPostDay, manyPostMMM] = [ref(0), ref("-"), ref("-")];
 
 const currentFilter = ref(defaultOption);
 const filterOptions = computed(() => [
@@ -33,41 +44,39 @@ const filterOptions = computed(() => [
   })),
 ]);
 
-const { data: _jandis, refresh } = await PostAPI.countByDate({ linkIds });
-jandis.value = _jandis.value || [];
+const {
+  data: _jandis,
+  refresh,
+  pending,
+} = await PostAPI.countByDate({ linkIds });
+
+watch(
+  _jandis,
+  () => {
+    jandis.value = _jandis.value || [];
+
+    const activeJandis = active(jandis.value);
+    if (activeJandis.length === 0) return;
+
+    //calculate
+    const dayOfWeek = day
+      .map((d) => ({ day: d, count: targetCount(activeJandis, d) }))
+      .sort((x, y) => y.count - x.count);
+
+    //setting
+    totalJandiCnt.value = activeJandis?.reduce(add, 0) || 0;
+    nextPostDay.value =
+      Math.round((90 / totalJandiCnt.value) * 100) / 100 + "일";
+    manyPostMMM.value = MMM[dayOfWeek[0].day];
+  },
+  { immediate: true }
+);
 
 const refreshJandiData = async (selected: { value: number }) => {
   linkIds.value = makeLinkIds(selected.value);
   await refresh();
   jandis.value = _jandis.value || [];
 };
-
-const [totalJandiCnt, nextPostDay, manyPostMMM] = [ref(0), ref("-"), ref("-")];
-watch(
-  () => jandis.value,
-  (_jandi) => {
-    const MMM = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const day = [0, 1, 2, 3, 4, 5, 6];
-
-    const activeJandis = _jandi.filter(({ count: c }) => c > 0);
-    if (activeJandis.length === 0) return;
-
-    //calculate
-    const add = (total: number, val: { count: number }) => total + val.count;
-    const totalCnt = activeJandis.reduce(add, 0);
-    const countTarget = (d: number) =>
-      activeJandis.filter(({ day }) => day === d).length;
-    const dayOfWeek = day
-      .map((d) => ({ day: d, count: countTarget(d) }))
-      .sort((x, y) => y.count - x.count);
-
-    //setting
-    totalJandiCnt.value = totalCnt;
-    nextPostDay.value = Math.round((90 / totalCnt) * 100) / 100 + "일";
-    manyPostMMM.value = MMM[dayOfWeek[0].day];
-  },
-  { immediate: true }
-);
 </script>
 <template>
   <div>
@@ -92,7 +101,7 @@ watch(
     </q-select>
     <q-card class="bg-green-1">
       <q-card-section class="row jandi-zone">
-        <JandiContents :data="jandis" />
+        <JandiContents :loading="pending" :data="jandis" />
         <JandiBottomTip :count="totalJandiCnt" />
       </q-card-section>
     </q-card>

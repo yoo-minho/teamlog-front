@@ -15,6 +15,8 @@ export const useGroupStore = defineStore("group", {
     groupSort: LocalStorage.getItem("groupSort") || "lastPostCreatedAt",
   }),
   getters: {
+    currentGroupLinkIds: (state) =>
+      state.currentGroup.links?.map(({ link: l }) => l.id) || [],
     linkCountMessage: ({ linksOnEditor: links }) =>
       links.length > 0 ? `(${links.length}/10)` : "",
     minScrapAt: ({ currentGroup }) => {

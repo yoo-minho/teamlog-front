@@ -14,6 +14,7 @@ export default {
     return await useFetch<Group[]>(() => `group`, {
       baseURL: config.public.apiBase,
       params: { page, sort, tag },
+      lazy: true,
     });
   },
   async count() {
@@ -31,18 +32,15 @@ export default {
     const config = useRuntimeConfig();
     return await useFetch<Tag[]>("tag", {
       baseURL: config.public.apiBase,
+      lazy: true,
     });
   },
   async findByDomain(domain: string) {
     const config = useRuntimeConfig();
-    try {
-      return await useFetch<Group>(() => `group/${domain}`, {
-        baseURL: config.public.apiBase,
-        lazy: true,
-      });
-    } catch (err) {
-      throw new Error("");
-    }
+    return await useFetch<Group>(() => `group/${domain}`, {
+      baseURL: config.public.apiBase,
+      lazy: true,
+    });
   },
   async create(props: {
     domain: string;
@@ -110,7 +108,7 @@ export default {
   async updateLastPostCreateAt(groupId?: number) {
     if (!groupId) throw new Error("No Group Id");
     const config = useRuntimeConfig();
-    await useFetch("group/last-post-create-at", {
+    return await useFetch("group/last-post-create-at", {
       baseURL: config.public.apiBase,
       method: "put",
       body: {

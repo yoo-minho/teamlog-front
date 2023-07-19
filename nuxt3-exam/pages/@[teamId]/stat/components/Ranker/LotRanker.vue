@@ -1,22 +1,31 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useGroupStore } from "@/stores/group";
-import { usePostStore } from "@/stores/post";
 import PostAPI from "@/api/postApi";
 import Ranker from "./Ranker.vue";
+import { RankerStat } from "~/types/common";
 
-const [groupStore, postStore] = [useGroupStore(), usePostStore()];
-const { lots } = storeToRefs(postStore);
-const { currentGroup } = storeToRefs(groupStore);
+const groupStore = useGroupStore();
+const { currentGroupLinkIds } = storeToRefs(groupStore);
 
 //define
-const linkIds = ref(currentGroup.value.links?.map(({ link: l }) => l.id) || []);
+const transLots = ref([] as RankerStat[]);
+const linkIds = ref(currentGroupLinkIds.value);
 
 //created
-const { data: _lot } = await PostAPI.findCountGroupById({ linkIds });
-lots.value = _lot.value || [];
-const transLots = lots.value.map((v) => ({ ...v, stat: v.count + "건" }));
+const { data: _lot, pending } = await PostAPI.findCountGroupById({
+  linkIds,
+});
+watch(
+  _lot,
+  () => {
+    transLots.value =
+      _lot.value?.map((v) => ({ linkId: v.linkId, stat: v.count + "건" })) ||
+      [];
+  },
+  { immediate: true }
+);
 </script>
 <template>
-  <Ranker title="최다작성" :data="transLots" />
+  <Ranker :pending="pending" title="최다작2성" :data="transLots" />
 </template>

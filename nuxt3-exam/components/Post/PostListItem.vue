@@ -28,22 +28,29 @@ const { post } = toRefs(props);
             v-if="isTextImage(post.link.imagePath)"
             color="black"
             text-color="white"
-            rounded
             size="24px"
           >
             <div class="non-selectable" style="font-size: 12px">
               {{ post.link.title.substring(0, 2) }}
             </div>
           </q-avatar>
-          <q-avatar v-else rounded size="24px" class="shadow-2">
+          <q-avatar v-else size="24px" class="shadow-2">
             <q-img
               :src="post.link.imagePath"
               :alt="post.link.title"
-              class="image-"
+              class="image-24"
               no-spinner
               loading="eager"
+              :style="{ height: '100%' }"
             >
-              <template #error>{{ post.link.title.substring(0, 1) }}</template>
+              <template #error>
+                <div
+                  class="absolute-full flex flex-center bg-green-4 text-white"
+                  :style="{ padding: '0' }"
+                >
+                  {{ post.link.title.substring(0, 1) }}
+                </div></template
+              >
             </q-img>
           </q-avatar>
           <q-item-label class="text-grey-5 ellipsis q-mx-sm" style="flex: 1">

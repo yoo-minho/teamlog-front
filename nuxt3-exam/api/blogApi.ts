@@ -7,6 +7,7 @@ export default {
     return await useFetch<Link[]>("link", {
       baseURL: config.public.apiBase,
       params: { tag, page },
+      lazy: true,
     });
   },
 };

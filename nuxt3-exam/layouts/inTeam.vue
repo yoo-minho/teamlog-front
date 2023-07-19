@@ -12,35 +12,31 @@ import { storeToRefs } from "pinia";
 import { Group, LinkWrap } from "~/types/common";
 import { delay } from "~/utils/CommUtil";
 import { isTodayByDate } from "@/plugin/dayjs";
+import { QPullToRefresh } from "quasar";
 
 const $q = useQuasar();
 const router = useRouter();
 const teamId = useState<string>("teamId");
 const tabId = useState<string>("tabId");
 
-console.log("inTeamLayout", teamId.value, tabId.value);
-
 const tab = ref(tabId.value);
 const groupStore = useGroupStore();
 const { currentGroup } = storeToRefs(groupStore);
 
 const isDark = ref($q.dark.isActive);
-const scrapLoading = ref(false);
 
 const goTagTeam = (tag: string) =>
   router.push({ path: "/team", query: { tag } });
 
 const scrapPosts = async (id: number, links: LinkWrap[]) => {
   if (links.length === 0) return;
-  scrapLoading.value = true;
   await Promise.allSettled([
     ...links.map(({ link }) => RssApi.scrap(link)),
     delay(1000),
   ]);
-  scrapLoading.value = false;
-  await GroupApi.updateLastPostCreateAt(id);
-  await refreshTeam();
-  currentGroup.value = currentTeam.value as Group;
+  const { data } = await GroupApi.updateLastPostCreateAt(id);
+  const rawData = data.value as { lastPostCreatedAt: Date };
+  currentGroup.value.lastPostCreatedAt = rawData.lastPostCreatedAt;
 };
 
 const refresh = (done: () => void) => {
@@ -49,21 +45,24 @@ const refresh = (done: () => void) => {
   scrapPosts(id, links).then(done);
 };
 
-const {
-  data: currentTeam,
-  refresh: refreshTeam,
-  pending,
-} = await GroupApi.findByDomain(teamId.value);
-
-watch(
-  () => currentTeam.value,
-  () => (currentGroup.value = currentTeam.value as Group),
-  { immediate: true }
+const { data: currentTeam, pending } = await GroupApi.findByDomain(
+  teamId.value
 );
 
-const { id = -1, links = [] } = currentGroup.value || {};
-const filterLinks = links?.filter(({ link }) => !isTodayByDate(link.scrapAt));
-scrapPosts(id, filterLinks);
+watch(
+  currentTeam,
+  () => {
+    currentGroup.value = currentTeam.value as Group;
+    const { id = -1, links = [] } = currentGroup.value || {};
+    const filterLinks = links?.filter(
+      ({ link }) => !isTodayByDate(link.scrapAt)
+    );
+    scrapPosts(id, filterLinks);
+  },
+  {
+    immediate: true,
+  }
+);
 
 watch(
   () => $q.dark.isActive,
@@ -83,42 +82,40 @@ watch(
         <template v-if="pending">
           <InTeamHeader group-title="" style="position: relative" />
         </template>
-        <template v-else-if="currentTeam">
+        <template v-else-if="currentGroup">
           <InTeamHeader
-            :group-id="currentTeam.id || -1"
-            :group-title="currentTeam.title"
+            :group-id="currentGroup.id"
+            :group-title="currentGroup.title"
             style="position: relative"
           />
         </template>
         <q-layout style="min-height: 0">
           <q-page-container style="min-height: 0; padding: 0">
             <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
-              <template v-if="pending">
-                {{ teamId }} - Team Top 로딩중...
-              </template>
-              <q-page v-else-if="currentTeam">
+              <q-page>
                 <template v-if="pending">
                   <GroupDetailCounter :today-views="0" :total-views="0" />
-                </template>
-                <template v-else-if="currentTeam">
-                  <GroupDetailCounter
-                    :today-views="currentTeam.todayViews || 0"
-                    :total-views="currentTeam.totalViews || 0"
-                  />
                   <GroupInfoSkeleton />
-                  <GroupInfo
-                    :group-data="currentTeam"
-                    :scrap-loading="scrapLoading"
-                  />
                 </template>
-
-                <div class="tag-scroll row justify-center">
-                  <template v-for="({ tag }, i) in currentTeam.tags" :key="i">
-                    <div @click="() => goTagTeam(tag.name)">
-                      <q-chip outline square clickable>#{{ tag.name }}</q-chip>
-                    </div>
-                  </template>
-                </div>
+                <template v-else-if="currentGroup">
+                  <GroupDetailCounter
+                    :today-views="currentGroup.todayViews || 0"
+                    :total-views="currentGroup.totalViews || 0"
+                  />
+                  <GroupInfo :group-data="currentGroup" />
+                  <div class="tag-scroll row justify-center">
+                    <template
+                      v-for="({ tag }, i) in currentGroup.tags"
+                      :key="i"
+                    >
+                      <div @click="() => goTagTeam(tag.name)">
+                        <q-chip outline square clickable>
+                          #{{ tag.name }}
+                        </q-chip>
+                      </div>
+                    </template>
+                  </div>
+                </template>
                 <q-tabs
                   v-model="tab"
                   dense
@@ -131,6 +128,7 @@ watch(
                     <q-route-tab
                       :to="`/@${teamId}/${tag.name}`"
                       :label="tag.label"
+                      :replace="true"
                       style="width: 100%"
                     />
                   </template>

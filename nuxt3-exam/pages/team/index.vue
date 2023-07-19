@@ -18,13 +18,23 @@ const selectedOrder = ref(groupSort.value);
 const isExistsNextPage = ref(false);
 
 const { data: tags } = await GroupApi.findAllTag();
-const { data: teams, refresh: refreshTeam } = await GroupApi.findAll({
+const {
+  data: teams,
+  refresh: refreshTeam,
+  pending,
+} = await GroupApi.findAll({
   page: page,
   tag: selectedTag,
   sort: selectedOrder,
 });
-groups.value = teams.value || []; //create
-isExistsNextPage.value = teams.value?.length === 10;
+watch(
+  teams,
+  () => {
+    groups.value = teams.value || [];
+    isExistsNextPage.value = teams.value?.length === 10;
+  },
+  { immediate: true }
+);
 
 const refreshTeamData = async ({ init = false } = {}) => {
   if (init) page.value = 1;
@@ -39,19 +49,10 @@ const next = () => {
 };
 
 const refresh = (dn: () => void) => refreshTeamData({ init: true }).then(dn);
-
-//props
 const filterTag = (tagName: string) => (selectedTag.value = tagName);
 
-//pinia
-watch(
-  () => groupSort.value,
-  (v) => (selectedOrder.value = v)
-);
-
-watch([() => selectedOrder.value, () => selectedTag.value], () =>
-  refreshTeamData({ init: true })
-);
+watch(groupSort, (v) => (selectedOrder.value = v));
+watch([selectedOrder, selectedTag], () => refreshTeamData({ init: true }));
 
 definePageMeta({
   pageTransition: { mode: "out-in" },
