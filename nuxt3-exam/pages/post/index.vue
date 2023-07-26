@@ -39,27 +39,20 @@ const {
 watch(
   _posts,
   () => {
-    savePosts(true, _posts.value);
+    savePosts(page.value === 1, _posts.value);
     isExistsNextPage.value = _posts.value?.length === 10;
   },
   { immediate: true }
 );
 
 const refreshPostData = async ({ init = false } = {}) => {
-  if (init) page.value = 1;
+  page.value = (init ? 0 : page.value) + 1;
   await refreshPost();
-  savePosts(init, _posts.value);
-  isExistsNextPage.value = _posts.value?.length === 10;
 };
 
-const next = () => {
-  if (!isExistsNextPage.value) return;
-  page.value++;
-  refreshPostData({ init: false });
-};
+const next = () => refreshPostData({ init: false });
 const refresh = (dn: () => void) => refreshPostData({ init: true }).then(dn);
 const filterTag = (tagName: string) => (selectTag.value = tagName);
-
 watch([selectTag, searchWord], () => refreshPostData({ init: true }));
 </script>
 
@@ -73,7 +66,7 @@ watch([selectTag, searchWord], () => refreshPostData({ init: true }));
       />
       <q-separator spaced />
       <q-page class="q-mt-sm" style="min-height: 0">
-        <template v-if="pending">
+        <template v-if="pending && posts.length === 0">
           <PostListSkeletonItem v-for="i in 12" :key="i" />
         </template>
         <template v-else>

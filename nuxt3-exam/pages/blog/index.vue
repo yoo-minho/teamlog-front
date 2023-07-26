@@ -2,7 +2,6 @@
 import { storeToRefs } from "pinia";
 import { useBlogStore } from "@/stores/blog";
 import ScrollObserver from "@/components/Observer/ScrollObserver.vue";
-import PostListSkeletonItem from "@/components/Post/PostListSkeletonItem.vue";
 import BlogTagList from "./components/BlogTagList.vue";
 import BlogListItem from "@/components/Blog/BlogListItem.vue";
 import BlogApi from "@/api/blogApi";
@@ -34,30 +33,21 @@ const {
 watch(
   _blogs,
   () => {
-    blogs.value = _blogs.value || [];
-    isExistsNextPage.value = blogs.value?.length === 10;
+    saveBlogs(page.value === 1, _blogs.value);
+    isExistsNextPage.value = _blogs.value?.length === 10;
   },
   { immediate: true }
 );
 
 const refreshBlogData = async ({ init = false } = {}) => {
-  if (init) page.value = 1;
+  page.value = (init ? 0 : page.value) + 1;
   await refreshBlog();
-  saveBlogs(init, _blogs.value);
-  isExistsNextPage.value = _blogs.value?.length === 10;
 };
 
-const next = () => {
-  page.value++;
-  refreshBlogData({ init: false });
-};
-
+const next = () => refreshBlogData({ init: false });
 const refresh = (dn: () => void) => refreshBlogData({ init: true }).then(dn);
-
-const filterTag = (tagName: string) => {
-  selectTag.value = tagName;
-  refreshBlogData({ init: true });
-};
+const filterTag = (tagName: string) => (selectTag.value = tagName);
+watch([selectTag], () => refreshBlogData({ init: true }));
 </script>
 <template>
   <div class="page">
@@ -69,7 +59,7 @@ const filterTag = (tagName: string) => {
       />
       <q-separator spaced />
       <q-page class="q-mt-sm" style="min-height: 0">
-        <v-template v-if="pending">
+        <v-template v-if="pending && blogs.length === 0">
           <BlogListSkeletonItem v-for="i in 12" :key="i" />
         </v-template>
         <v-template v-else>

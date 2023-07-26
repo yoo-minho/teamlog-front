@@ -46,7 +46,7 @@ const {
 watch(
   _posts,
   () => {
-    savePosts(true, _posts.value);
+    savePosts(page.value === 1, _posts.value);
     isExistsNextPage.value = _posts.value?.length === 10;
   },
   { immediate: true }

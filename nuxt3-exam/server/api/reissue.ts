@@ -6,16 +6,17 @@ export default defineEventHandler(async (event) => {
 
   const userAgent = getRequestHeader(event, "user-agent") || "";
   const config = useRuntimeConfig();
-  const { statusCode, atk, rtk } = await $fetch<{
+  const { statusCode, atk, rtk, message } = await $fetch<{
     statusCode: number;
     atk: string;
     rtk: string;
+    message: string;
   }>("auth/refresh", {
     baseURL: config.public.apiBase,
     headers: { Authorization: `Bearer ${currentRtk}`, "user-agent": userAgent },
   });
   if (statusCode === 401 || rtk === "") {
-    return { atk: "", rtk: "", message: "401 auth/refresh" };
+    return { atk: "", rtk: "", message: message || "401 auth/refresh" };
   }
   return { atk, rtk };
 });

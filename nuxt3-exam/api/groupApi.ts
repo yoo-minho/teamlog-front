@@ -57,10 +57,12 @@ export default {
       console.log({ user });
       throw new Error("액세스 토큰이 없는거!");
     }
-    await $fetch("group", {
+    const headers = ref({ Authorization: `Bearer ${atk.value}` });
+    await useFetch("group", {
       baseURL: config.public.apiBase,
-      headers: { Authorization: `Bearer ${atk.value}` },
+      headers,
       method: "post",
+      watch: [atk],
       body: {
         domain,
         title,
@@ -68,22 +70,13 @@ export default {
         tags,
         links,
       },
-      onResponse: ({ request, options, response }) => {
-        console.log(
-          "GroupApi.create [fetch response ]",
-          { request },
-          { options },
-          { status: response.status },
-          { body: response.body }
-        );
-      },
       onResponseError: async ({ request, options, response }) => {
-        const { data } = await UserApi.reissue();
+        const { data } = await UserApi.reissueAtk();
         if (data.value?.atk === "") {
           throw new Error("액세스 토큰이 없는거!");
         }
         atk.value = data.value?.atk || "";
-        console.log("GroupApi.create [fetch response  error]", { response });
+        headers.value = { Authorization: `Bearer ${atk.value}` };
       },
     });
   },

@@ -10,15 +10,14 @@ const isDarkActive = ref($q.dark.isActive);
 
 const userStore = useUserStore();
 const [route, router] = [useRoute(), useRouter()];
-
 const { user, atk } = storeToRefs(userStore);
-const rtk = useCookie("refresh-token", { httpOnly: true });
 
 const code = String(route.query.code || "");
 if (!code) {
   const { data } = await UserApi.reissue();
-  atk.value = data.value?.atk || "";
+  const rtk = useCookie("refresh-token");
   rtk.value = data.value?.rtk || "";
+  atk.value = data.value?.atk || "";
 } else {
   atk.value = code;
   router.replace("my");

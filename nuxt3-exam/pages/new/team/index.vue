@@ -88,7 +88,7 @@ const saveGroup = async () => {
     ),
     links: links.value,
   }).then(() => {
-    router.push({ path: `/@${domain}` });
+    router.replace({ path: `/@${domain}/post` });
   });
 };
 </script>
@@ -100,7 +100,6 @@ const saveGroup = async () => {
         @hide="showLink = false"
         @save-link="saveLink"
       />
-      {{ atk }}
       <q-input
         v-model="title"
         placeholder="팀 이름 추가"
