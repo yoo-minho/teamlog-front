@@ -27,5 +27,5 @@ watch(
 );
 </script>
 <template>
-  <Ranker :pending="pending" title="최다작2성" :data="transLots" />
+  <Ranker :pending="pending" title="최다작성" :data="transLots" />
 </template>

@@ -34,9 +34,13 @@ const scrapPosts = async (id: number, links: LinkWrap[]) => {
     ...links.map(({ link }) => RssApi.scrap(link)),
     delay(1000),
   ]);
-  const { data } = await GroupApi.updateLastPostCreateAt(id);
-  const rawData = data.value as { lastPostCreatedAt: Date };
+  const { data } = await GroupApi.updateStat(id);
+  const rawData = data.value as {
+    lastPostCreatedAt: Date;
+    weeklyAvgPost: number;
+  };
   currentGroup.value.lastPostCreatedAt = rawData.lastPostCreatedAt;
+  currentGroup.value.weeklyAvgPost = rawData.weeklyAvgPost;
 };
 
 const refresh = (done: () => void) => {

@@ -3,13 +3,10 @@ import { storeToRefs } from "pinia";
 import { useGroupStore } from "@/stores/group";
 import { useUserStore } from "@/stores/user";
 import { TAB_LABEL } from "@/constants";
-import { showOrderBottomSheet } from "@/composables/useOrderBottomSheet";
 import { showBottomSheet } from "@/composables/useSnsBottomSheet";
 import { showInstallBottomSheet } from "@/composables/useInstallBottomSheet";
 import { showAuthDialog } from "@/composables/useAuthDialog";
 
-const groupStore = useGroupStore();
-const { groupSort } = storeToRefs(groupStore);
 const userStore = useUserStore();
 const { searchWord, isExistsUser } = storeToRefs(userStore);
 const [route, router] = [useRoute(), useRouter()];
@@ -38,13 +35,6 @@ watch(
     });
   }
 );
-
-const showOrderBS = () => {
-  showOrderBottomSheet({
-    order: groupSort.value,
-    okCallback: (v: string) => (groupSort.value = v),
-  });
-};
 
 const routeName = String(route.name || "team");
 const title = ref(TAB_LABEL[routeName] || "팀로그");
@@ -106,9 +96,6 @@ watch(
       </template>
       <template v-if="isSortable">
         <q-btn icon="add" flat round dense @click="_openNewTeam()" />
-      </template>
-      <template v-if="isSortable">
-        <q-btn icon="filter_alt" flat round dense @click="showOrderBS" />
       </template>
       <q-btn icon="share" flat round dense @click="showBottomSheet()" />
       <q-btn icon="menu" flat round dense @click="_openSettingMain" />

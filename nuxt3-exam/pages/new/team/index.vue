@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import { QSelect, useQuasar } from "quasar";
+import { useUserStore } from "@/stores/user";
 
 import LinkCard from "@/components/Card/LinkCard.vue";
 import LinkDialog from "./components/LinkDialog.vue";
@@ -7,7 +9,7 @@ import GroupApi from "@/api/groupApi";
 import { Link } from "~/types/common";
 import { scrapOGS } from "@/composables/useOgs";
 
-import UserApi from "@/api/userApi";
+const { atk } = storeToRefs(useUserStore());
 
 type SelectedTag =
   | string
@@ -98,6 +100,7 @@ const saveGroup = async () => {
         @hide="showLink = false"
         @save-link="saveLink"
       />
+      {{ atk }}
       <q-input
         v-model="title"
         placeholder="팀 이름 추가"

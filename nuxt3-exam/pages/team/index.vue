@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { LocalStorage } from "quasar";
 import { storeToRefs } from "pinia";
 import { useGroupStore } from "@/stores/group";
 import TeamListItem from "./components/TeamListItem.vue";
@@ -9,13 +10,29 @@ import GroupApi from "@/api/groupApi";
 
 const route = useRoute();
 const groupStore = useGroupStore();
-const { groups, groupSort } = storeToRefs(groupStore);
+const { groups } = storeToRefs(groupStore);
 const { addTeams } = groupStore;
 
-const page = ref(1);
+const options = [
+  { label: "포스트 최신 작성순", value: "lastPostCreatedAt" },
+  { label: "주간 게시물 많은 순", value: "weeklyAvgPost" },
+  { label: "투데이 방문자 순", value: "todayViews" },
+  { label: "누적 방문자 순", value: "totalViews" },
+];
+
+const savedSortVal =
+  LocalStorage.getItem<string>("groupSort") || options[0].value;
+const selectedOrderModel = ref(
+  options.filter((v) => v.value === savedSortVal)[0]
+);
+const selectedOrder = ref(savedSortVal);
 const selectedTag = ref(String(route.query.tag || "All"));
-const selectedOrder = ref(groupSort.value);
+const page = ref(1);
 const isExistsNextPage = ref(false);
+
+const updateOption = (x: any) => {
+  selectedOrder.value = x.value;
+};
 
 const { data: tags } = await GroupApi.findAllTag();
 const {
@@ -50,8 +67,6 @@ const next = () => {
 
 const refresh = (dn: () => void) => refreshTeamData({ init: true }).then(dn);
 const filterTag = (tagName: string) => (selectedTag.value = tagName);
-
-watch(groupSort, (v) => (selectedOrder.value = v));
 watch([selectedOrder, selectedTag], () => refreshTeamData({ init: true }));
 
 definePageMeta({
@@ -69,7 +84,20 @@ definePageMeta({
         :tags="tags"
         :active-tag-name="selectedTag"
       />
-      <q-separator spaced />
+      <q-separator spaced style="margin-bottom: 0" />
+      <q-select
+        v-model="selectedOrderModel"
+        :options="options"
+        dense
+        borderless
+        class="q-mx-md"
+        @update:model-value="updateOption"
+      >
+        <template v-slot:prepend>
+          <q-icon name="filter_alt" />
+        </template>
+      </q-select>
+      <q-separator spaced style="margin-top: 0" />
       <q-page class="q-mt-sm" style="min-height: 0">
         <TeamListItem v-for="group in groups" :key="group.id" :group="group" />
       </q-page>

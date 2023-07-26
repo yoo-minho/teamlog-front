@@ -53,6 +53,10 @@ export default {
     const { user, atk } = storeToRefs(userStore);
     const config = useRuntimeConfig();
     const { domain, title, description, tags, links } = props;
+    if (!atk.value) {
+      console.log({ user });
+      throw new Error("액세스 토큰이 없는거!");
+    }
     await $fetch("group", {
       baseURL: config.public.apiBase,
       headers: { Authorization: `Bearer ${atk.value}` },
@@ -75,6 +79,9 @@ export default {
       },
       onResponseError: async ({ request, options, response }) => {
         const { data } = await UserApi.reissue();
+        if (data.value?.atk === "") {
+          throw new Error("액세스 토큰이 없는거!");
+        }
         atk.value = data.value?.atk || "";
         console.log("GroupApi.create [fetch response  error]", { response });
       },
@@ -109,6 +116,17 @@ export default {
     if (!groupId) throw new Error("No Group Id");
     const config = useRuntimeConfig();
     return await useFetch("group/last-post-create-at", {
+      baseURL: config.public.apiBase,
+      method: "put",
+      body: {
+        groupId,
+      },
+    });
+  },
+  async updateStat(groupId?: number) {
+    if (!groupId) throw new Error("No Group Id");
+    const config = useRuntimeConfig();
+    return await useFetch("group/stat", {
       baseURL: config.public.apiBase,
       method: "put",
       body: {

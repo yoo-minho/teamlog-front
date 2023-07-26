@@ -28,6 +28,7 @@ const { setSearchData } = userStore;
 
 const page = ref(1);
 const isExistsNextPage = ref(false);
+const isScrapRefresh = ref(false);
 const teamId = useState<string>("teamId");
 
 setSearchData(String(route.query.q || ""));
@@ -71,16 +72,18 @@ const refresh = async (done: () => void) => {
 
 watch(
   [() => currentGroup.value?.lastPostCreatedAt, searchWord],
-  (_, oldVal) => {
+  async (_, oldVal) => {
     if (!oldVal[0]) return; //lastPostCreatedAt 최초 할당시에는 미동작
-    refreshPostData({ init: true });
+    isScrapRefresh.value = true;
+    await refreshPostData({ init: true });
+    isScrapRefresh.value = false;
   }
 );
 </script>
 <template>
   <div class="max-width">
     <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
-      <template v-if="pending && page === 1">
+      <template v-if="pending && page === 1 && !isScrapRefresh">
         <PostListSkeletonItem v-for="i in 12" :key="i" />
       </template>
       <template v-else>

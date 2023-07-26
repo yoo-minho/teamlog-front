@@ -2,7 +2,6 @@ import { defineStore } from "pinia";
 import { Group, Link, TabType } from "../types/common";
 import { getDateString, isSameDate } from "@/plugin/dayjs";
 import { scrapOGS } from "~/composables/useOgs";
-import { LocalStorage } from "quasar";
 
 export const useGroupStore = defineStore("group", {
   state: () => ({
@@ -12,7 +11,6 @@ export const useGroupStore = defineStore("group", {
     groupLoading: true,
     currentGroup: {} as Group,
     selectTab: "" as TabType,
-    groupSort: LocalStorage.getItem("groupSort") || "lastPostCreatedAt",
   }),
   getters: {
     currentGroupLinkIds: (state) =>

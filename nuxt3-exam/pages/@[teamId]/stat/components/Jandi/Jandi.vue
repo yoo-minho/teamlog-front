@@ -33,7 +33,7 @@ const makeLinkIds = (selectedId: number) =>
   );
 
 const linkIds = ref(makeLinkIds(defaultValue));
-const [totalJandiCnt, nextPostDay, manyPostMMM] = [ref(0), ref("-"), ref("-")];
+const [totalJandiCnt, manyPostMMM] = [ref(0), ref("-"), ref("-")];
 
 const currentFilter = ref(defaultOption);
 const filterOptions = computed(() => [
@@ -65,8 +65,6 @@ watch(
 
     //setting
     totalJandiCnt.value = activeJandis?.reduce(add, 0) || 0;
-    nextPostDay.value =
-      Math.round((90 / totalJandiCnt.value) * 100) / 100 + "일";
     manyPostMMM.value = MMM[dayOfWeek[0].day];
   },
   { immediate: true }
@@ -106,7 +104,10 @@ const refreshJandiData = async (selected: { value: number }) => {
       </q-card-section>
     </q-card>
     <div class="row q-col-gutter-md q-mt-none">
-      <JandiBox :label="'다음 포스팅까지'" :value="nextPostDay" />
+      <JandiBox
+        :label="'주간 게시물'"
+        :value="String(currentGroup.weeklyAvgPost) || '-'"
+      />
       <JandiBox :label="'포스팅 많은 요일'" :value="manyPostMMM" />
     </div>
   </div>
