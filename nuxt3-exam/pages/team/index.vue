@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { LocalStorage } from "quasar";
 import { storeToRefs } from "pinia";
 import { useGroupStore } from "@/stores/group";
 import TeamListItem from "./components/TeamListItem.vue";
@@ -18,10 +17,11 @@ const options = [
   { label: "주간 게시물 많은 순", value: "weeklyAvgPost" },
   { label: "투데이 방문자 순", value: "todayViews" },
   { label: "누적 방문자 순", value: "totalViews" },
+  { label: "팀 등록순", value: "createdAt" },
 ];
 
-const savedSortVal =
-  LocalStorage.getItem<string>("groupSort") || options[0].value;
+const groupSort = useCookie("groupSort");
+const savedSortVal = groupSort.value || options[0].value;
 const selectedOrderModel = ref(
   options.filter((v) => v.value === savedSortVal)[0]
 );
@@ -29,10 +29,6 @@ const selectedOrder = ref(savedSortVal);
 const selectedTag = ref(String(route.query.tag || "All"));
 const page = ref(1);
 const isExistsNextPage = ref(false);
-
-const updateOption = (x: any) => {
-  selectedOrder.value = x.value;
-};
 
 const { data: tags } = await GroupApi.findAllTag();
 const {
@@ -47,35 +43,29 @@ const {
 watch(
   teams,
   () => {
-    groups.value = teams.value || [];
+    addTeams({ teams: teams.value || [], init: page.value === 1 });
     isExistsNextPage.value = teams.value?.length === 10;
   },
   { immediate: true }
 );
-
 const refreshTeamData = async ({ init = false } = {}) => {
-  if (init) page.value = 1;
+  page.value = (init ? 0 : page.value) + 1;
   await refreshTeam();
-  addTeams({ teams: teams.value || [], init });
-  isExistsNextPage.value = teams.value?.length === 10;
 };
-
-const next = () => {
-  page.value++;
-  refreshTeamData({ init: false });
-};
-
+const next = () => refreshTeamData({ init: false });
 const refresh = (dn: () => void) => refreshTeamData({ init: true }).then(dn);
 const filterTag = (tagName: string) => (selectedTag.value = tagName);
+const updateOption = (x: any) => {
+  selectedOrder.value = x.value;
+  groupSort.value = x.value;
+};
 watch([selectedOrder, selectedTag], () => refreshTeamData({ init: true }));
-
 definePageMeta({
   pageTransition: { mode: "out-in" },
   middleware: ["main-slide"],
   // keepalive: true,
 });
 </script>
-
 <template>
   <div class="page">
     <q-pull-to-refresh @refresh="refresh">
@@ -98,16 +88,23 @@ definePageMeta({
         </template>
       </q-select>
       <q-separator spaced style="margin-top: 0" />
-      <q-page class="q-mt-sm" style="min-height: 0">
-        <TeamListItem v-for="group in groups" :key="group.id" :group="group" />
-      </q-page>
-      <ClientOnly>
-        <template v-if="isExistsNextPage">
-          <ScrollObserver @trigger-intersected="next">
-            <TeamListSkeletonItem />
-          </ScrollObserver>
-        </template>
-      </ClientOnly>
+      <template v-if="pending && groups.length === 0">로딩중...</template>
+      <template v-else>
+        <q-page class="q-mt-sm" style="min-height: 0">
+          <TeamListItem
+            v-for="group in groups"
+            :key="group.id"
+            :group="group"
+          />
+        </q-page>
+        <ClientOnly>
+          <template v-if="isExistsNextPage">
+            <ScrollObserver @trigger-intersected="next">
+              <TeamListSkeletonItem />
+            </ScrollObserver>
+          </template>
+        </ClientOnly>
+      </template>
     </q-pull-to-refresh>
   </div>
 </template>
