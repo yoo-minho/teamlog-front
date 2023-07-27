@@ -6,7 +6,6 @@ export default defineNuxtConfig({
       viewport:
         "user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width",
     },
-    pageTransition: { name: "page", mode: "out-in" },
   },
   modules: ["nuxt-quasar-ui", "@pinia/nuxt", "@vite-pwa/nuxt"],
   pwa: {

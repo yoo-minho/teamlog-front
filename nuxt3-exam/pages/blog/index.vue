@@ -8,11 +8,6 @@ import BlogApi from "@/api/blogApi";
 import { BLOG_TAG } from "~/constants";
 import BlogListSkeletonItem from "~/components/Blog/BlogListSkeletonItem.vue";
 
-definePageMeta({
-  pageTransition: { mode: "out-in" },
-  middleware: ["main-slide"],
-});
-
 const route = useRoute();
 const blogStore = useBlogStore();
 const { blogs } = storeToRefs(blogStore);
@@ -48,6 +43,11 @@ const next = () => refreshBlogData({ init: false });
 const refresh = (dn: () => void) => refreshBlogData({ init: true }).then(dn);
 const filterTag = (tagName: string) => (selectTag.value = tagName);
 watch([selectTag], () => refreshBlogData({ init: true }));
+
+definePageMeta({
+  layout: "default",
+  middleware: ["main-slide"],
+});
 </script>
 <template>
   <div class="page">
@@ -59,10 +59,10 @@ watch([selectTag], () => refreshBlogData({ init: true }));
       />
       <q-separator spaced />
       <q-page class="q-mt-sm" style="min-height: 0">
-        <v-template v-if="pending && blogs.length === 0">
+        <template v-if="pending && blogs.length === 0">
           <BlogListSkeletonItem v-for="i in 12" :key="i" />
-        </v-template>
-        <v-template v-else>
+        </template>
+        <template v-else>
           <BlogListItem v-for="(blog, i) in blogs" :key="i" :link="blog" />
           <ClientOnly>
             <template v-if="isExistsNextPage">
@@ -71,7 +71,7 @@ watch([selectTag], () => refreshBlogData({ init: true }));
               </ScrollObserver>
             </template>
           </ClientOnly>
-        </v-template>
+        </template>
       </q-page>
     </q-pull-to-refresh>
   </div>

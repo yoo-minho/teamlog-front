@@ -60,10 +60,10 @@ const updateOption = (x: any) => {
   groupSort.value = x.value;
 };
 watch([selectedOrder, selectedTag], () => refreshTeamData({ init: true }));
+
 definePageMeta({
-  pageTransition: { mode: "out-in" },
+  layout: "default",
   middleware: ["main-slide"],
-  // keepalive: true,
 });
 </script>
 <template>

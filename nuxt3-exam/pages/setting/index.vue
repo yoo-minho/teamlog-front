@@ -15,6 +15,8 @@ import GroupApi from "@/api/groupApi";
 import { BLOG_TAG } from "~/constants";
 
 definePageMeta({
+  layout: "setting",
+  layoutTransition: { name: "page" },
   title: "더보기",
 });
 

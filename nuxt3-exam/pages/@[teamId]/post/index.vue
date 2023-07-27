@@ -8,11 +8,6 @@ import SearchEmpty from "@/components/Empty/SearchEmpty.vue";
 import ScrollObserver from "@/components/Observer/ScrollObserver.vue";
 import PostApi from "@/api/postApi";
 
-definePageMeta({
-  pageTransition: { mode: "out-in" },
-  middleware: ["team-slide"],
-});
-
 const route = useRoute();
 
 const [groupStore, postStore, userStore] = [
@@ -79,6 +74,11 @@ watch(
     isScrapRefresh.value = false;
   }
 );
+
+definePageMeta({
+  layout: "in-team",
+  middleware: ["team-slide"],
+});
 </script>
 <template>
   <div class="max-width">

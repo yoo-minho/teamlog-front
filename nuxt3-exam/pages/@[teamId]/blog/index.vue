@@ -18,7 +18,7 @@ const getLabel = (type: string) =>
   BLOG_TAG.find((v) => v.type === type)?.label || "All";
 
 definePageMeta({
-  pageTransition: { mode: "out-in" },
+  layout: "in-team",
   middleware: ["team-slide"],
 });
 </script>

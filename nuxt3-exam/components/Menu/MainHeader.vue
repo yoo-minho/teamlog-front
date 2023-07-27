@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useGroupStore } from "@/stores/group";
 import { useUserStore } from "@/stores/user";
 import { TAB_LABEL } from "@/constants";
 import { showBottomSheet } from "@/composables/useSnsBottomSheet";

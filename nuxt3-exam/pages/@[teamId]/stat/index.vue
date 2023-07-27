@@ -4,7 +4,7 @@ import LastRanker from "./components/Ranker/LastRanker.vue";
 import LotRanker from "./components/Ranker/LotRanker.vue";
 
 definePageMeta({
-  pageTransition: { mode: "out-in" },
+  layout: "in-team",
   middleware: ["team-slide"],
 });
 </script>

@@ -10,20 +10,16 @@ import { POST_TAG } from "@/constants";
 import { useUserStore } from "@/stores/user";
 import SearchEmpty from "~/components/Empty/SearchEmpty.vue";
 
-definePageMeta({
-  pageTransition: { mode: "out-in" },
-  middleware: ["main-slide"],
-});
-
 const route = useRoute();
 const userStore = useUserStore();
-const { searchWord } = storeToRefs(userStore);
+// const { searchWord } = storeToRefs(userStore);
+// searchWord.value = String(route.query.q || "");
 const postStore = usePostStore();
 const { posts } = storeToRefs(postStore);
 const { savePosts } = postStore;
 const page = ref(1);
 const selectTag = ref(String(route.query.tag || "All"));
-searchWord.value = String(route.query.q || "");
+const searchWord = ref(String(route.query.q || ""));
 const isExistsNextPage = ref(false);
 const tags = ref(POST_TAG.map((v) => ({ id: v.label, name: v.label })));
 
@@ -54,6 +50,11 @@ const next = () => refreshPostData({ init: false });
 const refresh = (dn: () => void) => refreshPostData({ init: true }).then(dn);
 const filterTag = (tagName: string) => (selectTag.value = tagName);
 watch([selectTag, searchWord], () => refreshPostData({ init: true }));
+
+definePageMeta({
+  layout: "default",
+  middleware: ["main-slide"],
+});
 </script>
 
 <template>

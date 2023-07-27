@@ -20,6 +20,7 @@ type SelectedTag =
 
 definePageMeta({
   title: "팀 만들기",
+  // layout: "new",
   middleware: ["auth"],
 });
 

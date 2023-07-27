@@ -5,10 +5,7 @@ import { getFormatString } from "@/plugin/dayjs";
 
 const props = defineProps<{ group: Group }>();
 const { group } = toRefs(props);
-const moveTeam = () => {
-  console.log("moveTeam", group.value.domain);
-  navigateTo(`/@${group.value.domain}/post`);
-};
+const moveTeam = () => navigateTo(`/@${group.value.domain}/post`);
 </script>
 <template>
   <q-item-label

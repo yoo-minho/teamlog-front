@@ -10,11 +10,17 @@ const userStore = useUserStore();
 const { isExistsUser, user, mainScrollAreaRef } = storeToRefs(userStore);
 const [route] = [useRoute(), useRouter()];
 
+const tab = ref(String(route.name));
 watch(
   () => $q.dark.isActive,
   (val) => (isDarkActive.value = val)
 );
-const tab = ref(String(route.name));
+watch(
+  () => route.name,
+  () => {
+    // mainScrollAreaRef.value.setScrollPosition("vertical", 0, 0);
+  }
+);
 </script>
 <template>
   <q-layout>
