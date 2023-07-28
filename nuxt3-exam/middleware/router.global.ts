@@ -13,4 +13,12 @@ export default defineNuxtRouteMiddleware((to) => {
   if ("" !== tabId) {
     _tabId.value = tabId;
   }
+
+  // if (teamId !== "") {
+  //   setPageLayout("in-team");
+  // } else if (String(to.name)?.includes("setting")) {
+  //   setPageLayout("setting");
+  // } else {
+  //   setPageLayout("default");
+  // }
 });

@@ -1,15 +1,19 @@
 export default defineNuxtRouteMiddleware((to, from) => {
   // console.log("teamSLide from.name", from.name, from.meta);
   // console.log("teamSLide to.name", to.name, to.meta);
-  if (from.name === "team" && to.name === "@teamId-post") {
-    from.meta = {
-      layoutTransition: {},
-      pageTransition: {},
-    };
-    to.meta.layoutTransition = { name: "page" };
-    return;
-  }
-
+  // if (from.name === "team" && to.name === "@teamId-post") {
+  //   from.meta = {
+  //     ...from.meta,
+  //     layoutTransition: {},
+  //     pageTransition: {},
+  //   };
+  //   to.meta = {
+  //     ...to.meta,
+  //     layoutTransition: { name: "page" },
+  //     pageTransition: { name: "" },
+  //   };
+  //   return;
+  // }
   const idx = (n: string) =>
     ["@teamId-blog", "@teamId-post", "@teamId-stat"].findIndex((v) => v === n);
   const toIdx = idx(String(to.name));
