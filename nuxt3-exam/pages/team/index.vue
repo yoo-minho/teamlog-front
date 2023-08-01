@@ -8,9 +8,9 @@ import TeamTagList from "./components/TeamTagList.vue";
 import GroupApi from "@/api/groupApi";
 
 const route = useRoute();
+const _fromRouteName = useState<string>("fromRouteName");
 const groupStore = useGroupStore();
 const { groups } = storeToRefs(groupStore);
-const { addTeams } = groupStore;
 
 const options = [
   { label: "포스트 최신 작성순", value: "lastPostCreatedAt" },
@@ -27,29 +27,37 @@ const selectedOrderModel = ref(
 );
 const selectedOrder = ref(savedSortVal);
 const selectedTag = ref(String(route.query.tag || "All"));
-const page = ref(1);
-const isExistsNextPage = ref(false);
 
 const { data: tags } = await GroupApi.findAllTag();
-const {
-  data: teams,
-  refresh: refreshTeam,
-  pending,
-} = await GroupApi.findAll({
+
+const isCached = () =>
+  _fromRouteName.value !== "team" && groups.value.length > 0;
+const page = ref(1);
+const response = await GroupApi.findAll({
   page: page,
   tag: selectedTag,
   sort: selectedOrder,
 });
-watch(
-  teams,
-  () => {
-    addTeams({ teams: teams.value || [], init: page.value === 1 });
-    isExistsNextPage.value = teams.value?.length === 10;
-  },
-  { immediate: true }
-);
+const { data: teams, refresh: refreshTeam, pending } = response;
+const currentTeam = ref(isCached() ? groups.value : teams.value || []);
+const isExistsNextPage = ref(true);
+
+watch(teams, (newTeams) => {
+  if (isCached()) {
+    //pass
+  } else {
+    currentTeam.value = [
+      ...(page.value === 1 ? [] : currentTeam.value || []),
+      ...(newTeams || []),
+    ];
+  }
+  _fromRouteName.value = "team";
+  groups.value = currentTeam.value;
+  isExistsNextPage.value = currentTeam.value.length % 10 === 0;
+});
+
 const refreshTeamData = async ({ init = false } = {}) => {
-  page.value = (init ? 0 : page.value) + 1;
+  page.value = (init ? 0 : Math.ceil(currentTeam.value.length / 10)) + 1;
   await refreshTeam();
 };
 const next = () => refreshTeamData({ init: false });
@@ -88,11 +96,13 @@ definePageMeta({
         </template>
       </q-select>
       <q-separator spaced style="margin-top: 0" />
-      <template v-if="pending && groups.length === 0">로딩중...</template>
+      <template v-if="pending && page === 1">
+        <div style="height: 1200px">로딩중...</div>
+      </template>
       <template v-else>
         <q-page class="q-mt-sm" style="min-height: 0">
           <TeamListItem
-            v-for="group in groups"
+            v-for="group in currentTeam"
             :key="group.id"
             :group="group"
           />

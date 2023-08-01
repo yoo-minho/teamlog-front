@@ -2,6 +2,7 @@
 import { useQuasar } from "quasar";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "./stores/user";
+import { useGroupStore } from "./stores/group";
 import UserApi from "@/api/userApi";
 import { savePrompt } from "@/composables/useInstallBottomSheet";
 
@@ -9,8 +10,10 @@ const $q = useQuasar();
 const isDarkActive = ref($q.dark.isActive);
 
 const userStore = useUserStore();
-const [route, router] = [useRoute(), useRouter()];
 const { user, atk } = storeToRefs(userStore);
+const groupStore = useGroupStore();
+const { groups } = storeToRefs(groupStore);
+const [route, router] = [useRoute(), useRouter()];
 
 const code = String(route.query.code || "");
 if (!code) {

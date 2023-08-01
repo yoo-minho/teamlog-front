@@ -8,19 +8,30 @@ const $q = useQuasar();
 const isDarkActive = ref($q.dark.isActive);
 const userStore = useUserStore();
 const { isExistsUser, user, mainScrollAreaRef } = storeToRefs(userStore);
-const [route] = [useRoute(), useRouter()];
+const route = useRoute();
+const _teamScrollVPos = useState<number>("teamScrollVPos");
 
 const tab = ref(String(route.name));
 watch(
   () => $q.dark.isActive,
   (val) => (isDarkActive.value = val)
 );
+
 watch(
   () => route.name,
-  () => {
-    // mainScrollAreaRef.value.setScrollPosition("vertical", 0, 0);
+  (currentRouteName) => {
+    const scrollVPos = "team" === currentRouteName ? _teamScrollVPos.value : 0;
+    setTimeout(() => {
+      mainScrollAreaRef.value.setScrollPosition("vertical", scrollVPos, 0);
+    }, 100); //0.1s의 트랜지션때문에 그보다 큰!
   }
 );
+
+const scroll = (info: any) => {
+  if ("team" === String(route.name)) {
+    _teamScrollVPos.value = info.verticalPosition;
+  }
+};
 </script>
 <template>
   <div :class="`${isDarkActive ? 'bg-grey-9' : 'bg-white'}`">
@@ -41,8 +52,9 @@ watch(
         </q-route-tab>
       </q-tabs>
       <q-scroll-area
+        @scroll="scroll"
         ref="mainScrollAreaRef"
-        :visible="true"
+        :visible="false"
         style="height: calc(100vh - 100px); overflow: hidden"
       >
         <q-layout class="max-width">

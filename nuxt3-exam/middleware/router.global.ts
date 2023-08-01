@@ -1,11 +1,13 @@
-export default defineNuxtRouteMiddleware((to) => {
+export default defineNuxtRouteMiddleware((to, from) => {
   const teamId = String(to.params.teamId || "");
   const tabId = to.path.replace(`/@${teamId}/`, "");
-
+  const fromRouteName = String(from.name || "");
   // console.log("router.global.ts", { teamId, tabId });
 
   const _teamId = useState<string>("teamId", () => ""); //2번째 영역은 초기값영역
   const _tabId = useState<string>("tabId", () => "");
+  const _fromRouteName = useState<string>("fromRouteName", () => "");
+  useState<number>("teamScrollVPos");
 
   if ("" !== teamId) {
     _teamId.value = teamId;
@@ -13,12 +15,5 @@ export default defineNuxtRouteMiddleware((to) => {
   if ("" !== tabId) {
     _tabId.value = tabId;
   }
-
-  // if (teamId !== "") {
-  //   setPageLayout("in-team");
-  // } else if (String(to.name)?.includes("setting")) {
-  //   setPageLayout("setting");
-  // } else {
-  //   setPageLayout("default");
-  // }
+  _fromRouteName.value = fromRouteName;
 });

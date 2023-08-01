@@ -18,7 +18,8 @@ const [groupStore, postStore, userStore] = [
 const { posts } = storeToRefs(postStore);
 const { savePosts } = postStore;
 const { currentGroup } = storeToRefs(groupStore);
-const { searchWord } = storeToRefs(userStore);
+// const { searchWord } = storeToRefs(userStore);
+const searchWord = ref("");
 const { setSearchData } = userStore;
 
 const page = ref(1);

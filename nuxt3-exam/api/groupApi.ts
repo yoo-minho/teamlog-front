@@ -70,7 +70,7 @@ export default {
         tags,
         links,
       },
-      onResponseError: async ({ request, options, response }) => {
+      onResponseError: async () => {
         const { data } = await UserApi.reissueAtk();
         if (data.value?.atk === "") {
           throw new Error("액세스 토큰이 없는거!");
