@@ -22,9 +22,8 @@ const close = () => {
 
 <template>
   <q-layout
-    class="max-width subpage"
+    class="max-width"
     :class="`${isDarkActive ? 'bg-grey-9' : 'bg-white'}`"
-    style="position: fixed; top: 0; left: 0"
   >
     <q-header bordered class="max-width bg-primary text-white">
       <q-toolbar>

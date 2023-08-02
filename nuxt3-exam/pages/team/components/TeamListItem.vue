@@ -1,23 +1,19 @@
 <script setup lang="ts">
-import { Group } from "@/types/common";
+import { BlogType, Group } from "@/types/common";
 import { isTextImage } from "@/utils/ImageUtil";
 import { getFormatString } from "@/plugin/dayjs";
+import { BLOG_TAG } from "@/constants/";
 
 const props = defineProps<{ group: Group }>();
 const { group } = toRefs(props);
 const moveTeam = () => navigateTo(`/@${group.value.domain}/post`);
+const getBlogColor = (type: BlogType) =>
+  BLOG_TAG.find((t) => t.type === type)?.color;
 </script>
 <template>
-  <q-item-label
-    class="cursor-pointer row q-mx-sm items-center"
-    @click="moveTeam()"
-  >
-    <div class="image_area row justify-center content-center">
-      <div
-        v-for="(v, i) in group.links?.slice(0, 4)"
-        :key="i"
-        class="image_item"
-      >
+  <q-item-label class="cursor-pointer q-mx-sm items-center" @click="moveTeam()">
+    <q-item class="q-px-sm" style="overflow-x: hidden">
+      <div v-for="(v, i) in group.links" :key="i" class="q-mr-sm">
         <q-avatar
           v-if="isTextImage(v.link.imagePath)"
           color="black"
@@ -26,7 +22,9 @@ const moveTeam = () => navigateTo(`/@${group.value.domain}/post`);
           size="32px"
           class="shadow-1"
         >
-          <div class="non-selectable">{{ v.link.title.substring(0, 2) }}</div>
+          <div class="non-selectable">
+            {{ v.link.title.substring(0, 2) }}
+          </div>
         </q-avatar>
         <q-avatar
           v-else
@@ -55,8 +53,8 @@ const moveTeam = () => navigateTo(`/@${group.value.domain}/post`);
           </q-img>
         </q-avatar>
       </div>
-    </div>
-    <q-item class="col q-px-sm">
+    </q-item>
+    <q-item class="q-px-sm q-pt-none">
       <q-item-section>
         <q-item-label class="text-weight-bolder row" style="font-size: 16px">
           <span>{{ group.title }}</span>
@@ -109,13 +107,5 @@ const moveTeam = () => navigateTo(`/@${group.value.domain}/post`);
   opacity: 0.8;
   margin: 0;
   margin-right: 4px;
-}
-.image_area {
-  width: 80px;
-  height: 80px;
-  margin: 4px 0 0 4px;
-}
-.image_item {
-  margin: 0 4px 4px 0;
 }
 </style>

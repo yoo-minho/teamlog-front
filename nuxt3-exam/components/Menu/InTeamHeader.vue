@@ -68,8 +68,9 @@ const deleteTeam = async () => {
           {{ groupTitle }}
         </q-toolbar-title>
         <template v-if="isPost">
-          <q-btn icon="search" flat round dense @click="toggleSearchMode()" />
+          <!-- <q-btn icon="search" flat round dense @click="toggleSearchMode()" /> -->
         </template>
+        <q-btn icon="edit" flat round dense @click="router.replace('edit')" />
       </template>
       <template v-if="isMasterUser">
         <q-btn icon="delete" flat round dense @click="deleteTeam" />

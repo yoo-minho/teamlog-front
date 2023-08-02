@@ -4,17 +4,10 @@ import { QSelect, useQuasar } from "quasar";
 import { useGroupStore } from "@/stores/group";
 
 import LinkCard from "@/components/Card/LinkCard.vue";
-import LinkDialog from "./components/LinkDialog.vue";
+import LinkDialog from "@/components/Dialog/LinkDialog.vue";
 import GroupApi from "@/api/groupApi";
-import { Link } from "~/types/common";
+import { Link } from "@/types/common";
 import { scrapOGS } from "@/composables/useOgs";
-
-type SelectedTag =
-  | string
-  | {
-      label: string;
-      value: number;
-    };
 
 definePageMeta({
   title: "팀 만들기",
@@ -30,12 +23,17 @@ const { currentGroup } = storeToRefs(groupStore);
 const { data: tags } = await GroupApi.findAllTag();
 
 const showLink = ref(false);
-const title = ref("");
-const idRef = ref();
-const id = ref("");
-const description = ref("");
-const selectedTags = ref([] as SelectedTag[]);
-const links = ref([] as Link[]);
+const title = ref(currentGroup.value.title);
+const domainRef = ref();
+const domain = ref(currentGroup.value.domain);
+const description = ref(currentGroup.value.description || "");
+const selectedTags = ref(
+  currentGroup.value.tags?.map(({ tag: { id, name } }) => ({
+    label: name,
+    value: id,
+  })) || []
+);
+const links = ref(currentGroup.value.links?.map((l) => l.link) || []);
 const linksCountLabel = computed(() =>
   links.value.length > 0 ? `(${links.value.length}/10)` : ""
 );
@@ -68,19 +66,22 @@ const refreshLink = async (url: string, stopLoading: () => void) => {
     link.url === url ? { ...link, title, description, imagePath } : link
   );
 };
-const saveGroup = async () => {
-  const domain = id.value;
-  if (!domain || domain.length === 0) {
+const editTeam = async () => {
+  if ((domain.value || "").length === 0) {
     $q.notify({ type: "negative", message: "도메인을 입력해주세요!" });
-    idRef.value.focus();
+    domainRef.value.focus();
     return;
   }
   if (!links.value || links.value.length === 0) {
     $q.notify({ type: "negative", message: "최소 1개의 url이 필요합니다." });
     return;
   }
-  GroupApi.create({
-    domain,
+  if (!currentGroup.value.id) {
+    throw new Error("ID 확인하숑!");
+  }
+  GroupApi.update({
+    id: currentGroup.value.id,
+    domain: domain.value,
     title: title.value,
     description: description.value,
     tags: selectedTags.value.map((tag) =>
@@ -88,12 +89,12 @@ const saveGroup = async () => {
     ),
     links: links.value,
   }).then(() => {
-    router.replace({ path: `/@${domain}/post` });
+    router.replace({ path: `/@${domain.value}/post` });
   });
 };
 </script>
 <template>
-  <NuxtLayout name="new" @save="saveGroup()">
+  <NuxtLayout name="new" @save="editTeam()">
     <LinkDialog
       :show="showLink"
       @hide="showLink = false"
@@ -112,7 +113,7 @@ const saveGroup = async () => {
     />
     <q-input
       ref="idRef"
-      v-model="id"
+      v-model="domain"
       label="전용 링크"
       type="email"
       stack-label

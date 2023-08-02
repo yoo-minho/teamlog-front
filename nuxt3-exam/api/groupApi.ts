@@ -89,21 +89,43 @@ export default {
       body: { id },
     });
   },
-  async update(id: number, group: Group, tags: string[], links: Link[]) {
-    const { domain, title, description } = group;
-    try {
-      await useFetch("group", {
-        method: "put",
-        body: {
-          id,
-          domain,
-          title,
-          description,
-          links,
-          tags,
-        },
-      });
-    } catch (axiosError) {}
+  async update(props: {
+    id: number;
+    domain: string;
+    title: string;
+    description: string;
+    tags: string[];
+    links: Link[];
+  }) {
+    const userStore = useUserStore();
+    const { user, atk } = storeToRefs(userStore);
+    const config = useRuntimeConfig();
+    const { id, domain, title, description, tags, links } = props;
+    if (!atk.value) {
+      console.log({ user });
+      throw new Error("액세스 토큰이 없는거!");
+    }
+    const headers = ref({ Authorization: `Bearer ${atk.value}` });
+    await useFetch("group", {
+      baseURL: config.public.apiBase,
+      method: "put",
+      body: {
+        id,
+        domain,
+        title,
+        description,
+        tags,
+        links,
+      },
+      onResponseError: async () => {
+        const { data } = await UserApi.reissueAtk();
+        if (data.value?.atk === "") {
+          throw new Error("액세스 토큰이 없는거!");
+        }
+        atk.value = data.value?.atk || "";
+        headers.value = { Authorization: `Bearer ${atk.value}` };
+      },
+    });
   },
   async updateLastPostCreateAt(groupId?: number) {
     if (!groupId) throw new Error("No Group Id");

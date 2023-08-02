@@ -97,7 +97,7 @@ definePageMeta({
       </q-select>
       <q-separator spaced style="margin-top: 0" />
       <template v-if="pending && page === 1">
-        <div style="height: 1200px">로딩중...</div>
+        <div>로딩중...</div>
       </template>
       <template v-else>
         <q-page class="q-mt-sm" style="min-height: 0">

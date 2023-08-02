@@ -8,13 +8,13 @@ export const POST_TAG = [
   { label: "sql", value: "sql|쿼리|query" },
 ];
 export const BLOG_TAG = [
-  { type: "TISTORY", label: "티스토리" },
-  { type: "VELOG", label: "벨로그" },
-  { type: "BRUNCH", label: "브런치" },
-  { type: "MEDIUM", label: "미디엄" },
-  { type: "NAVER", label: "네이버블로그" },
-  { type: "YOUTUBE", label: "유튜브" },
-  { type: "RSS", label: "RSS" },
+  { type: "TISTORY", label: "티스토리", color: "#E74F05" },
+  { type: "VELOG", label: "벨로그", color: "#20c997" },
+  { type: "BRUNCH", label: "브런치", color: "#231F20" },
+  { type: "MEDIUM", label: "미디엄", color: "#333333" },
+  { type: "NAVER", label: "네이버블로그", color: "#5BC36E" },
+  { type: "YOUTUBE", label: "유튜브", color: "#FE3333" },
+  { type: "RSS", label: "RSS", color: "#FFB833" },
 ];
 export const MAINTAB_LABEL = [
   "팀로그",
