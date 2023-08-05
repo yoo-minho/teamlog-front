@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useQuasar } from "quasar";
-
 const $q = useQuasar();
 const route = useRoute();
 const router = useRouter();

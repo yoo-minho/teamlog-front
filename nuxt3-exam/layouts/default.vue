@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useQuasar } from "quasar";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/user";
 import MainHeader from "@/components/Menu/MainHeader.vue";

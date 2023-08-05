@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { getImage } from "@/utils/ImageUtil";
 import { BLOG_TAG } from "@/constants";
-import { Tag } from "~/types/common";
+import { Tag } from "@/types/common";
 
-const router = useRouter();
 const route = useRoute();
 const totalTag = { id: "All", name: "All" };
 const props = defineProps<{ tags: Tag[] | null; activeTagName: string }>();
@@ -14,8 +13,8 @@ const isActiveTag = (tagName: string) => {
   return _activeTagName === tagName;
 };
 
-const clickTag = (tagName: string) => {
-  router.push({ path: "blog", query: { ...route.query, tag: tagName } });
+const clickTag = async (tagName: string) => {
+  await navigateTo({ path: "blog", query: { ...route.query, tag: tagName } });
   emits("clickTag", tagName);
 };
 

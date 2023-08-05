@@ -96,7 +96,7 @@ definePageMeta({
         </template>
       </q-select>
       <q-separator spaced style="margin-top: 0" />
-      <template v-if="pending && page === 1">
+      <template v-if="pending && currentTeam.length === 0">
         <div>로딩중...</div>
       </template>
       <template v-else>

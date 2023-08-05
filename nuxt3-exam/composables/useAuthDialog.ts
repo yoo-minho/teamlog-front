@@ -1,5 +1,3 @@
-import { Dialog } from "quasar";
-
 export const showAuthDialog = (props: { to: string }) => {
   Dialog.create({
     title: "로그인 요청",
@@ -7,7 +5,6 @@ export const showAuthDialog = (props: { to: string }) => {
     ok: "이동하기",
     cancel: "취소",
   }).onOk(() => {
-    const router = useRouter();
-    router.push({ path: "/my", query: { to: props.to } });
+    navigateTo({ path: "/my", query: { to: props.to } });
   });
 };

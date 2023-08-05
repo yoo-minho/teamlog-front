@@ -12,7 +12,7 @@ import { openUrl } from "@/utils/CommUtil";
 import { getImage } from "@/utils/ImageUtil";
 
 import GroupApi from "@/api/groupApi";
-import { BLOG_TAG } from "~/constants";
+import { BLOG_TAG } from "@/constants";
 
 definePageMeta({
   layout: "setting",
@@ -49,7 +49,7 @@ const getLabel = (type: string) =>
 
     <q-item-label header class="platform-area">
       전체 블로그 통계
-      <q-chip size="12px" clickable @click="$router.push('setting/platform')">
+      <q-chip size="12px" clickable @click="navigateTo('setting/platform')">
         허용가능한 블로그?
       </q-chip>
     </q-item-label>
@@ -103,7 +103,7 @@ const getLabel = (type: string) =>
     <SettingCardItem
       icon="military_tech"
       title="팀로그의 기술 스택"
-      @click="$router.push('/setting/stack')"
+      @click="navigateTo('/setting/stack')"
     />
   </q-list>
 </template>

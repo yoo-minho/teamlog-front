@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Dialog } from "quasar";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/user";
 import { showBottomSheet } from "@/composables/useSnsBottomSheet";
@@ -11,8 +10,8 @@ const { groupId } = toRefs(props);
 const userStore = useUserStore();
 const { isSearchMode, searchWord, isMasterUser } = storeToRefs(userStore);
 const { toggleSearchMode, initSearchData } = userStore;
-const [route, router] = [useRoute(), useRouter()];
-const _openSettingMain = () => router.push({ name: "setting" });
+const route = useRoute();
+const _openSettingMain = () => navigateTo({ name: "setting" });
 const isPost = ref(false);
 
 watch(
@@ -24,8 +23,7 @@ watch(
   { immediate: true }
 );
 
-const goBack = () => router.back();
-const goMain = () => router.push({ path: "/team" });
+const goMain = () => navigateTo({ path: "/team" }, { replace: true });
 const deleteTeam = async () => {
   Dialog.create({
     title: "삭제하기",
@@ -34,6 +32,7 @@ const deleteTeam = async () => {
     cancel: "취소",
   }).onOk(async () => {
     await GroupApi.delete(groupId?.value);
+    await new Promise((res) => setTimeout(res, 1000)); //타이밍 이슈가 있나보다.
     goMain();
   });
 };
@@ -42,7 +41,7 @@ const deleteTeam = async () => {
 <template>
   <q-header bordered class="text-white max-width">
     <q-toolbar>
-      <q-btn icon="keyboard_backspace" flat round dense @click="goBack()" />
+      <q-btn icon="keyboard_backspace" flat round dense @click="goMain()" />
       <template v-if="isSearchMode">
         <q-input
           v-model="searchWord"
@@ -67,10 +66,13 @@ const deleteTeam = async () => {
         <q-toolbar-title class="name ellipsis">
           {{ groupTitle }}
         </q-toolbar-title>
-        <template v-if="isPost">
-          <!-- <q-btn icon="search" flat round dense @click="toggleSearchMode()" /> -->
-        </template>
-        <q-btn icon="edit" flat round dense @click="router.replace('edit')" />
+        <q-btn
+          icon="edit"
+          flat
+          round
+          dense
+          @click="navigateTo('edit', { replace: true })"
+        />
       </template>
       <template v-if="isMasterUser">
         <q-btn icon="delete" flat round dense @click="deleteTeam" />

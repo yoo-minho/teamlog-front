@@ -8,11 +8,11 @@ import { showAuthDialog } from "@/composables/useAuthDialog";
 
 const userStore = useUserStore();
 const { searchWord, isExistsUser } = storeToRefs(userStore);
-const [route, router] = [useRoute(), useRouter()];
-const _openSettingMain = () => router.push({ name: "setting" });
+const route = useRoute();
+const _openSettingMain = () => navigateTo({ name: "setting" });
 const _openNewTeam = () => {
   if (isExistsUser.value) {
-    router.push({ path: "/new/team" });
+    navigateTo({ path: "/new/team" });
     return;
   }
   showAuthDialog({ to: "/new/team" });
@@ -27,7 +27,7 @@ watch(
     el.addEventListener("input", (e: InputEvent) => {
       const eventTarget = e.target as HTMLInputElement;
       postSearhWord.value = eventTarget.value;
-      router.push({
+      navigateTo({
         path: "post",
         query: { ...route.query, q: eventTarget.value },
       });

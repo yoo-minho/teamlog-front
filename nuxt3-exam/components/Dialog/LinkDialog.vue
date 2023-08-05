@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useQuasar } from "quasar";
 import { ErrorMessage, Link } from "@/types/common";
 import { scrapOGS } from "@/composables/useOgs";
 

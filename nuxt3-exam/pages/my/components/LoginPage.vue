@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useQuasar, QSpinnerIos } from "quasar";
+import { QSpinnerIos } from "quasar";
 import ApiArr from "@/data/login-api.json";
 
 const $q = useQuasar();

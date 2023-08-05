@@ -6,38 +6,42 @@ import { useGroupStore } from "@/stores/group";
 import LinkCard from "@/components/Card/LinkCard.vue";
 import LinkDialog from "@/components/Dialog/LinkDialog.vue";
 import GroupApi from "@/api/groupApi";
-import { Link } from "@/types/common";
+import { Link, TeamFormType } from "@/types/common";
 import { scrapOGS } from "@/composables/useOgs";
 
-definePageMeta({
-  title: "팀 만들기",
-  layout: "empty",
-  middleware: ["auth"],
-});
+const props = defineProps<{ currentGroup: Group }>();
+const emits = defineEmits<{
+  (eventName: "submit", value: TeamFormType): Promise<any>;
+}>();
+const { currentGroup } = toRefs(props);
+const {
+  id = "",
+  title = "",
+  domain = "",
+  description = "",
+  tags = [],
+} = currentGroup.value || {};
 
 const $q = useQuasar();
-const router = useRouter();
 const groupStore = useGroupStore();
-const { currentGroup } = storeToRefs(groupStore);
-
-const { data: tags } = await GroupApi.findAllTag();
+const { data: allTags } = await GroupApi.findAllTag();
 
 const showLink = ref(false);
-const title = ref(currentGroup.value.title);
 const domainRef = ref();
-const domain = ref(currentGroup.value.domain);
-const description = ref(currentGroup.value.description || "");
-const selectedTags = ref(
-  currentGroup.value.tags?.map(({ tag: { id, name } }) => ({
+const _domain = ref(domain);
+const _title = ref(title);
+const _description = ref(description);
+const _selectedTags = ref(
+  tags?.map(({ tag: { id, name } }) => ({
     label: name,
     value: id,
   })) || []
 );
-const links = ref(currentGroup.value.links?.map((l) => l.link) || []);
+const _tags = computed(() => _selectedTags.value.map((tag) => tag.label));
+const links = ref(currentGroup.value?.links?.map((l) => l.link) || []);
 const linksCountLabel = computed(() =>
   links.value.length > 0 ? `(${links.value.length}/10)` : ""
 );
-
 const titleRules = [
   (val: string) => val?.length > 0 || "팀 이름을 입력해주세요!",
 ];
@@ -47,9 +51,8 @@ const idRules = [
     new RegExp(/^[A-Za-z0-9_+]*$/).test(val) ||
     "대소문자, 숫자, 언더바를 활용하여 입력해주세요!",
 ];
-
 const options =
-  tags.value?.map((tag) => ({
+  allTags.value?.map((tag) => ({
     label: tag.name,
     value: tag.id,
   })) || [];
@@ -66,42 +69,32 @@ const refreshLink = async (url: string, stopLoading: () => void) => {
     link.url === url ? { ...link, title, description, imagePath } : link
   );
 };
-const editTeam = async () => {
-  if ((domain.value || "").length === 0) {
+const submitForm = async () => {
+  if ((_domain.value || "").length === 0) {
     $q.notify({ type: "negative", message: "도메인을 입력해주세요!" });
-    domainRef.value.focus();
+    domainRef.value?.focus();
     return;
   }
   if (!links.value || links.value.length === 0) {
     $q.notify({ type: "negative", message: "최소 1개의 url이 필요합니다." });
     return;
   }
-  if (!currentGroup.value.id) {
-    throw new Error("ID 확인하숑!");
-  }
-  GroupApi.update({
-    id: currentGroup.value.id,
-    domain: domain.value,
-    title: title.value,
-    description: description.value,
-    tags: selectedTags.value.map((tag) =>
-      typeof tag === "string" ? tag : tag.label
-    ),
+  const submitData = {
+    id,
+    domain: _domain.value,
+    title: _title.value,
+    description: _description.value,
+    tags: _tags,
     links: links.value,
-  }).then(() => {
-    router.replace({ path: `/@${domain.value}/post` });
-  });
+  };
+  const x = await emits("submit", submitData);
+  console.log({ x });
 };
 </script>
 <template>
-  <NuxtLayout name="new" @save="editTeam()">
-    <LinkDialog
-      :show="showLink"
-      @hide="showLink = false"
-      @save-link="saveLink"
-    />
+  <NuxtLayout name="new" @save="() => submitForm()">
     <q-input
-      v-model="title"
+      v-model="_title"
       placeholder="팀 이름 추가"
       label="팀 이름"
       counter
@@ -113,7 +106,7 @@ const editTeam = async () => {
     />
     <q-input
       ref="idRef"
-      v-model="domain"
+      v-model="_domain"
       label="전용 링크"
       type="email"
       stack-label
@@ -124,7 +117,7 @@ const editTeam = async () => {
       :rules="idRules"
     />
     <q-input
-      v-model="description"
+      v-model="_description"
       stack-label
       autogrow
       clearable
@@ -136,7 +129,7 @@ const editTeam = async () => {
       hide-bottom-space
     />
     <q-select
-      v-model="selectedTags"
+      v-model="_selectedTags"
       stack-label
       label="태그 추가"
       use-input
@@ -164,5 +157,10 @@ const editTeam = async () => {
         />
       </div>
     </q-list>
+    <LinkDialog
+      :show="showLink"
+      @hide="showLink = false"
+      @save-link="saveLink"
+    />
   </NuxtLayout>
 </template>

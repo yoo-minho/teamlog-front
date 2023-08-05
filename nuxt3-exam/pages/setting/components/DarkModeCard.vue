@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useQuasar } from "quasar";
-
 const $q = useQuasar();
 const value = ref($q.dark.isActive);
 const toggleDarkMode = () => {

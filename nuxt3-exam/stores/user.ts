@@ -2,7 +2,7 @@ import { MainTabType } from "@/types/common";
 import { defineStore } from "pinia";
 import { QScrollArea } from "quasar";
 
-import { User } from "~/types/common";
+import { User } from "@/types/common";
 
 export const useUserStore = defineStore("user", {
   state: () => ({

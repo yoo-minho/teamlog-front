@@ -1,20 +1,14 @@
 <script setup lang="ts">
-import { useQuasar } from "quasar";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "./stores/user";
-import { useGroupStore } from "./stores/group";
 import UserApi from "@/api/userApi";
 import { savePrompt } from "@/composables/useInstallBottomSheet";
 
 const $q = useQuasar();
 const isDarkActive = ref($q.dark.isActive);
-
 const userStore = useUserStore();
 const { user, atk } = storeToRefs(userStore);
-const groupStore = useGroupStore();
-const { groups } = storeToRefs(groupStore);
-const [route, router] = [useRoute(), useRouter()];
-
+const route = useRoute();
 const code = String(route.query.code || "");
 if (!code) {
   const { data } = await UserApi.reissue();
@@ -23,7 +17,7 @@ if (!code) {
   atk.value = data.value?.atk || "";
 } else {
   atk.value = code;
-  router.replace("my");
+  navigateTo("my", { replace: true });
 }
 
 const { data: _user } = await UserApi.findUser(atk);
@@ -37,14 +31,12 @@ watch(
 );
 
 onMounted(() => {
-  console.log("beforeinstallprompt2");
   window.addEventListener("beforeinstallprompt", (e) => {
-    console.log("beforeinstallprompt", e);
     e.preventDefault();
     savePrompt(e as BeforeInstallPromptEvent);
   });
   window.addEventListener("appinstalled", () => {
-    console.log("PWA was installed");
+    // console.log("PWA was installed");
   });
 });
 </script>

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useQuasar } from "quasar";
-
 const $q = useQuasar();
 const [route, router] = [useRoute(), useRouter()];
 const isDarkActive = ref($q.dark.isActive);

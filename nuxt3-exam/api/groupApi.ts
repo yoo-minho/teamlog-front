@@ -1,5 +1,5 @@
-import { useUserStore } from "~/stores/user";
-import { Tag, Group, Link, BlogType } from "../types/common";
+import { useUserStore } from "@/stores/user";
+import { Tag, Group, Link, BlogType, TeamFormType } from "@/types/common";
 import { storeToRefs } from "pinia";
 import UserApi from "./userApi";
 
@@ -49,6 +49,7 @@ export default {
     tags: string[];
     links: Link[];
   }) {
+    let cycle = 0;
     const userStore = useUserStore();
     const { user, atk } = storeToRefs(userStore);
     const config = useRuntimeConfig();
@@ -58,7 +59,7 @@ export default {
       throw new Error("액세스 토큰이 없는거!");
     }
     const headers = ref({ Authorization: `Bearer ${atk.value}` });
-    await useFetch("group", {
+    return await useFetch("group", {
       baseURL: config.public.apiBase,
       headers,
       method: "post",
@@ -70,13 +71,17 @@ export default {
         tags,
         links,
       },
-      onResponseError: async () => {
-        const { data } = await UserApi.reissueAtk();
-        if (data.value?.atk === "") {
-          throw new Error("액세스 토큰이 없는거!");
+      onResponseError: async (err) => {
+        const res = err.response?._data?.res;
+        if (res.name === "TokenExpiredError") {
+          const { data } = await UserApi.reissueAtk();
+          if (data.value?.atk === "") return;
+          atk.value = data.value?.atk || "";
+          headers.value = { Authorization: `Bearer ${atk.value}` };
+          return;
         }
-        atk.value = data.value?.atk || "";
-        headers.value = { Authorization: `Bearer ${atk.value}` };
+        cycle++;
+        if (cycle > 3) throw new Error("잠시후 다시 시도해주세요!");
       },
     });
   },
@@ -89,14 +94,8 @@ export default {
       body: { id },
     });
   },
-  async update(props: {
-    id: number;
-    domain: string;
-    title: string;
-    description: string;
-    tags: string[];
-    links: Link[];
-  }) {
+  async update(props: TeamFormType) {
+    let cycle = 0;
     const userStore = useUserStore();
     const { user, atk } = storeToRefs(userStore);
     const config = useRuntimeConfig();
@@ -117,13 +116,17 @@ export default {
         tags,
         links,
       },
-      onResponseError: async () => {
-        const { data } = await UserApi.reissueAtk();
-        if (data.value?.atk === "") {
-          throw new Error("액세스 토큰이 없는거!");
+      onResponseError: async (err) => {
+        const res = err.response?._data?.res;
+        if (res.name === "TokenExpiredError") {
+          const { data } = await UserApi.reissueAtk();
+          if (data.value?.atk === "") return;
+          atk.value = data.value?.atk || "";
+          headers.value = { Authorization: `Bearer ${atk.value}` };
+          return;
         }
-        atk.value = data.value?.atk || "";
-        headers.value = { Authorization: `Bearer ${atk.value}` };
+        cycle++;
+        if (cycle > 3) throw new Error("잠시후 다시 시도해주세요!");
       },
     });
   },

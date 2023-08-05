@@ -142,3 +142,11 @@ export type User = {
   email?: string;
   profileImage?: string;
 };
+export type TeamFormType = {
+  id?: number;
+  domain: string;
+  title: string;
+  description: string;
+  tags: string[];
+  links: Link[];
+};

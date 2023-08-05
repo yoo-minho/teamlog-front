@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useQuasar } from "quasar";
-import InTeamHeader from "~/components/Menu/InTeamHeader.vue";
+import { storeToRefs } from "pinia";
+import InTeamHeader from "@/components/Menu/InTeamHeader.vue";
 import GroupInfo from "@/components/Info/GroupInfo.vue";
 import GroupInfoSkeleton from "@/components/Info/GroupInfoSkeleton.vue";
 import GroupDetailCounter from "@/components/Counter/GroupDetailCounter.vue";
@@ -8,25 +8,18 @@ import GroupApi from "@/api/groupApi";
 import RssApi from "@/api/rssApi";
 import { TAB_LABEL_IN_TEAM } from "@/constants/";
 import { useGroupStore } from "@/stores/group";
-import { storeToRefs } from "pinia";
-import { Group, LinkWrap } from "~/types/common";
-import { delay } from "~/utils/CommUtil";
+import { Group, LinkWrap } from "@/types/common";
+import { delay } from "@/utils/CommUtil";
 import { isTodayByDate } from "@/plugin/dayjs";
-import { QPullToRefresh } from "quasar";
 
 const $q = useQuasar();
-const router = useRouter();
 const teamId = useState<string>("teamId");
 const tabId = useState<string>("tabId");
 
 const tab = ref(tabId.value);
 const groupStore = useGroupStore();
 const { currentGroup } = storeToRefs(groupStore);
-
 const isDark = ref($q.dark.isActive);
-
-const goTagTeam = (tag: string) =>
-  router.push({ path: "/team", query: { tag } });
 
 const scrapPosts = async (id: number, links: LinkWrap[]) => {
   if (links.length === 0) return;
@@ -63,9 +56,7 @@ watch(
     );
     scrapPosts(id, filterLinks);
   },
-  {
-    immediate: true,
-  }
+  {immediate: true}
 );
 
 watch(
@@ -76,43 +67,41 @@ watch(
 <template>
   <q-layout>
     <div :class="`${isDark ? 'bg-grey-9' : 'bg-white'}`">
+      <template v-if="pending">
+        <InTeamHeader group-title="" style="position: relative" />
+      </template>
+      <template v-else-if="currentGroup">
+        <InTeamHeader
+          :group-id="currentGroup.id"
+          :group-title="currentGroup.title"
+          style="position: relative"
+        />
+      </template>
       <q-scroll-area
         ref="scrollAreaRef"
         class="max-width without-header in-team"
         :visible="true"
-        style="overflow: hidden"
-        :thumb-style="{ zIndex: '999999' }"
+        style="height: calc(100vh - 50px); overflow: hidden"
       >
-        <template v-if="pending">
-          <InTeamHeader group-title="" style="position: relative" />
-        </template>
-        <template v-else-if="currentGroup">
-          <InTeamHeader
-            :group-id="currentGroup.id"
-            :group-title="currentGroup.title"
-            style="position: relative"
-          />
-        </template>
         <q-layout style="min-height: 0">
           <q-page-container style="min-height: 0; padding: 0">
             <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
               <q-page>
+                <GroupDetailCounter
+                  :today-views="currentGroup?.todayViews"
+                  :total-views="currentGroup?.totalViews"
+                />
                 <template v-if="pending">
-                  <GroupDetailCounter :today-views="0" :total-views="0" />
                   <GroupInfoSkeleton />
                 </template>
                 <template v-else-if="currentGroup">
-                  <GroupDetailCounter
-                    :today-views="currentGroup.todayViews || 0"
-                    :total-views="currentGroup.totalViews || 0"
-                  />
                   <GroupInfo :group-data="currentGroup" />
                   <div class="tag-scroll row justify-center">
                     <template
                       v-for="({ tag }, i) in currentGroup.tags"
                       :key="i"
                     >
-                      <div @click="() => goTagTeam(tag.name)">
+                      <div @click="() => navigateTo({ path: "/team", query: { tag:tag.name } })">
                         <q-chip outline square clickable>
                           #{{ tag.name }}
                         </q-chip>
@@ -139,16 +128,16 @@ watch(
                 </q-tabs>
                 <q-separator />
                 <slot></slot>
+                <q-page-scroller
+                  position="bottom-right"
+                  :scroll-offset="150"
+                  :offset="[18, 18]"
+                >
+                  <q-btn fab icon="keyboard_arrow_up" color="green-4" />
+                </q-page-scroller>
               </q-page>
             </q-pull-to-refresh>
           </q-page-container>
-          <q-page-scroller
-            position="bottom-right"
-            :scroll-offset="150"
-            :offset="[18, 18]"
-          >
-            <q-btn fab icon="keyboard_arrow_up" color="green-4" />
-          </q-page-scroller>
         </q-layout>
       </q-scroll-area>
     </div>
