@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useGroupStore } from "@/stores/group";
+import { useTeamStore } from "@/stores/team";
 import PostAPI from "@/api/postApi";
 import Ranker from "./Ranker.vue";
-import { RankerStat } from "~/types/common";
+import { RankerStat } from "@/types/common";
 
-const groupStore = useGroupStore();
-const { currentGroupLinkIds } = storeToRefs(groupStore);
+const teamStore = useTeamStore();
+const { currentTeamLinkIds } = storeToRefs(teamStore);
 
 //define
 const transLastPosts = ref([] as RankerStat[]);
-const linkIds = ref(currentGroupLinkIds.value);
+const linkIds = ref(currentTeamLinkIds.value);
 
 //created
 const { data: _lasts, pending } = await PostAPI.findLast({

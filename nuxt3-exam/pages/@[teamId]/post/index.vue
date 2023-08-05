@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { usePostStore } from "@/stores/post";
-import { useGroupStore } from "@/stores/group";
+import { useTeamStore } from "@/stores/team";
 import { useUserStore } from "@/stores/user";
 
 import SearchEmpty from "@/components/Empty/SearchEmpty.vue";
@@ -10,14 +10,14 @@ import PostApi from "@/api/postApi";
 
 const route = useRoute();
 
-const [groupStore, postStore, userStore] = [
-  useGroupStore(),
+const [teamStore, postStore, userStore] = [
+  useTeamStore(),
   usePostStore(),
   useUserStore(),
 ];
 const { posts } = storeToRefs(postStore);
 const { savePosts } = postStore;
-const { currentGroup } = storeToRefs(groupStore);
+const { currentTeam } = storeToRefs(teamStore);
 // const { searchWord } = storeToRefs(userStore);
 const searchWord = ref("");
 const { setSearchData } = userStore;
@@ -67,7 +67,7 @@ const refresh = async (done: () => void) => {
 };
 
 watch(
-  [() => currentGroup.value?.lastPostCreatedAt, searchWord],
+  [() => currentTeam.value?.lastPostCreatedAt, searchWord],
   async (_, oldVal) => {
     if (!oldVal[0]) return; //lastPostCreatedAt 최초 할당시에는 미동작
     isScrapRefresh.value = true;

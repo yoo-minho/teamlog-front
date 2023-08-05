@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useGroupStore } from "~/stores/group";
+import { useTeamStore } from "@/stores/team";
 import { getImage } from "@/utils/ImageUtil";
-import { BLOG_TAG } from "~/constants";
+import { BLOG_TAG } from "@/constants";
 
-const groupStore = useGroupStore();
-const { currentGroup } = storeToRefs(groupStore);
+const teamStore = useTeamStore();
+const { currentTeam } = storeToRefs(teamStore);
 
 //group by count
 const currentBlogs = Object.entries(
-  currentGroup.value.links
+  currentTeam.value.links
     ?.map((v) => v.link.type)
     ?.reduce((a, c) => ((a[c] = (a[c] || 0) + 1), a), Object.create(null))
 ).map(([key, value]) => ({ id: key, name: key, count: value }));
@@ -47,7 +47,7 @@ definePageMeta({
       </div>
       <q-separator spaced />
       <BlogListItem
-        v-for="({ link }, i) in currentGroup.links"
+        v-for="({ link }, i) in currentTeam.links"
         :key="i"
         :link="link"
       />

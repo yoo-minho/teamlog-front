@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useGroupStore } from "@/stores/group";
+import { useTeamStore } from "@/stores/team";
 import { skipBlogName } from "@/utils/NameUtil";
-import LinkInfo from "~/components/Info/LinkInfo.vue";
-import { RankerStat, Link } from "~/types/common";
+import LinkInfo from "@/components/Info/LinkInfo.vue";
+import { RankerStat, Link } from "@/types/common";
 
-const [groupStore] = [useGroupStore()];
-const { currentGroup } = storeToRefs(groupStore);
+const teamStore = useTeamStore();
+const { currentTeam } = storeToRefs(teamStore);
 
 //define
 const getLink = (id: number) =>
-  currentGroup.value.links
+  currentTeam.value.links
     ?.map(({ link }) => link)
     .find((l) => l.id === id) as Link;
 const getLinkTitle = (id: number) => skipBlogName(getLink(id)?.title || "");

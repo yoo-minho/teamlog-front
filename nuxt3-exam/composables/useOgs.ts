@@ -1,6 +1,6 @@
 import OpenGraphTagAPI from "@/api/openGraphTagApi";
-import { getBlogType } from "~/utils/ImageUtil";
-import { minifyStr } from "~/utils/CommUtil";
+import { getBlogType } from "@/utils/ImageUtil";
+import { minifyStr } from "@/utils/CommUtil";
 import { BlogType } from "@/types/common";
 
 type OGSOutput = {

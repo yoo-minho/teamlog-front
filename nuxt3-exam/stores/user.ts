@@ -1,4 +1,3 @@
-import { MainTabType } from "@/types/common";
 import { defineStore } from "pinia";
 import { QScrollArea } from "quasar";
 
@@ -30,16 +29,6 @@ export const useUserStore = defineStore("user", {
       this.isSearchMode = !this.isSearchMode;
       if (!this.isSearchMode) {
         this.searchWord = "";
-      }
-    },
-    handleSwipeMainTab(direction: "left" | "right", currentTab: MainTabType) {
-      const tabs = [`t_0`, `t_1`, `t_2`, "t_3", "t_4"];
-      const idx = tabs.indexOf(currentTab);
-      let nextTab;
-      if (direction === "left") {
-        nextTab = tabs[(idx + 1) % tabs.length];
-      } else if (direction === "right") {
-        nextTab = tabs[(idx + tabs.length - 1) % tabs.length];
       }
     },
   },

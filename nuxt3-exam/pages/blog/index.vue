@@ -5,8 +5,8 @@ import ScrollObserver from "@/components/Observer/ScrollObserver.vue";
 import BlogTagList from "./components/BlogTagList.vue";
 import BlogListItem from "@/components/Blog/BlogListItem.vue";
 import BlogApi from "@/api/blogApi";
-import { BLOG_TAG } from "~/constants";
-import BlogListSkeletonItem from "~/components/Blog/BlogListSkeletonItem.vue";
+import { BLOG_TAG } from "@/constants";
+import BlogListSkeletonItem from "@/components/Blog/BlogListSkeletonItem.vue";
 
 const route = useRoute();
 const blogStore = useBlogStore();

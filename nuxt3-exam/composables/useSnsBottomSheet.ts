@@ -1,4 +1,4 @@
-import { getImage } from "~/utils/ImageUtil";
+import { getImage } from "@/utils/ImageUtil";
 import { shareKakao } from "./useKakaoApi";
 import { BottomSheet, Notify } from "quasar";
 

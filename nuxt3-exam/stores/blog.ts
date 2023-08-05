@@ -4,7 +4,6 @@ import { Link } from "../types/common";
 export const useBlogStore = defineStore("blog", {
   state: () => ({
     blogs: [] as Link[],
-    blogsLoading: true,
     currentBlog: {} as Link,
   }),
   getters: {},

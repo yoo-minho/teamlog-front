@@ -18,7 +18,7 @@ export type GroupTagWrap = {
     name: string;
   };
 };
-export type Group = {
+export type Team = {
   id?: number;
   domain: string;
   title: string;
@@ -31,10 +31,18 @@ export type Group = {
   lastPostCreatedAt?: Date;
   weeklyAvgPost?: number;
 };
-export type GroupTag = {
-  index: number;
-  groupId: string;
-  name: string;
+export type Group = {
+  id?: number;
+  domain: string;
+  title: string;
+  description?: string;
+  links?: LinkWrap[];
+  tags?: GroupTagWrap[];
+  createdAt?: Date;
+  todayViews?: number;
+  totalViews?: number;
+  lastPostCreatedAt?: Date;
+  weeklyAvgPost?: number;
 };
 export type Tag = {
   index?: number;

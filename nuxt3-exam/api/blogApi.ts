@@ -1,4 +1,4 @@
-import { Link } from "~/types/common";
+import { Link } from "@/types/common";
 
 export default {
   async findAll(props: { tag?: Ref<string>; page?: Ref<number> } = {}) {

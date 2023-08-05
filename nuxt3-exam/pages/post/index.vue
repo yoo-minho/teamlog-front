@@ -8,7 +8,7 @@ import PostTagList from "./components/PostTagList.vue";
 import PostApi from "@/api/postApi";
 import { POST_TAG } from "@/constants";
 import { useUserStore } from "@/stores/user";
-import SearchEmpty from "~/components/Empty/SearchEmpty.vue";
+import SearchEmpty from "@/components/Empty/SearchEmpty.vue";
 
 const route = useRoute();
 const userStore = useUserStore();

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useGroupStore } from "@/stores/group";
+import { useTeamStore } from "@/stores/team";
 import { usePostStore } from "@/stores/post";
 import { skipBlogName } from "@/utils/NameUtil";
 import PostAPI from "@/api/postApi";
@@ -8,7 +8,7 @@ import PostAPI from "@/api/postApi";
 import JandiBox from "./JandiBox.vue";
 import JandiContents from "./JandiContents.vue";
 import JandiBottomTip from "./JandiBottomTip.vue";
-import { DaysCount } from "~/types/common";
+import { DaysCount } from "@/types/common";
 
 const MMM = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const day = [0, 1, 2, 3, 4, 5, 6];
@@ -17,9 +17,9 @@ const active = (arr: DaysCount[]) => arr.filter((v) => v.count > 0);
 const targetCount = (arr: DaysCount[], day: number) =>
   arr.filter((v) => v.day === day).length;
 
-const [groupStore, postStore] = [useGroupStore(), usePostStore()];
+const [teamStore, postStore] = [useTeamStore(), usePostStore()];
 const { jandis } = storeToRefs(postStore);
-const { currentGroup, currentGroupLinkIds } = storeToRefs(groupStore);
+const { currentTeam, currentTeamLinkIds } = storeToRefs(teamStore);
 
 const defaultValue = -1;
 const defaultOption = {
@@ -28,7 +28,7 @@ const defaultOption = {
 };
 
 const makeLinkIds = (selectedId: number) =>
-  currentGroupLinkIds.value.filter((id) =>
+  currentTeamLinkIds.value.filter((id) =>
     selectedId === defaultValue ? true : id === selectedId
   );
 
@@ -38,7 +38,7 @@ const [totalJandiCnt, manyPostMMM] = [ref(0), ref("-"), ref("-")];
 const currentFilter = ref(defaultOption);
 const filterOptions = computed(() => [
   defaultOption,
-  ...(currentGroup.value.links || []).map(({ link }) => ({
+  ...(currentTeam.value.links || []).map(({ link }) => ({
     label: skipBlogName(link.title),
     value: link.id || -1,
   })),
@@ -106,7 +106,7 @@ const refreshJandiData = async (selected: { value: number }) => {
     <div class="row q-col-gutter-md q-mt-none">
       <JandiBox
         :label="'주간 게시물'"
-        :value="String(currentGroup.weeklyAvgPost) || '-'"
+        :value="String(currentTeam.weeklyAvgPost) || '-'"
       />
       <JandiBox :label="'포스팅 많은 요일'" :value="manyPostMMM" />
     </div>

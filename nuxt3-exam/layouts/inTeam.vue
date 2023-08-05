@@ -7,7 +7,7 @@ import GroupDetailCounter from "@/components/Counter/GroupDetailCounter.vue";
 import GroupApi from "@/api/groupApi";
 import RssApi from "@/api/rssApi";
 import { TAB_LABEL_IN_TEAM } from "@/constants/";
-import { useGroupStore } from "@/stores/group";
+import { useTeamStore } from "@/stores/team";
 import { Group, LinkWrap } from "@/types/common";
 import { delay } from "@/utils/CommUtil";
 import { isTodayByDate } from "@/plugin/dayjs";
@@ -17,8 +17,8 @@ const teamId = useState<string>("teamId");
 const tabId = useState<string>("tabId");
 
 const tab = ref(tabId.value);
-const groupStore = useGroupStore();
-const { currentGroup } = storeToRefs(groupStore);
+const teamStore = useTeamStore();
+const { currentTeam } = storeToRefs(teamStore);
 const isDark = ref($q.dark.isActive);
 
 const scrapPosts = async (id: number, links: LinkWrap[]) => {
@@ -32,31 +32,29 @@ const scrapPosts = async (id: number, links: LinkWrap[]) => {
     lastPostCreatedAt: Date;
     weeklyAvgPost: number;
   };
-  currentGroup.value.lastPostCreatedAt = rawData.lastPostCreatedAt;
-  currentGroup.value.weeklyAvgPost = rawData.weeklyAvgPost;
+  currentTeam.value.lastPostCreatedAt = rawData.lastPostCreatedAt;
+  currentTeam.value.weeklyAvgPost = rawData.weeklyAvgPost;
 };
 
 const refresh = (done: () => void) => {
-  const { id, links } = currentGroup.value;
+  const { id, links } = currentTeam.value;
   if (!id || !links) return;
   scrapPosts(id, links).then(done);
 };
 
-const { data: currentTeam, pending } = await GroupApi.findByDomain(
-  teamId.value
-);
+const { data: team, pending } = await GroupApi.findByDomain(teamId.value);
 
 watch(
-  currentTeam,
+  team,
   () => {
-    currentGroup.value = currentTeam.value as Group;
-    const { id = -1, links = [] } = currentGroup.value || {};
+    currentTeam.value = team.value as Group;
+    const { id = -1, links = [] } = currentTeam.value || {};
     const filterLinks = links?.filter(
       ({ link }) => !isTodayByDate(link.scrapAt)
     );
     scrapPosts(id, filterLinks);
   },
-  {immediate: true}
+  { immediate: true }
 );
 
 watch(
@@ -70,10 +68,10 @@ watch(
       <template v-if="pending">
         <InTeamHeader group-title="" style="position: relative" />
       </template>
-      <template v-else-if="currentGroup">
+      <template v-else-if="currentTeam">
         <InTeamHeader
-          :group-id="currentGroup.id"
-          :group-title="currentGroup.title"
+          :group-id="currentTeam.id"
+          :group-title="currentTeam.title"
           style="position: relative"
         />
       </template>
@@ -88,25 +86,27 @@ watch(
             <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
               <q-page>
                 <GroupDetailCounter
-                  :today-views="currentGroup?.todayViews"
-                  :total-views="currentGroup?.totalViews"
+                  :today-views="currentTeam?.todayViews"
+                  :total-views="currentTeam?.totalViews"
                 />
                 <template v-if="pending">
                   <GroupInfoSkeleton />
                 </template>
-                <template v-else-if="currentGroup">
-                  <GroupInfo :group-data="currentGroup" />
+                <template v-else-if="currentTeam">
+                  <GroupInfo :group-data="currentTeam" />
                   <div class="tag-scroll row justify-center">
-                    <template
-                      v-for="({ tag }, i) in currentGroup.tags"
+                    <div
+                      v-for="({ tag: { name } }, i) in currentTeam.tags"
                       :key="i"
                     >
-                      <div @click="() => navigateTo({ path: "/team", query: { tag:tag.name } })">
-                        <q-chip outline square clickable>
-                          #{{ tag.name }}
-                        </q-chip>
+                      <div
+                        @click="
+                          navigateTo({ path: '/team', query: { tag: name } })
+                        "
+                      >
+                        <q-chip outline square clickable> #{{ name }} </q-chip>
                       </div>
-                    </template>
+                    </div>
                   </div>
                 </template>
                 <q-tabs
@@ -117,14 +117,14 @@ watch(
                   :indicator-color="`${isDark ? 'green-4' : 'primary'}`"
                   narrow-indicator
                 >
-                  <template v-for="(tag, i) in TAB_LABEL_IN_TEAM" :key="i">
+                  <div v-for="(tag, i) in TAB_LABEL_IN_TEAM" :key="i">
                     <q-route-tab
                       :to="`/@${teamId}/${tag.name}`"
                       :label="tag.label"
                       :replace="true"
                       style="width: 100%"
                     />
-                  </template>
+                  </div>
                 </q-tabs>
                 <q-separator />
                 <slot></slot>

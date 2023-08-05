@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useGroupStore } from "@/stores/group";
+import { useTeamStore } from "@/stores/team";
 import TeamListItem from "./components/TeamListItem.vue";
 import ScrollObserver from "@/components/Observer/ScrollObserver.vue";
 import TeamListSkeletonItem from "./components/TeamListSkeletonItem.vue";
@@ -9,8 +9,8 @@ import GroupApi from "@/api/groupApi";
 
 const route = useRoute();
 const _fromRouteName = useState<string>("fromRouteName");
-const groupStore = useGroupStore();
-const { groups } = storeToRefs(groupStore);
+const teamStore = useTeamStore();
+const { teams } = storeToRefs(teamStore);
 
 const options = [
   { label: "포스트 최신 작성순", value: "lastPostCreatedAt" },
@@ -31,33 +31,33 @@ const selectedTag = ref(String(route.query.tag || "All"));
 const { data: tags } = await GroupApi.findAllTag();
 
 const isCached = () =>
-  _fromRouteName.value !== "team" && groups.value.length > 0;
+  _fromRouteName.value !== "team" && teams.value.length > 0;
 const page = ref(1);
 const response = await GroupApi.findAll({
   page: page,
   tag: selectedTag,
   sort: selectedOrder,
 });
-const { data: teams, refresh: refreshTeam, pending } = response;
-const currentTeam = ref(isCached() ? groups.value : teams.value || []);
+const { data: _teams, refresh: refreshTeam, pending } = response;
+const currentTeams = ref(isCached() ? teams.value : teams.value || []);
 const isExistsNextPage = ref(true);
 
-watch(teams, (newTeams) => {
+watch(_teams, (newTeams) => {
   if (isCached()) {
     //pass
   } else {
-    currentTeam.value = [
-      ...(page.value === 1 ? [] : currentTeam.value || []),
+    currentTeams.value = [
+      ...(page.value === 1 ? [] : currentTeams.value || []),
       ...(newTeams || []),
     ];
   }
   _fromRouteName.value = "team";
-  groups.value = currentTeam.value;
-  isExistsNextPage.value = currentTeam.value.length % 10 === 0;
+  teams.value = currentTeams.value;
+  isExistsNextPage.value = teams.value.length % 10 === 0;
 });
 
 const refreshTeamData = async ({ init = false } = {}) => {
-  page.value = (init ? 0 : Math.ceil(currentTeam.value.length / 10)) + 1;
+  page.value = (init ? 0 : Math.ceil(teams.value.length / 10)) + 1;
   await refreshTeam();
 };
 const next = () => refreshTeamData({ init: false });
@@ -96,13 +96,13 @@ definePageMeta({
         </template>
       </q-select>
       <q-separator spaced style="margin-top: 0" />
-      <template v-if="pending && currentTeam.length === 0">
+      <template v-if="pending && teams.length === 0">
         <div>로딩중...</div>
       </template>
       <template v-else>
         <q-page class="q-mt-sm" style="min-height: 0">
           <TeamListItem
-            v-for="group in currentTeam"
+            v-for="group in currentTeams"
             :key="group.id"
             :group="group"
           />

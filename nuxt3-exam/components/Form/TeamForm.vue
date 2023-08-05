@@ -1,29 +1,23 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { QSelect, useQuasar } from "quasar";
-import { useGroupStore } from "@/stores/group";
-
 import LinkCard from "@/components/Card/LinkCard.vue";
 import LinkDialog from "@/components/Dialog/LinkDialog.vue";
 import GroupApi from "@/api/groupApi";
-import { Link, TeamFormType } from "@/types/common";
+import { Link, TeamFormType, Team } from "@/types/common";
 import { scrapOGS } from "@/composables/useOgs";
 
-const props = defineProps<{ currentGroup: Group }>();
+const props = defineProps<{ currentTeam?: Team }>();
 const emits = defineEmits<{
   (eventName: "submit", value: TeamFormType): Promise<any>;
 }>();
-const { currentGroup } = toRefs(props);
+const { currentTeam } = toRefs(props);
 const {
-  id = "",
+  id = -1,
   title = "",
   domain = "",
   description = "",
   tags = [],
-} = currentGroup.value || {};
+} = currentTeam?.value || {};
 
-const $q = useQuasar();
-const groupStore = useGroupStore();
 const { data: allTags } = await GroupApi.findAllTag();
 
 const showLink = ref(false);
@@ -38,7 +32,7 @@ const _selectedTags = ref(
   })) || []
 );
 const _tags = computed(() => _selectedTags.value.map((tag) => tag.label));
-const links = ref(currentGroup.value?.links?.map((l) => l.link) || []);
+const links = ref(currentTeam?.value?.links?.map((l) => l.link) || []);
 const linksCountLabel = computed(() =>
   links.value.length > 0 ? `(${links.value.length}/10)` : ""
 );
@@ -69,14 +63,17 @@ const refreshLink = async (url: string, stopLoading: () => void) => {
     link.url === url ? { ...link, title, description, imagePath } : link
   );
 };
-const submitForm = async () => {
+const submitForm = () => {
   if ((_domain.value || "").length === 0) {
-    $q.notify({ type: "negative", message: "도메인을 입력해주세요!" });
+    Notify.create({ type: "negative", message: "도메인을 입력해주세요!" });
     domainRef.value?.focus();
     return;
   }
   if (!links.value || links.value.length === 0) {
-    $q.notify({ type: "negative", message: "최소 1개의 url이 필요합니다." });
+    Notify.create({
+      type: "negative",
+      message: "최소 1개의 url이 필요합니다.",
+    });
     return;
   }
   const submitData = {
@@ -84,11 +81,10 @@ const submitForm = async () => {
     domain: _domain.value,
     title: _title.value,
     description: _description.value,
-    tags: _tags,
+    tags: _tags.value,
     links: links.value,
   };
-  const x = await emits("submit", submitData);
-  console.log({ x });
+  emits("submit", submitData);
 };
 </script>
 <template>

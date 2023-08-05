@@ -8,7 +8,8 @@ const props = defineProps<{ groupId?: number; groupTitle: string }>();
 const { groupId } = toRefs(props);
 
 const userStore = useUserStore();
-const { isSearchMode, searchWord, isMasterUser } = storeToRefs(userStore);
+const { isSearchMode, searchWord, isMasterUser, isExistsUser } =
+  storeToRefs(userStore);
 const { toggleSearchMode, initSearchData } = userStore;
 const route = useRoute();
 const _openSettingMain = () => navigateTo({ name: "setting" });
@@ -35,6 +36,13 @@ const deleteTeam = async () => {
     await new Promise((res) => setTimeout(res, 1000)); //타이밍 이슈가 있나보다.
     goMain();
   });
+};
+const _openEditor = () => {
+  if (isExistsUser.value) {
+    navigateTo("edit", { replace: true });
+    return;
+  }
+  showAuthDialog({ to: "edit" });
 };
 </script>
 
@@ -66,13 +74,7 @@ const deleteTeam = async () => {
         <q-toolbar-title class="name ellipsis">
           {{ groupTitle }}
         </q-toolbar-title>
-        <q-btn
-          icon="edit"
-          flat
-          round
-          dense
-          @click="navigateTo('edit', { replace: true })"
-        />
+        <q-btn icon="edit" flat round dense @click="_openEditor" />
       </template>
       <template v-if="isMasterUser">
         <q-btn icon="delete" flat round dense @click="deleteTeam" />
