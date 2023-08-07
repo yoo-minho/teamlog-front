@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import InTeamHeader from "@/components/Menu/InTeamHeader.vue";
-import GroupInfo from "@/components/Info/GroupInfo.vue";
-import GroupInfoSkeleton from "@/components/Info/GroupInfoSkeleton.vue";
-import GroupDetailCounter from "@/components/Counter/GroupDetailCounter.vue";
 import GroupApi from "@/api/groupApi";
 import RssApi from "@/api/rssApi";
 import { TAB_LABEL_IN_TEAM } from "@/constants/";
 import { useTeamStore } from "@/stores/team";
-import { Group, LinkWrap } from "@/types/common";
-import { delay } from "@/utils/CommUtil";
+import { LinkWrap, Team } from "@/types/common";
 import { isTodayByDate } from "@/plugin/dayjs";
+import TeamListItem from "@/pages/team/components/TeamListItem.vue";
+import TeamListSkeletonItem from "@/pages/team/components/TeamListSkeletonItem.vue";
 
 const $q = useQuasar();
 const teamId = useState<string>("teamId");
@@ -21,17 +19,16 @@ const teamStore = useTeamStore();
 const { currentTeam } = storeToRefs(teamStore);
 const isDark = ref($q.dark.isActive);
 
+type TeamStatType = {
+  lastPostCreatedAt: Date;
+  weeklyAvgPost: number;
+};
+
 const scrapPosts = async (id: number, links: LinkWrap[]) => {
   if (links.length === 0) return;
-  await Promise.allSettled([
-    ...links.map(({ link }) => RssApi.scrap(link)),
-    delay(1000),
-  ]);
+  await Promise.allSettled(links.map(({ link }) => RssApi.scrap(link)));
   const { data } = await GroupApi.updateStat(id);
-  const rawData = data.value as {
-    lastPostCreatedAt: Date;
-    weeklyAvgPost: number;
-  };
+  const rawData = data.value as TeamStatType;
   currentTeam.value.lastPostCreatedAt = rawData.lastPostCreatedAt;
   currentTeam.value.weeklyAvgPost = rawData.weeklyAvgPost;
 };
@@ -47,7 +44,8 @@ const { data: team, pending } = await GroupApi.findByDomain(teamId.value);
 watch(
   team,
   () => {
-    currentTeam.value = team.value as Group;
+    if (!team.value) return;
+    currentTeam.value = team.value;
     const { id = -1, links = [] } = currentTeam.value || {};
     const filterLinks = links?.filter(
       ({ link }) => !isTodayByDate(link.scrapAt)
@@ -65,16 +63,11 @@ watch(
 <template>
   <q-layout>
     <div :class="`${isDark ? 'bg-grey-9' : 'bg-white'}`">
-      <template v-if="pending">
-        <InTeamHeader group-title="" style="position: relative" />
-      </template>
-      <template v-else-if="currentTeam">
-        <InTeamHeader
-          :group-id="currentTeam.id"
-          :group-title="currentTeam.title"
-          style="position: relative"
-        />
-      </template>
+      <InTeamHeader
+        :team-id="team?.id"
+        :team-title="team?.title"
+        :createrId="team?.createrId"
+      />
       <q-scroll-area
         ref="scrollAreaRef"
         class="max-width without-header in-team"
@@ -85,30 +78,8 @@ watch(
           <q-page-container style="min-height: 0; padding: 0">
             <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
               <q-page>
-                <GroupDetailCounter
-                  :today-views="currentTeam?.todayViews"
-                  :total-views="currentTeam?.totalViews"
-                />
-                <template v-if="pending">
-                  <GroupInfoSkeleton />
-                </template>
-                <template v-else-if="currentTeam">
-                  <GroupInfo :group-data="currentTeam" />
-                  <div class="tag-scroll row justify-center">
-                    <div
-                      v-for="({ tag: { name } }, i) in currentTeam.tags"
-                      :key="i"
-                    >
-                      <div
-                        @click="
-                          navigateTo({ path: '/team', query: { tag: name } })
-                        "
-                      >
-                        <q-chip outline square clickable> #{{ name }} </q-chip>
-                      </div>
-                    </div>
-                  </div>
-                </template>
+                <TeamListSkeletonItem v-if="pending" />
+                <TeamListItem v-else :team="(team as Team)" where="IN_TEAM" />
                 <q-tabs
                   v-model="tab"
                   dense

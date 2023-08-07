@@ -1,17 +1,28 @@
+<script setup lang="ts">
+import TeamCounter from "@/components/Counter/TeamCounter.vue";
+</script>
 <template>
-  <q-item-label class="cursor-pointer row q-mx-sm items-center">
-    <div class="image_area row justify-center content-center">
-      <div v-for="n in 4" :key="n" class="image_item shadow-1">
-        <q-avatar rounded size="32px">
-          <q-skeleton size="32px" />
+  <q-item-label class="q-mx-sm">
+    <TeamCounter class="q-px-sm q-py-sm" />
+    <q-item class="q-px-sm" style="overflow-x: hidden">
+      <div v-for="i in 4" :key="i" class="q-mr-sm">
+        <q-avatar
+          color="black"
+          text-color="white"
+          rounded
+          size="32px"
+          class="shadow-1"
+        >
+          <div class="non-selectable"></div>
         </q-avatar>
       </div>
-    </div>
-    <q-item class="col q-px-sm">
+    </q-item>
+    <q-item class="q-px-sm q-pt-sm">
       <q-item-section>
-        <q-skeleton type="text" width="60%" height="1.8rem" />
-        <q-skeleton type="text" width="80%" height="1.5rem" />
-        <q-skeleton type="text" width="50%" height="1.5rem" />
+        <q-skeleton type="rect" width="35%" height="1.4rem" />
+        <q-skeleton type="rect" width="80%" height="0.8rem" class="q-mt-xs" />
+        <q-skeleton type="rect" width="20%" height="0.8rem" class="q-mt-sm" />
+        <q-skeleton type="rect" width="40%" height="0.8rem" class="q-mt-xs" />
       </q-item-section>
     </q-item>
   </q-item-label>

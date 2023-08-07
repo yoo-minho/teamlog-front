@@ -26,6 +26,7 @@ export type Team = {
   links?: LinkWrap[];
   tags?: GroupTagWrap[];
   createdAt?: Date;
+  createrId: string;
   todayViews?: number;
   totalViews?: number;
   lastPostCreatedAt?: Date;

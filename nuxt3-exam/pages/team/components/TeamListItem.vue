@@ -1,19 +1,33 @@
 <script setup lang="ts">
-import { BlogType, Group } from "@/types/common";
+import { Team } from "@/types/common";
 import { isTextImage } from "@/utils/ImageUtil";
 import { getFormatString } from "@/plugin/dayjs";
-import { BLOG_TAG } from "@/constants/";
+import TeamCounter from "@/components/Counter/TeamCounter.vue";
 
-const props = defineProps<{ group: Group }>();
-const { group } = toRefs(props);
-const moveTeam = () => navigateTo(`/@${group.value.domain}/post`);
-const getBlogColor = (type: BlogType) =>
-  BLOG_TAG.find((t) => t.type === type)?.color;
+const props = defineProps<{
+  team?: Team;
+  where: "MAIN" | "IN_TEAM";
+}>();
+const { team } = toRefs(props);
+const moveTeam = () => {
+  if (props.where === "IN_TEAM" || !team?.value) return;
+  navigateTo(`/@${team.value.domain}/post`);
+};
 </script>
 <template>
-  <q-item-label class="cursor-pointer q-mx-sm items-center" @click="moveTeam()">
+  <q-item-label
+    class="q-mx-sm"
+    :class="{ 'cursor-pointer': where === 'MAIN' }"
+    @click="moveTeam()"
+  >
+    <TeamCounter
+      :weekly-avg-post="team?.weeklyAvgPost"
+      :today-views="team?.todayViews"
+      :total-views="team?.totalViews"
+      class="q-px-sm q-py-sm"
+    />
     <q-item class="q-px-sm" style="overflow-x: hidden">
-      <div v-for="(v, i) in group.links" :key="i" class="q-mr-sm">
+      <div v-for="(v, i) in team?.links || []" :key="i" class="q-mr-sm">
         <q-avatar
           v-if="isTextImage(v.link.imagePath)"
           color="black"
@@ -54,58 +68,28 @@ const getBlogColor = (type: BlogType) =>
         </q-avatar>
       </div>
     </q-item>
-    <q-item class="q-px-sm q-pt-none">
+    <q-item class="q-px-sm q-pt-sm">
       <q-item-section>
-        <q-item-label class="text-weight-bolder row" style="font-size: 16px">
-          <span>{{ group.title }}</span>
-          <span class="text-grey-5 q-mx-sm">{{ group.links?.length }}</span>
+        <q-item-label class="text-weight-bolder row" style="font-size: 20px">
+          <span>{{ team?.title || "" }}</span>
+          <span class="text-grey-5 q-mx-sm">{{ team?.links?.length }}</span>
         </q-item-label>
         <q-item-label class="ellipsis-2-lines">{{
-          group.description
+          team?.description
         }}</q-item-label>
+        <q-item-label class="text-grey-5 q-pt-sm">
+          <span v-for="tag in team?.tags || []" class="q-mr-xs"
+            >#{{ tag.tag.name }}</span
+          >
+        </q-item-label>
         <q-item-label class="text-grey-5">
           {{
-            getFormatString(group.lastPostCreatedAt, "YYYY-MM-DD HH:mm (ddd)")
+            getFormatString(team?.lastPostCreatedAt, "YYYY-MM-DD HH:mm (ddd)")
           }}
-        </q-item-label>
-        <q-item-label class="text-grey-5 q-pt-xs">
-          <q-chip
-            square
-            outline
-            dense
-            color="green-4"
-            class="views q-mr-xs"
-            :label="'주간 게시물 ' + group.weeklyAvgPost + '개'"
-          />
-          <q-chip
-            square
-            outline
-            dense
-            color="green-3"
-            class="views q-mr-xs"
-            :label="'today ' + group.todayViews"
-          />
-          <q-chip
-            square
-            outline
-            dense
-            color="green-2"
-            class="views"
-            :label="
-              'total ' + ((group.totalViews || 0) + (group.todayViews || 0))
-            "
-          />
         </q-item-label>
       </q-item-section>
     </q-item>
   </q-item-label>
-  <q-separator spaced />
+  <q-separator :class="where === 'MAIN' ? 'q-my-sm' : 'q-mt-sm'" />
 </template>
-<style scope>
-.views {
-  font-size: 12px;
-  opacity: 0.8;
-  margin: 0;
-  margin-right: 4px;
-}
-</style>
+<style scope></style>

@@ -1,5 +1,5 @@
 import { useUserStore } from "@/stores/user";
-import { Tag, Group, Link, BlogType, TeamFormType } from "@/types/common";
+import { Tag, Link, BlogType, TeamFormType, Team } from "@/types/common";
 import { storeToRefs } from "pinia";
 import UserApi from "./userApi";
 
@@ -11,7 +11,7 @@ export default {
   }) {
     const config = useRuntimeConfig();
     const { tag, page, sort } = props;
-    return await useFetch<Group[]>(() => `group`, {
+    return await useFetch<Team[]>(() => `group`, {
       baseURL: config.public.apiBase,
       params: { page, sort, tag },
       lazy: true,
@@ -37,7 +37,7 @@ export default {
   },
   async findByDomain(domain: string) {
     const config = useRuntimeConfig();
-    return await useFetch<Group>(() => `group/${domain}`, {
+    return await useFetch<Team>(() => `group/${domain}`, {
       baseURL: config.public.apiBase,
       lazy: true,
     });
@@ -105,9 +105,11 @@ export default {
       throw new Error("액세스 토큰이 없는거!");
     }
     const headers = ref({ Authorization: `Bearer ${atk.value}` });
-    await useFetch("group", {
+    return await useFetch("group", {
       baseURL: config.public.apiBase,
       method: "put",
+      headers,
+      watch: [atk],
       body: {
         id,
         domain,

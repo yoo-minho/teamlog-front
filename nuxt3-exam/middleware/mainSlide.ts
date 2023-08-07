@@ -1,6 +1,4 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-  // console.log("mainSLide from.name", from.name, from.meta);
-  // console.log("mainSLide to.name", to.name, to.meta);
   const idx = (n: string) =>
     ["team", "blog", "post", "noti", "my"].findIndex((v) => v === n);
   const toIdx = idx(String(to.name));

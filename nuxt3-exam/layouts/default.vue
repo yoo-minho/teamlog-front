@@ -9,6 +9,7 @@ const userStore = useUserStore();
 const { isExistsUser, user, mainScrollAreaRef } = storeToRefs(userStore);
 const route = useRoute();
 const _teamScrollVPos = useState<number>("teamScrollVPos");
+const isVisibleScrollArea = ref(true);
 
 const tab = ref(String(route.name));
 watch(
@@ -19,9 +20,11 @@ watch(
 watch(
   () => route.name,
   (currentRouteName) => {
+    isVisibleScrollArea.value = false;
     const scrollVPos = "team" === currentRouteName ? _teamScrollVPos.value : 0;
     setTimeout(() => {
       mainScrollAreaRef.value.setScrollPosition("vertical", scrollVPos, 0);
+      isVisibleScrollArea.value = true;
     }, 100); //0.1s의 트랜지션때문에 그보다 큰!
   }
 );
@@ -58,7 +61,7 @@ const scroll = (info: any) => {
       >
         <q-layout class="max-width">
           <q-page-container style="min-height: 0; padding: 0">
-            <q-page style="min-height: 0">
+            <q-page :style="{ opacity: isVisibleScrollArea ? 1 : 0 }">
               <slot />
               <q-page-scroller
                 position="bottom-right"

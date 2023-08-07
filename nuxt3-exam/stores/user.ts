@@ -17,6 +17,9 @@ export const useUserStore = defineStore("user", {
     isMasterUser: (state) => ["KAKAO_2710302227"].includes(state.user?.id),
   },
   actions: {
+    isMyContents(createrId?: string) {
+      return createrId === this.user.id;
+    },
     initSearchData() {
       this.isSearchMode = false;
       this.searchWord = "";

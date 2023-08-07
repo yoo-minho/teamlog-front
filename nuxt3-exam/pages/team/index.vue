@@ -42,19 +42,23 @@ const { data: _teams, refresh: refreshTeam, pending } = response;
 const currentTeams = ref(isCached() ? teams.value : teams.value || []);
 const isExistsNextPage = ref(true);
 
-watch(_teams, (newTeams) => {
-  if (isCached()) {
-    //pass
-  } else {
-    currentTeams.value = [
-      ...(page.value === 1 ? [] : currentTeams.value || []),
-      ...(newTeams || []),
-    ];
-  }
-  _fromRouteName.value = "team";
-  teams.value = currentTeams.value;
-  isExistsNextPage.value = teams.value.length % 10 === 0;
-});
+watch(
+  _teams,
+  (newTeams) => {
+    if (isCached()) {
+      //pass
+    } else {
+      currentTeams.value = [
+        ...(page.value === 1 ? [] : currentTeams.value || []),
+        ...(newTeams || []),
+      ];
+    }
+    _fromRouteName.value = "team";
+    teams.value = currentTeams.value;
+    isExistsNextPage.value = teams.value.length % 10 === 0;
+  },
+  { immediate: !isCached() }
+);
 
 const refreshTeamData = async ({ init = false } = {}) => {
   page.value = (init ? 0 : Math.ceil(teams.value.length / 10)) + 1;
@@ -97,14 +101,17 @@ definePageMeta({
       </q-select>
       <q-separator spaced style="margin-top: 0" />
       <template v-if="pending && teams.length === 0">
-        <div>로딩중...</div>
+        <template v-for="i in 10">
+          <TeamListSkeletonItem />
+        </template>
       </template>
       <template v-else>
         <q-page class="q-mt-sm" style="min-height: 0">
           <TeamListItem
-            v-for="group in currentTeams"
-            :key="group.id"
-            :group="group"
+            where="MAIN"
+            v-for="team in currentTeams"
+            :key="team.id"
+            :team="team"
           />
         </q-page>
         <ClientOnly>

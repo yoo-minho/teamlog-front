@@ -18,7 +18,7 @@ const { post } = toRefs(props);
           v-html="post.title"
         ></div>
         <div class="label ellipsis-2-lines" style="line-height: 20px">
-          {{ post.description || "ㅤ" }}
+          {{ post.description || "" }}
         </div>
         <div class="label text-grey-5 ellipsis">
           {{ getDateString(post.createdAt) }}

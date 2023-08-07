@@ -91,7 +91,7 @@ watch(
         <q-toolbar-title class="name">{{ title }}</q-toolbar-title>
       </template>
       <template v-if="isSearchable">
-        <q-btn :icon="seachIcon" flat round dense @click="toggleSearchMode()" />
+        <!-- <q-btn :icon="seachIcon" flat round dense @click="toggleSearchMode()" /> -->
       </template>
       <template v-if="isSortable">
         <q-btn icon="add" flat round dense @click="_openNewTeam()" />
@@ -99,7 +99,7 @@ watch(
       <q-btn icon="share" flat round dense @click="showBottomSheet()" />
       <q-btn icon="menu" flat round dense @click="_openSettingMain" />
       <q-btn
-        icon="get_app"
+        icon="add_to_home_screen"
         flat
         round
         dense
