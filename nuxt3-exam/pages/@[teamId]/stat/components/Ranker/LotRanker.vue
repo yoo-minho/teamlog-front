@@ -3,13 +3,12 @@ import { storeToRefs } from "pinia";
 import { useTeamStore } from "@/stores/team";
 import PostAPI from "@/api/postApi";
 import Ranker from "./Ranker.vue";
-import { RankerStat } from "@/types/common";
 
 const teamStore = useTeamStore();
 const { currentTeamLinkIds } = storeToRefs(teamStore);
 
 //define
-const transLots = ref([] as RankerStat[]);
+const transLots = ref();
 const linkIds = ref(currentTeamLinkIds.value);
 
 //created
@@ -20,8 +19,10 @@ watch(
   _lot,
   () => {
     transLots.value =
-      _lot.value?.map((v) => ({ linkId: v.linkId, stat: v.count + "건" })) ||
-      [];
+      (_lot.value || []).map((v) => ({
+        linkId: v.linkId,
+        stat: v.count + "건",
+      })) || [];
   },
   { immediate: true }
 );

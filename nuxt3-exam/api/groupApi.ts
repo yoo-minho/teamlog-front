@@ -1,157 +1,53 @@
-import { useUserStore } from "@/stores/user";
-import { Tag, Link, BlogType, TeamFormType, Team } from "@/types/common";
-import { storeToRefs } from "pinia";
-import UserApi from "./userApi";
+import { Tag, TeamFormType, Team } from "@/types/common";
+import { TeamCountResultType, TeamCreateJson, TeamFilter } from "@/types/api";
 
 export default {
-  async findAll(props: {
-    tag?: Ref<string>;
-    page: Ref<number>;
-    sort?: Ref<string>;
-  }) {
-    const config = useRuntimeConfig();
+  findAll(props: TeamFilter) {
     const { tag, page, sort } = props;
-    return await useFetch<Team[]>(() => `group`, {
-      baseURL: config.public.apiBase,
-      params: { page, sort, tag },
+    return useAPIFetch<Team[]>("group", {
+      params: { page: page.value, sort, tag },
       lazy: true,
     });
   },
-  async count() {
-    const config = useRuntimeConfig();
-    return await useFetch<{
-      groupCount: number;
-      linkCount: number;
-      postCount: number;
-      linkCountByPlatform: { _count: number; type: BlogType }[];
-    }>("group/counts", {
-      baseURL: config.public.apiBase,
-    });
+  count() {
+    return useAPIFetch<TeamCountResultType>("group/counts");
   },
-  async findAllTag() {
-    const config = useRuntimeConfig();
-    return await useFetch<Tag[]>("tag", {
-      baseURL: config.public.apiBase,
-      lazy: true,
-    });
+  findAllTag() {
+    return useAPIFetch<Tag[]>("tag", { lazy: true });
   },
-  async findByDomain(domain: string) {
-    const config = useRuntimeConfig();
-    return await useFetch<Team>(() => `group/${domain}`, {
-      baseURL: config.public.apiBase,
-      lazy: true,
-    });
+  findByDomain(domain: string) {
+    return useAPIFetch<Team>(`group/${domain}`, { lazy: true });
   },
-  async create(props: {
-    domain: string;
-    title: string;
-    description: string;
-    tags: string[];
-    links: Link[];
-  }) {
-    let cycle = 0;
-    const userStore = useUserStore();
-    const { user, atk } = storeToRefs(userStore);
-    const config = useRuntimeConfig();
+  create(props: TeamCreateJson) {
     const { domain, title, description, tags, links } = props;
-    if (!atk.value) {
-      console.log({ user });
-      throw new Error("액세스 토큰이 없는거!");
-    }
-    const headers = ref({ Authorization: `Bearer ${atk.value}` });
-    return await useFetch("group", {
-      baseURL: config.public.apiBase,
-      headers,
+    return useAPIFetchWithGuard("group", {
       method: "post",
-      watch: [atk],
-      body: {
-        domain,
-        title,
-        description,
-        tags,
-        links,
-      },
-      onResponseError: async (err) => {
-        const res = err.response?._data?.res;
-        if (res.name === "TokenExpiredError") {
-          const { data } = await UserApi.reissueAtk();
-          if (data.value?.atk === "") return;
-          atk.value = data.value?.atk || "";
-          headers.value = { Authorization: `Bearer ${atk.value}` };
-          return;
-        }
-        cycle++;
-        if (cycle > 3) throw new Error("잠시후 다시 시도해주세요!");
-      },
+      body: { domain, title, description, tags, links },
     });
   },
-  async delete(id?: number) {
-    if (!id) throw new Error(`유효한 아이디가 아닙니다. ${id}`);
-    const config = useRuntimeConfig();
-    return await useFetch("group", {
-      baseURL: config.public.apiBase,
-      method: "delete",
-      body: { id },
-    });
-  },
-  async update(props: TeamFormType) {
-    let cycle = 0;
-    const userStore = useUserStore();
-    const { user, atk } = storeToRefs(userStore);
-    const config = useRuntimeConfig();
+  update(props: TeamFormType) {
     const { id, domain, title, description, tags, links } = props;
-    if (!atk.value) {
-      console.log({ user });
-      throw new Error("액세스 토큰이 없는거!");
-    }
-    const headers = ref({ Authorization: `Bearer ${atk.value}` });
-    return await useFetch("group", {
-      baseURL: config.public.apiBase,
+    return useAPIFetchWithGuard("group", {
       method: "put",
-      headers,
-      watch: [atk],
-      body: {
-        id,
-        domain,
-        title,
-        description,
-        tags,
-        links,
-      },
-      onResponseError: async (err) => {
-        const res = err.response?._data?.res;
-        if (res.name === "TokenExpiredError") {
-          const { data } = await UserApi.reissueAtk();
-          if (data.value?.atk === "") return;
-          atk.value = data.value?.atk || "";
-          headers.value = { Authorization: `Bearer ${atk.value}` };
-          return;
-        }
-        cycle++;
-        if (cycle > 3) throw new Error("잠시후 다시 시도해주세요!");
-      },
+      body: { id, domain, title, description, tags, links },
     });
   },
-  async updateLastPostCreateAt(groupId?: number) {
+  delete(id?: number) {
+    if (!id) throw new Error(`유효한 아이디가 아닙니다. ${id}`);
+    return useAPIFetchWithGuard("group", { methods: "delete", body: { id } });
+  },
+  updateLastPostCreateAt(groupId?: number) {
     if (!groupId) throw new Error("No Group Id");
-    const config = useRuntimeConfig();
-    return await useFetch("group/last-post-create-at", {
-      baseURL: config.public.apiBase,
+    return useAPIFetch("group/last-post-create-at", {
       method: "put",
-      body: {
-        groupId,
-      },
+      body: { groupId },
     });
   },
-  async updateStat(groupId?: number) {
+  updateStat(groupId?: number) {
     if (!groupId) throw new Error("No Group Id");
-    const config = useRuntimeConfig();
-    return await useFetch("group/stat", {
-      baseURL: config.public.apiBase,
+    return useAPIFetch("group/stat", {
       method: "put",
-      body: {
-        groupId,
-      },
+      body: { groupId },
     });
   },
 };

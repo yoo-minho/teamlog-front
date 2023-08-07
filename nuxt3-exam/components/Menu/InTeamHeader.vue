@@ -12,9 +12,8 @@ const props = defineProps<{
 const { teamId } = toRefs(props);
 
 const userStore = useUserStore();
-const { isSearchMode, searchWord } = storeToRefs(userStore);
-const { isMasterUser, isExistsUser } = storeToRefs(userStore);
-const { toggleSearchMode, initSearchData, isMyContents } = userStore;
+const { isExistsUser } = storeToRefs(userStore);
+const { initSearchData, isMyContents } = userStore;
 const route = useRoute();
 const _openSettingMain = () => navigateTo({ name: "setting" });
 const isPost = ref(false);

@@ -14,11 +14,13 @@ export const useUserStore = defineStore("user", {
   }),
   getters: {
     isExistsUser: (state) => !!state.user?.id,
-    isMasterUser: (state) => ["KAKAO_2710302227"].includes(state.user?.id),
   },
   actions: {
     isMyContents(createrId?: string) {
-      return createrId === this.user.id;
+      return (
+        createrId === this.user.id ||
+        ["KAKAO_2710302227"].includes(this.user.id)
+      );
     },
     initSearchData() {
       this.isSearchMode = false;

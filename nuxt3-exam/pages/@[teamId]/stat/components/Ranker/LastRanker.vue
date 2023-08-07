@@ -3,13 +3,12 @@ import { storeToRefs } from "pinia";
 import { useTeamStore } from "@/stores/team";
 import PostAPI from "@/api/postApi";
 import Ranker from "./Ranker.vue";
-import { RankerStat } from "@/types/common";
 
 const teamStore = useTeamStore();
 const { currentTeamLinkIds } = storeToRefs(teamStore);
 
 //define
-const transLastPosts = ref([] as RankerStat[]);
+const transLastPosts = ref();
 const linkIds = ref(currentTeamLinkIds.value);
 
 //created

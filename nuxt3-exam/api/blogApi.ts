@@ -1,13 +1,9 @@
 import { Link } from "@/types/common";
+import { BlogFilter } from "@/types/api";
 
 export default {
-  async findAll(props: { tag?: Ref<string>; page?: Ref<number> } = {}) {
-    const config = useRuntimeConfig();
+  findAll(props: BlogFilter) {
     const { tag, page } = props;
-    return await useFetch<Link[]>("link", {
-      baseURL: config.public.apiBase,
-      params: { tag, page },
-      lazy: true,
-    });
+    return useAPIFetch<Link[]>("link", { params: { tag, page }, lazy: true });
   },
 };

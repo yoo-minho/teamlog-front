@@ -6,74 +6,39 @@ import {
   LinkWrap,
   Post,
   ScrapItem,
-  linkCount,
 } from "@/types/common";
+import { SearchParam } from "@/types/api";
 import { getAgoString, getDateString } from "@/plugin/dayjs";
-
-type SearchParam = {
-  teamId?: Ref<string>;
-  tag?: Ref<string>;
-  q?: Ref<string>;
-  page?: Ref<number>;
-};
 
 const getIds = (links?: LinkWrap[]) =>
   links ? links.map(({ link }) => link.id) : [];
 
 export default {
-  async createPosts(linkId?: number, items?: ScrapItem[]) {
+  createPosts(linkId?: number, items?: ScrapItem[]) {
     if (items?.length === 0) return;
-    const config = useRuntimeConfig();
-    const baseURL = config.public.apiBase;
-    await $fetch("post", {
-      baseURL,
-      method: "post",
-      body: { linkId, items },
-    });
+    return useAPIFetch("post", { method: "post", body: { linkId, items } });
   },
-  async findAllPosts(links?: LinkWrap[], page?: number) {
-    const config = useRuntimeConfig();
-    const baseURL = config.public.apiBase;
-    return await useFetch("post", {
-      baseURL,
-      params: { linkIds: getIds(links), page },
-    });
+  findAllPosts(links?: LinkWrap[], page?: number) {
+    return useAPIFetch("post", { params: { linkIds: getIds(links), page } });
   },
-  async findPosts(props: SearchParam) {
+  findPosts(props: SearchParam) {
     const { teamId, tag, q, page } = props;
-    const config = useRuntimeConfig();
-    const baseURL = config.public.apiBase;
-    return await useFetch<Post[]>("post", {
-      baseURL,
+    return useAPIFetch<Post[]>("post", {
       params: { teamId, tag, q, page },
       lazy: true,
     });
   },
-  async findCountGroupById(props: { linkIds: Ref<(number | undefined)[]> }) {
-    const config = useRuntimeConfig();
-    const baseURL = config.public.apiBase;
-    return await useFetch<linkCount[]>("post/many", {
-      baseURL,
+  findCountGroupById(props: { linkIds: Ref<(number | undefined)[]> }) {
+    return useAPIFetch<{ linkId: number; count: number }[]>("post/many", {
       params: { linkIds: props.linkIds },
       lazy: true,
     });
   },
-  async findLast(props: { linkIds: Ref<(number | undefined)[]> }) {
-    console.log("findLastfindLast");
-    const config = useRuntimeConfig();
-    const baseURL = config.public.apiBase;
-    return await useFetch<
-      LastPost[], //ResT
-      null, //ErrorT
-      "post/last", //ReqT
-      "get", //Method
-      LastPost[], //_ResT
-      LastPostPlus[] //DataT
-    >("post/last", {
-      baseURL,
+  findLast(props: { linkIds: Ref<(number | undefined)[]> }) {
+    return useAPIFetch<LastPost[]>("post/last", {
       params: { linkIds: props.linkIds },
       lazy: true,
-      transform: (lasts) =>
+      transform: (lasts: LastPost[]): LastPostPlus[] =>
         lasts.map((v) => ({
           ...v,
           dateString: getDateString(v.createdAt),
@@ -81,23 +46,11 @@ export default {
         })),
     });
   },
-  async countByDate(props: { linkIds: Ref<(number | undefined)[]> }) {
-    const config = useRuntimeConfig();
-    const baseURL = config.public.apiBase;
-    return await useFetch<
-      DaysAllCounts[], //ResT
-      null, //ErrorT
-      "post/count/date", //ReqT
-      "get", //Method
-      DaysAllCounts[], //_ResT
-      DaysCount[] //DataT
-    >("post/count/date", {
-      baseURL,
-      params: {
-        linkIds: props.linkIds,
-      },
+  countByDate(props: { linkIds: Ref<(number | undefined)[]> }) {
+    return useAPIFetch<DaysAllCounts[]>("post/count/date", {
+      params: { linkIds: props.linkIds },
       lazy: true,
-      transform: (counts) =>
+      transform: (counts: DaysAllCounts[]): DaysCount[] =>
         counts.map((v) => ({
           ...v,
           count: v.count ? v.count.totalCount || 0 : 0,

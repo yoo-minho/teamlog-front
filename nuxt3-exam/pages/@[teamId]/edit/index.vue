@@ -15,10 +15,11 @@ const teamStore = useTeamStore();
 const { currentTeam } = storeToRefs(teamStore);
 const editTeam = async (formData: TeamFormType) => {
   const { error } = await GroupApi.update(formData);
+  console.log("error", error.value);
   if (error.value?.statusCode === 401) {
     Notify.create({
       type: "negative",
-      message: "등록한 계정만 수정 가능합니다!",
+      message: "본인이 등록한 팀에 한하여 수정 가능합니다!",
     });
     return;
   }
