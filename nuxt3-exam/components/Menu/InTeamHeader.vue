@@ -45,7 +45,7 @@ const deleteTeam = async () => {
       return;
     }
     Notify.create({ type: "success", message: "삭제되었습니다." });
-    await new Promise((res) => setTimeout(res, 500)); //타이밍 이슈가 있나보다.
+    await new Promise((res) => setTimeout(res, 1000)); //타이밍 이슈가 있나보다.
     goMain();
   });
 };
