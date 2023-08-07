@@ -34,7 +34,7 @@ export default {
   },
   delete(id?: number) {
     if (!id) throw new Error(`유효한 아이디가 아닙니다. ${id}`);
-    return useAPIFetchWithGuard("group", { methods: "delete", body: { id } });
+    return useAPIFetchWithGuard("group", { method: "delete", body: { id } });
   },
   updateLastPostCreateAt(groupId?: number) {
     if (!groupId) throw new Error("No Group Id");

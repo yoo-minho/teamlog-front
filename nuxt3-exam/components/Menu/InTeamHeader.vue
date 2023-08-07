@@ -35,8 +35,17 @@ const deleteTeam = async () => {
     ok: "삭제하기",
     cancel: "취소",
   }).onOk(async () => {
-    await GroupApi.delete(teamId?.value);
-    await new Promise((res) => setTimeout(res, 1000)); //타이밍 이슈가 있나보다.
+    const { error } = await GroupApi.delete(teamId?.value);
+    console.log(error.value);
+    if (error.value?.statusCode === 401) {
+      Notify.create({
+        type: "negative",
+        message: "본인이 등록한 팀에 한하여 삭제 가능합니다!",
+      });
+      return;
+    }
+    Notify.create({ type: "success", message: "삭제되었습니다." });
+    await new Promise((res) => setTimeout(res, 500)); //타이밍 이슈가 있나보다.
     goMain();
   });
 };
