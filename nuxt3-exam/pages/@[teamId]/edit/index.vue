@@ -15,7 +15,6 @@ const teamStore = useTeamStore();
 const { currentTeam } = storeToRefs(teamStore);
 const editTeam = async (formData: TeamFormType) => {
   const { error } = await GroupApi.update(formData);
-  console.log("error", error.value);
   if (error.value?.statusCode === 401) {
     Notify.create({
       type: "negative",
