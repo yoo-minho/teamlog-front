@@ -1,5 +1,4 @@
 import {
-  DaysAllCounts,
   DaysCount,
   LastPost,
   LastPostPlus,
@@ -7,7 +6,7 @@ import {
   Post,
   ScrapItem,
 } from "@/types/common";
-import { SearchParam } from "@/types/api";
+import { SearchParam, LinkIdsType } from "@/types/api";
 import { getAgoString, getDateString } from "@/plugin/dayjs";
 
 const getIds = (links?: LinkWrap[]) =>
@@ -28,13 +27,13 @@ export default {
       lazy: true,
     });
   },
-  findCountGroupById(props: { linkIds: Ref<(number | undefined)[]> }) {
+  findCountGroupById(props: LinkIdsType) {
     return useAPIFetch<{ linkId: number; count: number }[]>("post/many", {
       params: { linkIds: props.linkIds },
       lazy: true,
     });
   },
-  findLast(props: { linkIds: Ref<(number | undefined)[]> }) {
+  findLast(props: LinkIdsType) {
     return useAPIFetch<LastPost[]>("post/last", {
       params: { linkIds: props.linkIds },
       lazy: true,
@@ -46,11 +45,13 @@ export default {
         })),
     });
   },
-  countByDate(props: { linkIds: Ref<(number | undefined)[]> }) {
-    return useAPIFetch<DaysAllCounts[]>("post/count/date", {
-      params: { linkIds: props.linkIds },
+  countByDate(props: LinkIdsType = {}) {
+    return useAPIFetch<DaysCount<number>[]>("post/count/date", {
+      params: props ? { linkIds: props.linkIds } : {},
       lazy: true,
-      transform: (counts: DaysAllCounts[]): DaysCount[] =>
+      transform: (
+        counts: DaysCount<{ totalCount: number }>[]
+      ): DaysCount<number>[] =>
         counts.map((v) => ({
           ...v,
           count: v.count ? v.count.totalCount || 0 : 0,

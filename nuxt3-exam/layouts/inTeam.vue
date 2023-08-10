@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import InTeamHeader from "@/components/Menu/InTeamHeader.vue";
+import InTeamHeader from "@/components/Header/InTeamHeader.vue";
 import GroupApi from "@/api/groupApi";
 import RssApi from "@/api/rssApi";
 import { TAB_LABEL_IN_TEAM } from "@/constants/";
 import { useTeamStore } from "@/stores/team";
-import { LinkWrap, Team } from "@/types/common";
+import { LinkWrap, Team, TeamStatType } from "@/types/common";
 import { isTodayByDate } from "@/plugin/dayjs";
 import TeamListItem from "@/pages/team/components/TeamListItem.vue";
 import TeamListSkeletonItem from "@/pages/team/components/TeamListSkeletonItem.vue";
@@ -18,11 +18,6 @@ const tab = ref(tabId.value);
 const teamStore = useTeamStore();
 const { currentTeam } = storeToRefs(teamStore);
 const isDark = ref($q.dark.isActive);
-
-type TeamStatType = {
-  lastPostCreatedAt: Date;
-  weeklyAvgPost: number;
-};
 
 const scrapPosts = async (id: number, links: LinkWrap[]) => {
   if (links.length === 0) return;
@@ -86,7 +81,6 @@ watch(
                   :class="`text-grey js-tab bg-${isDark ? 'dark' : 'white'}`"
                   :active-color="`${isDark ? 'green-4' : 'primary'}`"
                   :indicator-color="`${isDark ? 'green-4' : 'primary'}`"
-                  narrow-indicator
                 >
                   <div v-for="(tag, i) in TAB_LABEL_IN_TEAM" :key="i">
                     <q-route-tab
@@ -98,7 +92,7 @@ watch(
                   </div>
                 </q-tabs>
                 <q-separator />
-                <slot></slot>
+                <slot />
                 <q-page-scroller
                   position="bottom-right"
                   :scroll-offset="150"

@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { QScrollArea } from "quasar";
-
-import { User } from "@/types/common";
+import { Tag, User } from "@/types/common";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -11,6 +10,7 @@ export const useUserStore = defineStore("user", {
     isSearchMode: false,
     searchWord: "",
     mainScrollAreaRef: null as unknown as QScrollArea,
+    tags: [] as Tag[],
   }),
   getters: {
     isExistsUser: (state) => !!state.user?.id,

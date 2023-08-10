@@ -45,7 +45,7 @@ const clickTag = async (tagName: string) => {
   .active {
     font-weight: bolder;
     color: $dark;
-    background: $green-5 !important;
+    background: $green-10 !important;
   }
 }
 </style>

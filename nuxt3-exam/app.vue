@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useUserStore } from "./stores/user";
-import UserApi from "@/api/userApi";
+import { useUserStore } from "@/stores/user";
 import { savePrompt } from "@/composables/useInstallBottomSheet";
+import UserApi from "@/api/userApi";
+import GroupApi from "@/api/groupApi";
 
 const $q = useQuasar();
 const isDarkActive = ref($q.dark.isActive);
 const userStore = useUserStore();
-const { user, atk } = storeToRefs(userStore);
+const { user, atk, tags } = storeToRefs(userStore);
 const route = useRoute();
 const code = String(route.query.code || "");
+
 if (!code) {
   const { data } = await UserApi.reissue();
   const rtk = useCookie("refresh-token");
@@ -24,6 +26,9 @@ const { data: _user } = await UserApi.findUser(atk);
 if (_user.value != null) {
   user.value = _user.value;
 }
+
+const { data: _tags } = await GroupApi.findAllTag();
+watch(_tags, () => (tags.value = _tags.value || []), { immediate: true });
 
 watch(
   () => $q.dark.isActive,

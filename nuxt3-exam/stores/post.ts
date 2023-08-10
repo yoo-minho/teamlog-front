@@ -1,12 +1,11 @@
 import { defineStore, storeToRefs } from "pinia";
-import { DaysCount, Post } from "@/types/common";
+import { Post } from "@/types/common";
 import { useUserStore } from "./user";
 import { changeMarkContents } from "@/composables/useHighlight";
 
 export const usePostStore = defineStore("post", {
   state: () => ({
     posts: [] as Post[],
-    jandis: [] as DaysCount[],
   }),
   getters: {},
   actions: {

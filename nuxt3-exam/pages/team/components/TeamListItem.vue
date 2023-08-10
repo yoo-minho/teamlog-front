@@ -58,10 +58,10 @@ const moveTeam = () => {
           >
             <template #error>
               <div
-                class="absolute-full flex flex-center bg-negative text-white"
+                class="absolute-full flex flex-center bg-green-4 text-white"
                 style="padding: 0"
               >
-                {{ v.link.title.substring(0, 2) }}
+                {{ v.link.title.substring(0, 1) }}
               </div>
             </template>
           </q-img>

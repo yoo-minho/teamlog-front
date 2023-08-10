@@ -96,28 +96,17 @@ export type Days = {
   day: number;
   month: string;
 };
-export type DaysCount = Days & {
-  count: number;
-};
-export type DaysAllCounts = {
+export type DaysCount<T> = {
   date: string;
   day: number;
   month: string;
-  count: {
-    [key: string]: number;
-  };
+  count: T;
 };
 export type Jandi = {
   date: string;
   day: number;
   month: string;
   count: { totalCount: number } | number | undefined;
-};
-export type DaysCounts = {
-  date: string;
-  day: number;
-  month: string;
-  count: number;
 };
 export type StackJson = {
   name: string;
@@ -158,4 +147,8 @@ export type TeamFormType = {
   description: string;
   tags: string[];
   links: Link[];
+};
+export type TeamStatType = {
+  lastPostCreatedAt: Date;
+  weeklyAvgPost: number;
 };

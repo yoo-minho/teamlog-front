@@ -1,15 +1,20 @@
 <script setup lang="ts">
 import LinkCard from "@/components/Card/LinkCard.vue";
 import LinkDialog from "@/components/Dialog/LinkDialog.vue";
-import GroupApi from "@/api/groupApi";
 import { Link, TeamFormType, Team } from "@/types/common";
 import { scrapOGS } from "@/composables/useOgs";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "@/stores/user";
+
+type TempTag = { id: number | string; name: string };
 
 const $q = useQuasar();
 const route = useRoute();
 const router = useRouter();
 const isMobile = $q.platform.is.mobile;
 const isDarkActive = ref($q.dark.isActive);
+const userStore = useUserStore();
+const { tags } = storeToRefs(userStore);
 
 watch(
   () => $q.dark.isActive,
@@ -18,7 +23,7 @@ watch(
 
 const props = defineProps<{ currentTeam?: Team }>();
 const emits = defineEmits<{
-  (eventName: "submit", value: TeamFormType): Promise<any>;
+  (eventName: "submit", value: TeamFormType): void;
 }>();
 const { currentTeam } = toRefs(props);
 const {
@@ -26,22 +31,18 @@ const {
   title = "",
   domain = "",
   description = "",
-  tags = [],
+  tags: currentSelectedTag = [],
 } = currentTeam?.value || {};
-
-const { data: allTags } = await GroupApi.findAllTag();
-
 const showLink = ref(false);
 const domainRef = ref();
 const _domain = ref(domain);
 const _title = ref(title);
 const _description = ref(description);
-const _selectedTags = ref(
-  tags?.map(({ tag: { id, name } }) => ({
-    label: name,
-    value: id,
-  })) || []
-);
+
+const tag2tag = ({ name, id }: TempTag) => ({ label: name, value: id });
+const options = tags.value?.map(tag2tag) || [];
+const selectTags = currentSelectedTag?.map(({ tag }) => tag2tag(tag)) || [];
+const _selectedTags = ref(selectTags);
 const links = ref(currentTeam?.value?.links?.map((l) => l.link) || []);
 const linksCountLabel = computed(() =>
   links.value.length > 0 ? `(${links.value.length}/10)` : ""
@@ -55,11 +56,6 @@ const idRules = [
     new RegExp(/^[A-Za-z0-9_+]*$/).test(val) ||
     "대소문자, 숫자, 언더바를 활용하여 입력해주세요!",
 ];
-const options =
-  allTags.value?.map((tag) => ({
-    label: tag.name,
-    value: tag.id,
-  })) || [];
 
 const saveLink = (link: Link) => links.value.push(link);
 const deleteLink = (url: string) => {

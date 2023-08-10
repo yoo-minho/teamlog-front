@@ -14,7 +14,7 @@ defineProps<{
       dense
       color="green-4"
       class="views q-mr-xs"
-      :label="'주간 게시물 ' + (weeklyAvgPost || 0) + '개'"
+      :label="'주간 게시물 ' + (weeklyAvgPost || 0) + '건'"
     />
     <q-chip
       square
@@ -34,7 +34,7 @@ defineProps<{
     />
   </q-item-label>
 </template>
-<style scope>
+<style>
 .views {
   font-size: 12px;
   opacity: 0.8;

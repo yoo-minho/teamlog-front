@@ -27,7 +27,7 @@ export const TAB_LABEL = {
   team: "팀로그",
   blog: "블로그",
   post: "포스트",
-  noti: "알림",
+  stat: "통계",
   my: "나의 공간",
 } as { [key: string]: string };
 export const TAB_LABEL_IN_TEAM = [

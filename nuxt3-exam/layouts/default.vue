@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/user";
-import MainHeader from "@/components/Menu/MainHeader.vue";
+import MainHeader from "@/components/Header/MainHeader.vue";
 
 const $q = useQuasar();
 const isDarkActive = ref($q.dark.isActive);
@@ -9,7 +9,6 @@ const userStore = useUserStore();
 const { isExistsUser, user, mainScrollAreaRef } = storeToRefs(userStore);
 const route = useRoute();
 const _teamScrollVPos = useState<number>("teamScrollVPos");
-const isVisibleScrollArea = ref(true);
 
 const tab = ref(String(route.name));
 watch(
@@ -20,11 +19,9 @@ watch(
 watch(
   () => route.name,
   (currentRouteName) => {
-    isVisibleScrollArea.value = false;
     const scrollVPos = "team" === currentRouteName ? _teamScrollVPos.value : 0;
     setTimeout(() => {
       mainScrollAreaRef.value.setScrollPosition("vertical", scrollVPos, 0);
-      isVisibleScrollArea.value = true;
     }, 100); //0.1s의 트랜지션때문에 그보다 큰!
   }
 );
@@ -39,11 +36,17 @@ const scroll = (info: any) => {
   <div :class="`${isDarkActive ? 'bg-grey-9' : 'bg-white'}`">
     <q-layout>
       <MainHeader style="position: relative" />
-      <q-tabs v-model="tab" class="bg-dark text-white shadow-2" align="justify">
+      <q-tabs
+        v-model="tab"
+        dense
+        :class="`text-grey js-tab bg-dark`"
+        :active-color="`green-1`"
+        :indicator-color="`green-1`"
+      >
         <q-route-tab to="/team" label="Team" style="flex: 1" no-caps />
         <q-route-tab to="/blog" label="Blog" style="flex: 1" no-caps />
         <q-route-tab to="/post" label="Post" style="flex: 1" no-caps />
-        <q-route-tab to="/noti" icon="notifications" style="flex: 1" no-caps />
+        <q-route-tab to="/stat" label="Stat" style="flex: 1" no-caps />
         <q-route-tab to="/my" style="flex: 1" no-caps>
           <q-btn v-if="isExistsUser" flat round>
             <q-avatar size="28px">
@@ -61,8 +64,8 @@ const scroll = (info: any) => {
       >
         <q-layout class="max-width">
           <q-page-container style="min-height: 0; padding: 0">
-            <q-page :style="{ opacity: isVisibleScrollArea ? 1 : 0 }">
-              <slot />
+            <q-page>
+              <slot></slot>
               <q-page-scroller
                 position="bottom-right"
                 :scroll-offset="150"
@@ -77,8 +80,3 @@ const scroll = (info: any) => {
     </q-layout>
   </div>
 </template>
-<style lang="scss">
-.q-tab--active {
-  color: $green-5;
-}
-</style>

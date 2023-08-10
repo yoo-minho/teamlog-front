@@ -1,40 +1,28 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useTeamStore } from "@/stores/team";
-import { usePostStore } from "@/stores/post";
 import { skipBlogName } from "@/utils/NameUtil";
 import PostAPI from "@/api/postApi";
 
-import JandiBox from "./JandiBox.vue";
-import JandiContents from "./JandiContents.vue";
-import JandiBottomTip from "./JandiBottomTip.vue";
-import { DaysCount } from "@/types/common";
-
-const MMM = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const day = [0, 1, 2, 3, 4, 5, 6];
-const add = (total: number, val: { count: number }) => total + val.count;
-const active = (arr: DaysCount[]) => arr.filter((v) => v.count > 0);
-const targetCount = (arr: DaysCount[], day: number) =>
-  arr.filter((v) => v.day === day).length;
-
-const [teamStore, postStore] = [useTeamStore(), usePostStore()];
-const { jandis } = storeToRefs(postStore);
-const { currentTeam, currentTeamLinkIds } = storeToRefs(teamStore);
+import JandiContents from "@/components/Jandi/JandiContents.vue";
+import JandiBottomTip from "@/components/Jandi/JandiBottomTip.vue";
 
 const defaultValue = -1;
 const defaultOption = {
   label: "전체 (블로그별 필터 가능)",
   value: defaultValue,
 };
-
+const teamStore = useTeamStore();
+const { currentTeam, currentTeamLinkIds } = storeToRefs(teamStore);
 const makeLinkIds = (selectedId: number) =>
   currentTeamLinkIds.value.filter((id) =>
     selectedId === defaultValue ? true : id === selectedId
   );
 
+const jandis = ref();
 const linkIds = ref(makeLinkIds(defaultValue));
-const [totalJandiCnt, manyPostMMM] = [ref(0), ref("-"), ref("-")];
-
+const _totalJandiCnt = ref(0);
+const _manyPostMMM = ref("-");
 const currentFilter = ref(defaultOption);
 const filterOptions = computed(() => [
   defaultOption,
@@ -54,18 +42,9 @@ watch(
   _jandis,
   () => {
     jandis.value = _jandis.value || [];
-
-    const activeJandis = active(jandis.value);
-    if (activeJandis.length === 0) return;
-
-    //calculate
-    const dayOfWeek = day
-      .map((d) => ({ day: d, count: targetCount(activeJandis, d) }))
-      .sort((x, y) => y.count - x.count);
-
-    //setting
-    totalJandiCnt.value = activeJandis?.reduce(add, 0) || 0;
-    manyPostMMM.value = MMM[dayOfWeek[0].day];
+    const { totalJandiCnt, manyPostMMM } = useDayCount(jandis.value);
+    _totalJandiCnt.value = totalJandiCnt;
+    _manyPostMMM.value = manyPostMMM;
   },
   { immediate: true }
 );
@@ -97,23 +76,28 @@ const refreshJandiData = async (selected: { value: number }) => {
         />
       </template>
     </q-select>
-    <q-card class="bg-green-1">
+    <q-card>
       <q-card-section class="row jandi-zone">
         <JandiContents :loading="pending" :data="jandis" />
-        <JandiBottomTip :count="totalJandiCnt" />
+        <JandiBottomTip :count="_totalJandiCnt" />
       </q-card-section>
     </q-card>
-    <div class="row q-col-gutter-md q-mt-none">
-      <JandiBox
-        :label="'주간 게시물'"
-        :value="String(currentTeam.weeklyAvgPost) || '-'"
-      />
-      <JandiBox :label="'포스팅 많은 요일'" :value="manyPostMMM" />
-    </div>
   </div>
+  <q-item-label class="text-grey-5 q-mt-md">
+    <q-chip
+      square
+      outline
+      dense
+      color="green-1"
+      class="views q-mr-xs"
+      :label="`#${_manyPostMMM}요일에포스팅많아`"
+    />
+  </q-item-label>
 </template>
 
-<style scoped>
+<style lang="scss">
+@charset "UTF-8";
+
 .jandi-zone {
   justify-content: center;
 }
@@ -122,6 +106,32 @@ const refreshJandiData = async (selected: { value: number }) => {
   .jandi-zone {
     justify-content: end;
     overflow-x: scroll;
+  }
+}
+
+.stat-area {
+  .jandi {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(27, 31, 35, 0.06);
+    border-radius: 4px;
+    outline-offset: -1px;
+  }
+  .jandi-area {
+    padding-top: 20px;
+    height: 160px;
+    width: 300px;
+  }
+  .jandi-wrap {
+    width: auto;
+    height: 14%;
+  }
+  .jandi-month {
+    position: absolute;
+    top: 12px;
+  }
+  .jandi-today {
+    border-color: $grey-1;
   }
 }
 </style>

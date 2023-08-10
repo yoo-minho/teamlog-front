@@ -8,11 +8,13 @@ const teamStore = useTeamStore();
 const { currentTeam } = storeToRefs(teamStore);
 
 //group by count
-const currentBlogs = Object.entries(
+const currentBlogs = Object.entries<number>(
   currentTeam.value.links
     ?.map((v) => v.link.type)
     ?.reduce((a, c) => ((a[c] = (a[c] || 0) + 1), a), Object.create(null))
-).map(([key, value]) => ({ id: key, name: key, count: value }));
+)
+  .map(([key, value]) => ({ id: key, name: key, count: value }))
+  .sort((v1, v2) => v2.count - v1.count);
 
 const getLabel = (type: string) =>
   BLOG_TAG.find((v) => v.type === type)?.label || "All";

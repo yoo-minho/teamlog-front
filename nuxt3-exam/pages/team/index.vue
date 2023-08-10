@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useTeamStore } from "@/stores/team";
+import { useUserStore } from "@/stores/user";
 import TeamListItem from "./components/TeamListItem.vue";
 import ScrollObserver from "@/components/Observer/ScrollObserver.vue";
 import TeamListSkeletonItem from "./components/TeamListSkeletonItem.vue";
@@ -11,6 +12,8 @@ const route = useRoute();
 const _fromRouteName = useState<string>("fromRouteName");
 const teamStore = useTeamStore();
 const { teams } = storeToRefs(teamStore);
+const userStore = useUserStore();
+const { tags } = storeToRefs(userStore);
 
 const options = [
   { label: "포스트 최신 작성순", value: "lastPostCreatedAt" },
@@ -28,13 +31,11 @@ const selectedOrderModel = ref(
 const selectedOrder = ref(savedSortVal);
 const selectedTag = ref(String(route.query.tag || "All"));
 
-const { data: tags } = await GroupApi.findAllTag();
-
 const isCached = () =>
   _fromRouteName.value !== "team" && teams.value.length > 0;
 const page = ref(1);
 const response = await GroupApi.findAll({
-  page: page,
+  page,
   tag: selectedTag,
   sort: selectedOrder,
 });
@@ -79,49 +80,45 @@ definePageMeta({
 });
 </script>
 <template>
-  <div class="page">
-    <q-pull-to-refresh @refresh="refresh">
-      <TeamTagList
-        @click-tag="filterTag"
-        :tags="tags"
-        :active-tag-name="selectedTag"
+  <q-pull-to-refresh @refresh="refresh">
+    <TeamTagList
+      @click-tag="filterTag"
+      :tags="tags"
+      :active-tag-name="selectedTag"
+    />
+    <q-separator spaced style="margin-bottom: 0" />
+    <q-select
+      v-model="selectedOrderModel"
+      :options="options"
+      dense
+      borderless
+      class="q-mx-md"
+      @update:model-value="updateOption"
+    >
+      <template v-slot:prepend>
+        <q-icon name="filter_alt" />
+      </template>
+    </q-select>
+    <q-separator spaced style="margin-top: 0" />
+    <template v-if="pending && teams.length === 0">
+      <template v-for="i in 10">
+        <TeamListSkeletonItem />
+      </template>
+    </template>
+    <template v-else>
+      <TeamListItem
+        where="MAIN"
+        v-for="team in currentTeams"
+        :key="team.id"
+        :team="team"
       />
-      <q-separator spaced style="margin-bottom: 0" />
-      <q-select
-        v-model="selectedOrderModel"
-        :options="options"
-        dense
-        borderless
-        class="q-mx-md"
-        @update:model-value="updateOption"
-      >
-        <template v-slot:prepend>
-          <q-icon name="filter_alt" />
+      <ClientOnly>
+        <template v-if="isExistsNextPage">
+          <ScrollObserver @trigger-intersected="next">
+            <TeamListSkeletonItem />
+          </ScrollObserver>
         </template>
-      </q-select>
-      <q-separator spaced style="margin-top: 0" />
-      <template v-if="pending && teams.length === 0">
-        <template v-for="i in 10">
-          <TeamListSkeletonItem />
-        </template>
-      </template>
-      <template v-else>
-        <q-page class="q-mt-sm" style="min-height: 0">
-          <TeamListItem
-            where="MAIN"
-            v-for="team in currentTeams"
-            :key="team.id"
-            :team="team"
-          />
-        </q-page>
-        <ClientOnly>
-          <template v-if="isExistsNextPage">
-            <ScrollObserver @trigger-intersected="next">
-              <TeamListSkeletonItem />
-            </ScrollObserver>
-          </template>
-        </ClientOnly>
-      </template>
-    </q-pull-to-refresh>
-  </div>
+      </ClientOnly>
+    </template>
+  </q-pull-to-refresh>
 </template>

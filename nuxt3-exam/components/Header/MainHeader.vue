@@ -18,6 +18,13 @@ const _openNewTeam = () => {
   showAuthDialog({ to: "/new/team" });
 };
 
+const _clickNoti = () => {
+  Notify.create({
+    type: "success",
+    message: "알림 기능을 준비중입니다!",
+  });
+};
+
 const keywordRef = ref();
 watch(
   () => keywordRef.value,
@@ -97,13 +104,14 @@ watch(
         <q-btn icon="add" flat round dense @click="_openNewTeam()" />
       </template>
       <q-btn icon="share" flat round dense @click="showBottomSheet()" />
+      <q-btn icon="notifications" flat round dense @click="_clickNoti()" />
       <q-btn icon="menu" flat round dense @click="_openSettingMain" />
       <q-btn
         icon="add_to_home_screen"
         flat
         round
         dense
-        color="green-5 bounce"
+        color="green-10 bounce"
         @click="showInstallBottomSheet()"
       />
     </q-toolbar>

@@ -24,32 +24,3 @@ definePageMeta({
     </q-item-section>
   </q-item>
 </template>
-<style lang="scss">
-@charset "UTF-8";
-
-.stat-area {
-  .jandi {
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
-    outline-offset: -1px;
-  }
-  .jandi-area {
-    padding-top: 20px;
-    height: 160px;
-    width: 300px;
-  }
-  .jandi-wrap {
-    width: auto;
-    height: 14%;
-  }
-  .jandi-month {
-    position: absolute;
-    top: 12px;
-  }
-  .jandi-today {
-    border-color: $grey-1;
-  }
-}
-</style>
