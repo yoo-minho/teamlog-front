@@ -88,7 +88,7 @@ const refreshJandiData = async (selected: { value: number }) => {
       square
       outline
       dense
-      color="green-1"
+      color="green-4"
       class="views q-mr-xs"
       :label="`#${_manyPostMMM}요일에포스팅많아`"
     />

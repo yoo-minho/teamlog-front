@@ -22,7 +22,7 @@ if (!code) {
   navigateTo("my", { replace: true });
 }
 
-const { data: _user } = await UserApi.findUser(atk);
+const { data: _user } = await UserApi.findUser(atk.value);
 if (_user.value != null) {
   user.value = _user.value;
 }
@@ -101,8 +101,7 @@ ul {
 body {
   font-family: "Pretendard-Regular", "Noto Sans KR", Avenir, Helvetica, Arial,
     sans-serif;
-  color: #2c3e50;
-  background-color: $grey-3;
+  background-color: $grey-4;
 }
 
 .max-width {

@@ -11,9 +11,15 @@ import GroupApi from "@/api/groupApi";
 const route = useRoute();
 const _fromRouteName = useState<string>("fromRouteName");
 const teamStore = useTeamStore();
-const { teams } = storeToRefs(teamStore);
+const { teams, lastSelectTag } = storeToRefs(teamStore);
 const userStore = useUserStore();
 const { tags } = storeToRefs(userStore);
+
+// if (lastSelectTag.value) {
+//   navigateTo({ query: { tag: lastSelectTag.value } });
+// } else {
+//   lastSelectTag.value = String(route.query.tag || "All");
+// }
 
 const options = [
   { label: "포스트 최신 작성순", value: "lastPostCreatedAt" },
@@ -29,18 +35,17 @@ const selectedOrderModel = ref(
   options.filter((v) => v.value === savedSortVal)[0]
 );
 const selectedOrder = ref(savedSortVal);
-const selectedTag = ref(String(route.query.tag || "All"));
 
 const isCached = () =>
   _fromRouteName.value !== "team" && teams.value.length > 0;
 const page = ref(1);
 const response = await GroupApi.findAll({
   page,
-  tag: selectedTag,
+  tag: lastSelectTag,
   sort: selectedOrder,
 });
 const { data: _teams, refresh: refreshTeam, pending } = response;
-const currentTeams = ref(isCached() ? teams.value : teams.value || []);
+const currentTeams = ref(isCached() ? teams.value : []);
 const isExistsNextPage = ref(true);
 
 watch(
@@ -56,7 +61,7 @@ watch(
     }
     _fromRouteName.value = "team";
     teams.value = currentTeams.value;
-    isExistsNextPage.value = teams.value.length % 10 === 0;
+    // isExistsNextPage.value = _teams?.value?.length % 10 === 0;
   },
   { immediate: !isCached() }
 );
@@ -67,12 +72,11 @@ const refreshTeamData = async ({ init = false } = {}) => {
 };
 const next = () => refreshTeamData({ init: false });
 const refresh = (dn: () => void) => refreshTeamData({ init: true }).then(dn);
-const filterTag = (tagName: string) => (selectedTag.value = tagName);
+const filterTag = (tagName: string) => (lastSelectTag.value = tagName);
 const updateOption = (x: any) => {
   selectedOrder.value = x.value;
   groupSort.value = x.value;
 };
-watch([selectedOrder, selectedTag], () => refreshTeamData({ init: true }));
 
 definePageMeta({
   layout: "default",
@@ -84,8 +88,9 @@ definePageMeta({
     <TeamTagList
       @click-tag="filterTag"
       :tags="tags"
-      :active-tag-name="selectedTag"
+      :active-tag-name="lastSelectTag"
     />
+    [{{ _teams?.length }}] [{{ teams.length }}]
     <q-separator spaced style="margin-bottom: 0" />
     <q-select
       v-model="selectedOrderModel"
@@ -100,7 +105,7 @@ definePageMeta({
       </template>
     </q-select>
     <q-separator spaced style="margin-top: 0" />
-    <template v-if="pending && teams.length === 0">
+    <template v-if="pending && page === 1">
       <template v-for="i in 10">
         <TeamListSkeletonItem />
       </template>

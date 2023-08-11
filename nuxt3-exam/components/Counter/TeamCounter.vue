@@ -12,7 +12,7 @@ defineProps<{
       square
       outline
       dense
-      color="green-4"
+      color="green-5"
       class="views q-mr-xs"
       :label="'주간 게시물 ' + (weeklyAvgPost || 0) + '건'"
     />
@@ -20,7 +20,7 @@ defineProps<{
       square
       outline
       dense
-      color="green-3"
+      color="green-4"
       class="views q-mr-xs"
       :label="'today ' + (todayViews || 0)"
     />
@@ -28,7 +28,7 @@ defineProps<{
       square
       outline
       dense
-      color="green-2"
+      color="green-3"
       class="views"
       :label="'total ' + ((totalViews || 0) + (todayViews || 0))"
     />

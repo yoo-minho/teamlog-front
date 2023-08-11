@@ -1,33 +1,20 @@
 import { User } from "@/types/common";
 
+type TokenType = { atk: string; rtk: string };
+
 export default {
-  async findUser(atk: Ref<string>) {
-    const config = useRuntimeConfig();
-    const baseURL = config.public.apiBase;
-    return await useFetch<User>("user", {
-      baseURL,
-      headers: { Authorization: `Bearer ${atk.value}` },
+  findUser(atk: string) {
+    return useAPIFetch<User>("user", {
+      headers: { Authorization: `Bearer ${atk}` },
     });
+  },
+  logoutUser(id: string) {
+    useAPIFetch("auth/logout", { params: { id } });
   },
   async reissue() {
-    return await useFetch<{ atk: string; rtk: string }>("/api/reissue");
+    return await useFetch<TokenType>("/api/reissue");
   },
   async reissueAtk() {
-    return await useFetch<{ atk: string; rtk: string }>("/api/reissue-atk");
-  },
-  async loginKakao() {
-    try {
-      return await useFetch("auth/kakao");
-    } catch (err) {
-      throw new Error("");
-    }
-  },
-  async logoutUser(id: string) {
-    const config = useRuntimeConfig();
-    const baseURL = config.public.apiBase;
-    await useFetch("auth/logout", {
-      baseURL,
-      params: { id },
-    });
+    return await useFetch<TokenType>("/api/reissue-atk");
   },
 };

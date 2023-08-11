@@ -38,3 +38,6 @@ export type SearchParam = {
   q?: Ref<string>;
   page?: Ref<number>;
 };
+export type LinkIdsType = {
+  linkIds?: Ref<(number | undefined)[]>;
+};

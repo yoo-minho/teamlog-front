@@ -5,6 +5,7 @@ export const useTeamStore = defineStore("team", {
   state: () => ({
     teams: [] as Team[],
     currentTeam: {} as Team,
+    lastSelectTag: "",
   }),
   getters: {
     currentTeamLinkIds: (state) =>

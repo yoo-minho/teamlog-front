@@ -72,15 +72,16 @@ watch(
         <q-layout style="min-height: 0">
           <q-page-container style="min-height: 0; padding: 0">
             <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
-              <q-page>
+              <q-page class="max-width">
                 <TeamListSkeletonItem v-if="pending" />
                 <TeamListItem v-else :team="(team as Team)" where="IN_TEAM" />
                 <q-tabs
                   v-model="tab"
                   dense
-                  :class="`text-grey js-tab bg-${isDark ? 'dark' : 'white'}`"
+                  :class="`bg-${isDark ? 'dark' : 'white'}`"
                   :active-color="`${isDark ? 'green-4' : 'primary'}`"
                   :indicator-color="`${isDark ? 'green-4' : 'primary'}`"
+                  style="justify-content: flex-start"
                 >
                   <div v-for="(tag, i) in TAB_LABEL_IN_TEAM" :key="i">
                     <q-route-tab

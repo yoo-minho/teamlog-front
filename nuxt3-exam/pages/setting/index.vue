@@ -82,11 +82,6 @@ const getLabel = (type: string) =>
       @click="openServiceIdentityNotion()"
     />
     <SettingCardItem
-      icon="rss_feed"
-      title="팀블로그 신청하기"
-      @click="openRequestTeamMakerForm()"
-    />
-    <SettingCardItem
       icon="reviews"
       title="의견,오류,제휴,광고 문의"
       @click="openFeedbackForm()"

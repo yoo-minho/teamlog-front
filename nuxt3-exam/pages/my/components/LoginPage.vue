@@ -16,15 +16,6 @@ const tryLogin = (e: MouseEvent, id: string) => {
       messageColor: "white",
     });
     location.href = "http://localhost:5000/api/auth/kakao";
-
-    // const iv = setInterval(async () => {
-    //   if (!w?.closed) return;
-    //   $q.loading.hide();
-    //   $q.notify({ type: "success", message: "로그인 성공" });
-    //   await delay(500);
-    //   clearInterval(iv);
-    //   location.reload();
-    // }, 1000);
     return e;
   }
   return e;
