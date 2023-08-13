@@ -4,8 +4,11 @@ import ApiArr from "@/data/login-api.json";
 import FeatureInfo from "./FeatureInfo.vue";
 
 const $q = useQuasar();
+const isProd = process.env.NODE_ENV === "production";
 
 const tryLogin = (e: MouseEvent, id: string) => {
+  const config = useRuntimeConfig();
+  const baseURL = config.public.apiBase[isProd ? "prod" : "dev"];
   if (id === "kakao") {
     $q.loading.show({
       spinner: QSpinnerIos,
@@ -15,7 +18,7 @@ const tryLogin = (e: MouseEvent, id: string) => {
       message: "잠시만 기다려주세요!",
       messageColor: "white",
     });
-    location.href = "http://localhost:5000/api/auth/kakao";
+    location.href = baseURL + "auth/kakao";
     return e;
   }
   return e;
