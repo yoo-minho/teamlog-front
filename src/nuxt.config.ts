@@ -105,7 +105,10 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: "http://localhost:5000/api/",
+      apiBase: {
+        dev: "http://localhost:5000/api/",
+        prod: "https://teamlog.team/api/",
+      },
     },
   },
   vite: {

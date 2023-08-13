@@ -1,3 +1,5 @@
+const isProd = process.env.NODE_ENV === "production";
+
 export default defineEventHandler(async (event) => {
   const currentRtk = getCookie(event, "refresh-token");
   if (currentRtk === "") {
@@ -11,7 +13,7 @@ export default defineEventHandler(async (event) => {
     atk: string;
     message: string;
   }>("auth/refresh/atk", {
-    baseURL: config.public.apiBase,
+    baseURL: config.public.apiBase[isProd ? "prod" : "dev"],
     headers: { Authorization: `Bearer ${currentRtk}`, "user-agent": userAgent },
   });
   if (statusCode === 401) {
