@@ -2,6 +2,8 @@ import { Link, RssItem, ScrapItem } from "@/types/common";
 import PostAPI from "./postApi";
 import { pipe } from "@/utils/CommUtil";
 
+const isProd = process.env.NODE_ENV === "production";
+
 export default {
   async scrap(_link: Link) {
     const scrapUrl = _link.rssUrl || _link.url;
@@ -14,7 +16,7 @@ export default {
 
     const config = useRuntimeConfig();
     const data = await $fetch("rss", {
-      baseURL: config.public.apiBase,
+      baseURL: config.public.apiBase[isProd ? "prod" : "dev"],
       method: "post",
       body: {
         linkId: _link.id,
