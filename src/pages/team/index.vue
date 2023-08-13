@@ -15,9 +15,7 @@ const { teams, lastSelectTag } = storeToRefs(teamStore);
 const userStore = useUserStore();
 const { tags } = storeToRefs(userStore);
 
-if (lastSelectTag.value) {
-  // navigateTo({ query: { tag: lastSelectTag.value } }, { replace: true });
-} else {
+if (!lastSelectTag.value) {
   lastSelectTag.value = String(route.query.tag || "All");
 }
 
