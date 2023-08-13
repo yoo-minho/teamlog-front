@@ -7,38 +7,29 @@ defineProps<{
 </script>
 
 <template>
-  <q-item-label class="text-grey-5 q-pt-xs">
-    <q-chip
-      square
+  <div class="q-gutter-xs">
+    <q-badge
+      class="small-badge"
       outline
-      dense
       color="green-5"
-      class="views q-mr-xs"
       :label="'주간 게시물 ' + (weeklyAvgPost || 0) + '건'"
     />
-    <q-chip
-      square
+    <q-badge
+      class="small-badge"
       outline
-      dense
       color="green-4"
-      class="views q-mr-xs"
       :label="'today ' + (todayViews || 0)"
     />
-    <q-chip
-      square
+    <q-badge
+      class="small-badge"
       outline
-      dense
       color="green-3"
-      class="views"
       :label="'total ' + ((totalViews || 0) + (todayViews || 0))"
     />
-  </q-item-label>
+  </div>
 </template>
 <style>
-.views {
-  font-size: 12px;
-  opacity: 0.8;
-  margin: 0;
-  margin-right: 4px;
+.small-badge {
+  font-size: 11px;
 }
 </style>

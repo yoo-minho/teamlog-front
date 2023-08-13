@@ -20,12 +20,16 @@ const moveTeam = () => {
     :class="{ 'cursor-pointer': where === 'MAIN' }"
     @click="moveTeam()"
   >
-    <TeamCounter
-      :weekly-avg-post="team?.weeklyAvgPost"
-      :today-views="team?.todayViews"
-      :total-views="team?.totalViews"
-      class="q-px-sm q-py-sm"
-    />
+    <q-item
+      class="q-px-sm"
+      style="overflow-x: hidden; min-height: 0 !important"
+    >
+      <TeamCounter
+        :weekly-avg-post="team?.weeklyAvgPost"
+        :today-views="team?.todayViews"
+        :total-views="team?.totalViews"
+      />
+    </q-item>
     <q-item class="q-px-sm" style="overflow-x: hidden">
       <div v-for="(v, i) in team?.links || []" :key="i" class="q-mr-sm">
         <q-avatar

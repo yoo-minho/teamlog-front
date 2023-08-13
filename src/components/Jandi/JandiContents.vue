@@ -18,18 +18,18 @@ const tooltip = ({ count, date }: DaysCount<number>) =>
       <q-spinner color="white" size="6em" :thickness="3" />
     </div>
     <div v-else>
-      <div class="column jandi-week">
-        <div></div>
-        <div>Mon</div>
-        <div></div>
-        <div>Wed</div>
-        <div></div>
-        <div>Fri</div>
-        <div></div>
-      </div>
       <div class="column jandi-area">
+        <div class="column jandi-week">
+          <div></div>
+          <div>M</div>
+          <div></div>
+          <div>W</div>
+          <div></div>
+          <div>F</div>
+          <div></div>
+        </div>
         <div v-for="(v, i) in props.data" :key="i" class="jandi-wrap">
-          <div class="jandi-month text-drak">{{ v.month }}</div>
+          <div class="jandi-month text-dark">{{ v.month }}</div>
           <div
             :class="{
               jandi: true,
@@ -45,14 +45,10 @@ const tooltip = ({ count, date }: DaysCount<number>) =>
   </div>
 </template>
 <style>
-.jandi-week {
-  position: absolute;
-  left: 24px;
-  top: 36px;
-}
 .jandi-week div {
   height: 16px;
   width: 16px;
   margin: 1.5px;
+  line-height: 16px;
 }
 </style>
