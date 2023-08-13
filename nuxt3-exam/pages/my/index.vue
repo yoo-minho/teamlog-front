@@ -14,7 +14,7 @@ definePageMeta({
 </script>
 
 <template>
-  <q-page class="q-mt-sm">
+  <q-page>
     <template v-if="isExistsUser">
       <MyInnerPage
         :id="user.id"

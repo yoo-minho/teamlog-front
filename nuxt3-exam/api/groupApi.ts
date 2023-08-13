@@ -5,7 +5,7 @@ export default {
   findAll(props: TeamFilter) {
     const { tag, page, sort } = props;
     return useAPIFetch<Team[]>("group", {
-      params: { page: page.value, sort, tag },
+      params: { page, sort, tag },
       lazy: true,
     });
   },

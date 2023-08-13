@@ -15,11 +15,11 @@ const { teams, lastSelectTag } = storeToRefs(teamStore);
 const userStore = useUserStore();
 const { tags } = storeToRefs(userStore);
 
-// if (lastSelectTag.value) {
-//   navigateTo({ query: { tag: lastSelectTag.value } });
-// } else {
-//   lastSelectTag.value = String(route.query.tag || "All");
-// }
+if (lastSelectTag.value) {
+  // navigateTo({ query: { tag: lastSelectTag.value } }, { replace: true });
+} else {
+  lastSelectTag.value = String(route.query.tag || "All");
+}
 
 const options = [
   { label: "포스트 최신 작성순", value: "lastPostCreatedAt" },
@@ -46,7 +46,7 @@ const response = await GroupApi.findAll({
 });
 const { data: _teams, refresh: refreshTeam, pending } = response;
 const currentTeams = ref(isCached() ? teams.value : []);
-const isExistsNextPage = ref(true);
+const isExistsNextPage = ref(false);
 
 watch(
   _teams,
@@ -60,11 +60,14 @@ watch(
       ];
     }
     _fromRouteName.value = "team";
-    teams.value = currentTeams.value;
-    // isExistsNextPage.value = _teams?.value?.length % 10 === 0;
+    setTimeout(() => {
+      teams.value = currentTeams.value;
+      isExistsNextPage.value = currentTeams.value?.length % 10 === 0;
+    }, 100); //하이드레이션 이슈가 생겨!
   },
   { immediate: !isCached() }
 );
+watch([lastSelectTag, selectedOrder], () => refreshTeamData({ init: true }));
 
 const refreshTeamData = async ({ init = false } = {}) => {
   page.value = (init ? 0 : Math.ceil(teams.value.length / 10)) + 1;
@@ -90,8 +93,8 @@ definePageMeta({
       :tags="tags"
       :active-tag-name="lastSelectTag"
     />
-    [{{ _teams?.length }}] [{{ teams.length }}]
     <q-separator spaced style="margin-bottom: 0" />
+
     <q-select
       v-model="selectedOrderModel"
       :options="options"
@@ -105,7 +108,7 @@ definePageMeta({
       </template>
     </q-select>
     <q-separator spaced style="margin-top: 0" />
-    <template v-if="pending && page === 1">
+    <template v-if="pending && currentTeams.length === 0">
       <template v-for="i in 10">
         <TeamListSkeletonItem />
       </template>

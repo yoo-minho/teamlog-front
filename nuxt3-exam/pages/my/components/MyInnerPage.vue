@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import UserApi from "@/api/userApi";
+import FeatureInfo from "./FeatureInfo.vue";
 
 const props = defineProps<{
   id: string;
@@ -25,7 +26,6 @@ const logout = async () => {
       <q-item-section>
         <q-item-label lines="1">
           <div style="font-size: 1rem">{{ name }}</div>
-          <div>{{ email || "nomail@kakao.com" }}</div>
         </q-item-label>
       </q-item-section>
       <q-item-section side>

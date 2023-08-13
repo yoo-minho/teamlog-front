@@ -2,7 +2,6 @@
 import {
   openFeedbackForm,
   openServiceIdentityNotion,
-  openRequestTeamMakerForm,
 } from "@/composables/useOpenWindow";
 
 import DarkModeCard from "./components/DarkModeCard.vue";

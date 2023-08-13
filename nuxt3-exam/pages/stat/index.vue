@@ -26,6 +26,12 @@ definePageMeta({
     <q-item-section>
       <div class="max-width">
         <div class="q-px-md q-pb-md q-mt-sm stat-area">
+          <q-item-label
+            class="text-weight-bolder q-mb-md"
+            style="font-size: 20px"
+          >
+            팀로그의 누군가는 계속 포스팅하고 있습니다 ✍
+          </q-item-label>
           <q-card>
             <q-card-section class="row jandi-zone">
               <JandiContents :loading="pending" :data="jandi" />

@@ -21,7 +21,7 @@ watch(
   (currentRouteName) => {
     const scrollVPos = "team" === currentRouteName ? _teamScrollVPos.value : 0;
     setTimeout(() => {
-      mainScrollAreaRef.value.setScrollPosition("vertical", scrollVPos, 0);
+      mainScrollAreaRef.value?.setScrollPosition("vertical", scrollVPos, 0);
     }, 100); //0.1s의 트랜지션때문에 그보다 큰!
   }
 );
@@ -40,8 +40,8 @@ const scroll = (info: any) => {
         v-model="tab"
         dense
         :class="`text-grey js-tab bg-dark`"
-        :active-color="`green-1`"
-        :indicator-color="`green-1`"
+        :active-color="`green-3`"
+        :indicator-color="`green-3`"
       >
         <q-route-tab to="/team" label="Team" style="flex: 1" no-caps />
         <q-route-tab to="/blog" label="Blog" style="flex: 1" no-caps />

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { QSpinnerIos } from "quasar";
 import ApiArr from "@/data/login-api.json";
+import FeatureInfo from "./FeatureInfo.vue";
 
 const $q = useQuasar();
-const logo = new URL(`@/assets/dark_logo.png`, import.meta.url).toString();
 
 const tryLogin = (e: MouseEvent, id: string) => {
   if (id === "kakao") {
@@ -33,18 +33,17 @@ const tryLogin = (e: MouseEvent, id: string) => {
       >
         <div class="contents" :style="api.style">
           <img width="24" height="24" :src="api.src" :alt="api.alt" />
-          <span class="label">{{ api.label }}</span>
+          <span class="login-label">{{ api.label }}</span>
         </div>
       </li>
     </ul>
-    <q-item dense class="text-h6 q-mb-lg column items-center">
-      <q-item dense>간편하게 로그인하고</q-item>
-      <q-item dense>자유롭게 활용하세요</q-item>
-    </q-item>
-    <q-item dense class="d-flex text-center column items-center">
-      <q-item dense class="q-mx-sm">Service by Teamlog</q-item>
-      <q-img :src="logo" spinner-color="white" class="logo-img" />
-    </q-item>
+    <q-item-label
+      class="text-weight-bolder q-mb-md text-center"
+      style="font-size: 20px"
+    >
+      로그인하면 할 수 있는 기능들을 소개합니다
+    </q-item-label>
+    <FeatureInfo />
   </q-page>
 </template>
 <style lang="scss" scoped>
@@ -63,10 +62,10 @@ const tryLogin = (e: MouseEvent, id: string) => {
     align-self: center;
   }
 
-  .label {
+  .login-label {
     align-self: center;
     margin-left: 20px;
-    font-size: 1rem;
+    font-size: 20px;
   }
 }
 </style>
