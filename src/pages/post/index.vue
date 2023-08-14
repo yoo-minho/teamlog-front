@@ -39,34 +39,52 @@ watch([selectTag], () => refreshPostData({ init: true }));
 
 definePageMeta({
   layout: "default",
-  middleware: ["main-slide"],
 });
 </script>
 <template>
-  <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
-    <PostTagList
-      @click-tag="filterTag"
-      :tags="tags"
-      :active-tag-name="selectTag"
-    />
-    <q-separator spaced />
-    <template v-if="pending && page === 1">
-      <PostListSkeletonItem v-for="i in 12" :key="i" />
-    </template>
-    <template v-else>
-      <template v-if="currentPosts.length > 0">
-        <PostListItem v-for="(post, i) in currentPosts" :key="i" :post="post" />
-        <ClientOnly>
-          <template v-if="isExistsNextPage">
-            <ScrollObserver @trigger-intersected="next">
-              <PostListSkeletonItem />
-            </ScrollObserver>
-          </template>
-        </ClientOnly>
-      </template>
-      <template v-else>
-        <SearchEmpty mode="SEARCH" />
-      </template>
-    </template>
+  <q-pull-to-refresh @refresh="refresh">
+    <q-scroll-area style="height: calc(100vh - 100px)" :visible="false">
+      <q-layout class="max-width">
+        <q-page-container>
+          <q-page>
+            <PostTagList
+              @click-tag="filterTag"
+              :tags="tags"
+              :active-tag-name="selectTag"
+            />
+            <q-separator spaced />
+            <template v-if="pending && page === 1">
+              <PostListSkeletonItem v-for="i in 12" :key="i" />
+            </template>
+            <template v-else>
+              <template v-if="currentPosts.length > 0">
+                <PostListItem
+                  v-for="(post, i) in currentPosts"
+                  :key="i"
+                  :post="post"
+                />
+                <ClientOnly>
+                  <template v-if="isExistsNextPage">
+                    <ScrollObserver @trigger-intersected="next">
+                      <PostListSkeletonItem />
+                    </ScrollObserver>
+                  </template>
+                </ClientOnly>
+              </template>
+              <template v-else>
+                <SearchEmpty mode="SEARCH" />
+              </template>
+            </template>
+            <q-page-scroller
+              position="bottom-right"
+              :scroll-offset="150"
+              :offset="[18, 18]"
+            >
+              <q-btn fab icon="keyboard_arrow_up" color="green-5" />
+            </q-page-scroller>
+          </q-page>
+        </q-page-container>
+      </q-layout>
+    </q-scroll-area>
   </q-pull-to-refresh>
 </template>
