@@ -39,31 +39,47 @@ watch([selectTag], () => refreshBlogData({ init: true }));
 
 definePageMeta({
   layout: "default",
-  middleware: ["main-slide"],
 });
 </script>
 <template>
   <q-pull-to-refresh @refresh="refresh">
-    <BlogTagList
-      :active-tag-name="selectTag"
-      @click-tag="filterTag"
-      :tags="tags"
-    />
-    <q-separator spaced />
-    <q-page class="q-mt-sm" style="min-height: 0">
-      <template v-if="pending && page === 1">
-        <BlogListSkeletonItem v-for="i in 12" :key="i" />
-      </template>
-      <template v-else>
-        <BlogListItem v-for="(blog, i) in currentBlogs" :key="i" :link="blog" />
-        <ClientOnly>
-          <template v-if="isExistsNextPage">
-            <ScrollObserver @trigger-intersected="next">
-              <BlogListSkeletonItem />
-            </ScrollObserver>
-          </template>
-        </ClientOnly>
-      </template>
-    </q-page>
+    <q-scroll-area style="height: calc(100vh - 100px)" :visible="false">
+      <q-layout class="max-width">
+        <q-page-container>
+          <q-page>
+            <BlogTagList
+              :active-tag-name="selectTag"
+              @click-tag="filterTag"
+              :tags="tags"
+            />
+            <q-separator spaced />
+            <template v-if="pending && page === 1">
+              <BlogListSkeletonItem v-for="i in 12" :key="i" />
+            </template>
+            <template v-else>
+              <BlogListItem
+                v-for="(blog, i) in currentBlogs"
+                :key="i"
+                :link="blog"
+              />
+              <ClientOnly>
+                <template v-if="isExistsNextPage">
+                  <ScrollObserver @trigger-intersected="next">
+                    <BlogListSkeletonItem />
+                  </ScrollObserver>
+                </template>
+              </ClientOnly>
+            </template>
+            <q-page-scroller
+              position="bottom-right"
+              :scroll-offset="150"
+              :offset="[18, 18]"
+            >
+              <q-btn fab icon="keyboard_arrow_up" color="green-5" />
+            </q-page-scroller>
+          </q-page>
+        </q-page-container>
+      </q-layout>
+    </q-scroll-area>
   </q-pull-to-refresh>
 </template>

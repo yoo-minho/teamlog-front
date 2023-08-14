@@ -3,7 +3,6 @@ import { storeToRefs } from "pinia";
 import InTeamHeader from "@/components/Header/InTeamHeader.vue";
 import GroupApi from "@/api/groupApi";
 import RssApi from "@/api/rssApi";
-import { TAB_LABEL_IN_TEAM } from "@/constants/";
 import { useTeamStore } from "@/stores/team";
 import { LinkWrap, Team, TeamStatType } from "@/types/common";
 import { isTodayByDate } from "@/plugin/dayjs";
@@ -54,6 +53,14 @@ watch(
   () => $q.dark.isActive,
   (val) => (isDark.value = val)
 );
+
+watch(tab, (newTab) => {
+  setTimeout(async () => {
+    const route = useRoute();
+    if (route.name === newTab) return;
+    await navigateTo(newTab);
+  }, 0);
+});
 </script>
 <template>
   <q-layout>
@@ -63,16 +70,15 @@ watch(
         :team-title="team?.title"
         :createrId="team?.createrId"
       />
-      <q-scroll-area
-        ref="scrollAreaRef"
-        class="max-width without-header in-team"
-        :visible="true"
-        style="height: calc(100vh - 50px); overflow: hidden"
-      >
-        <q-layout style="min-height: 0">
-          <q-page-container style="min-height: 0; padding: 0">
-            <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
-              <q-page class="max-width">
+      <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
+        <q-scroll-area
+          class="max-width without-header in-team"
+          :visible="false"
+          style="height: calc(100vh - 50px); overflow: hidden"
+        >
+          <q-layout class="max-width">
+            <q-page-container>
+              <q-page>
                 <TeamListSkeletonItem v-if="pending" />
                 <TeamListItem v-else :team="(team as Team)" where="IN_TEAM" />
                 <q-tabs
@@ -83,17 +89,48 @@ watch(
                   :indicator-color="`${isDark ? 'green-4' : 'primary'}`"
                   style="justify-content: flex-start"
                 >
-                  <div v-for="(tag, i) in TAB_LABEL_IN_TEAM" :key="i">
-                    <q-route-tab
-                      :to="`/@${teamId}/${tag.name}`"
-                      :label="tag.label"
-                      :replace="true"
-                      style="width: 100%"
-                    />
-                  </div>
+                  <q-route-tab
+                    name="blog"
+                    :to="`/@${teamId}/blog`"
+                    :replace="true"
+                    label="블로그"
+                    no-caps
+                    style="flex: 1"
+                  />
+                  <q-route-tab
+                    name="post"
+                    :to="`/@${teamId}/post`"
+                    :replace="true"
+                    label="포스트"
+                    no-caps
+                    style="flex: 1"
+                  />
+                  <q-route-tab
+                    name="stat"
+                    :to="`/@${teamId}/stat`"
+                    :replace="true"
+                    label="통계"
+                    no-caps
+                    style="flex: 1"
+                  />
                 </q-tabs>
                 <q-separator />
-                <slot />
+                <q-tab-panels
+                  v-model="tab"
+                  animated
+                  swipeable
+                  class="my-panels"
+                >
+                  <q-tab-panel name="blog" class="q-pa-none">
+                    <slot />
+                  </q-tab-panel>
+                  <q-tab-panel name="post" class="q-pa-none">
+                    <slot />
+                  </q-tab-panel>
+                  <q-tab-panel name="stat" class="q-pa-none">
+                    <slot />
+                  </q-tab-panel>
+                </q-tab-panels>
                 <q-page-scroller
                   position="bottom-right"
                   :scroll-offset="150"
@@ -102,10 +139,10 @@ watch(
                   <q-btn fab icon="keyboard_arrow_up" color="green-4" />
                 </q-page-scroller>
               </q-page>
-            </q-pull-to-refresh>
-          </q-page-container>
-        </q-layout>
-      </q-scroll-area>
+            </q-page-container>
+          </q-layout>
+        </q-scroll-area>
+      </q-pull-to-refresh>
     </div>
   </q-layout>
 </template>

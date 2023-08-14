@@ -8,14 +8,20 @@ defineProps<{ linkData: Link; links?: boolean; posts?: boolean }>();
 <template>
   <div>
     <template v-if="isTextImage(linkData.imagePath)">
-      <q-avatar size="64px" color="black" text-color="white" class="shadow-1">
+      <q-avatar
+        size="64px"
+        color="black"
+        text-color="white"
+        class="shadow-1"
+        rounded
+      >
         <div class="text-h5 non-selectable">
           {{ linkData.title.substring(0, 2) }}
         </div>
       </q-avatar>
     </template>
     <template v-else>
-      <q-avatar size="64px" class="shadow-1">
+      <q-avatar size="64px" class="shadow-1" rounded>
         <q-img
           :src="linkData.imagePath"
           :alt="linkData.title"
@@ -35,6 +41,7 @@ defineProps<{ linkData: Link; links?: boolean; posts?: boolean }>();
     <q-avatar
       :class="{ 'blog-icon': true, 'shadow-2': true, posts, links }"
       size="18px"
+      rounded
     >
       <q-img
         :src="getImageByBlogType(linkData.type)"

@@ -78,53 +78,83 @@ const updateOption = (x: any) => {
   selectedOrder.value = x.value;
   groupSort.value = x.value;
 };
+const _teamScrollVPos = useState<number>("teamScrollVPos");
 
 definePageMeta({
   layout: "default",
-  middleware: ["main-slide"],
+});
+
+const scroll = (info: any) => {
+  if (info.verticalPosition > 0) {
+    _teamScrollVPos.value = info.verticalPosition;
+  }
+};
+const scrollRef = ref();
+watch(scrollRef, (scrollDom) => {
+  scrollDom.setScrollPosition("vertical", _teamScrollVPos.value, 0);
 });
 </script>
 <template>
   <q-pull-to-refresh @refresh="refresh">
-    <TeamTagList
-      @click-tag="filterTag"
-      :tags="tags"
-      :active-tag-name="lastSelectTag"
-    />
-    <q-separator spaced style="margin-bottom: 0" />
-
-    <q-select
-      v-model="selectedOrderModel"
-      :options="options"
-      dense
-      borderless
-      class="q-mx-md"
-      @update:model-value="updateOption"
+    <q-scroll-area
+      @scroll="scroll"
+      ref="scrollRef"
+      style="height: calc(100vh - 100px)"
+      :visible="false"
     >
-      <template v-slot:prepend>
-        <q-icon name="filter_alt" />
-      </template>
-    </q-select>
-    <q-separator spaced style="margin-top: 0" />
-    <template v-if="pending && currentTeams.length === 0">
-      <template v-for="i in 10">
-        <TeamListSkeletonItem />
-      </template>
-    </template>
-    <template v-else>
-      <TeamListItem
-        where="MAIN"
-        v-for="team in currentTeams"
-        :key="team.id"
-        :team="team"
-      />
-      <ClientOnly>
-        <template v-if="isExistsNextPage">
-          <ScrollObserver @trigger-intersected="next">
-            <TeamListSkeletonItem />
-          </ScrollObserver>
-        </template>
-      </ClientOnly>
-    </template>
+      <q-layout class="max-width">
+        <q-page-container>
+          <q-page>
+            <TeamTagList
+              @click-tag="filterTag"
+              :tags="tags"
+              :active-tag-name="lastSelectTag"
+            />
+            <q-separator spaced style="margin-bottom: 0" />
+
+            <q-select
+              v-model="selectedOrderModel"
+              :options="options"
+              dense
+              borderless
+              class="q-mx-md"
+              @update:model-value="updateOption"
+            >
+              <template v-slot:prepend>
+                <q-icon name="filter_alt" />
+              </template>
+            </q-select>
+            <q-separator spaced style="margin-top: 0" />
+            <template v-if="pending && currentTeams.length === 0">
+              <template v-for="i in 10">
+                <TeamListSkeletonItem />
+              </template>
+            </template>
+            <template v-else>
+              <TeamListItem
+                where="MAIN"
+                v-for="team in currentTeams"
+                :key="team.id"
+                :team="team"
+              />
+              <ClientOnly>
+                <template v-if="isExistsNextPage">
+                  <ScrollObserver @trigger-intersected="next">
+                    <TeamListSkeletonItem />
+                  </ScrollObserver>
+                </template>
+              </ClientOnly>
+            </template>
+            <q-page-scroller
+              position="bottom-right"
+              :scroll-offset="150"
+              :offset="[18, 18]"
+            >
+              <q-btn fab icon="keyboard_arrow_up" color="green-5" />
+            </q-page-scroller>
+          </q-page>
+        </q-page-container>
+      </q-layout>
+    </q-scroll-area>
   </q-pull-to-refresh>
 </template>

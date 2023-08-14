@@ -2,8 +2,7 @@
 import { getImage } from "@/utils/ImageUtil";
 
 definePageMeta({
-  pageTransition: { mode: "out-in" },
-  middleware: ["main-slide"],
+  layout: "default",
 });
 </script>
 <template>

@@ -8,7 +8,6 @@ const isDarkActive = ref($q.dark.isActive);
 const userStore = useUserStore();
 const { isExistsUser, user, mainScrollAreaRef } = storeToRefs(userStore);
 const route = useRoute();
-const _teamScrollVPos = useState<number>("teamScrollVPos");
 
 const tab = ref(String(route.name));
 watch(
@@ -16,21 +15,14 @@ watch(
   (val) => (isDarkActive.value = val)
 );
 
-watch(
-  () => route.name,
-  (currentRouteName) => {
-    const scrollVPos = "team" === currentRouteName ? _teamScrollVPos.value : 0;
-    setTimeout(() => {
-      mainScrollAreaRef.value?.setScrollPosition("vertical", scrollVPos, 0);
-    }, 100); //0.1s의 트랜지션때문에 그보다 큰!
-  }
-);
-
-const scroll = (info: any) => {
-  if ("team" === String(route.name)) {
-    _teamScrollVPos.value = info.verticalPosition;
-  }
-};
+watch(tab, (newTab) => {
+  if (newTab === null) return;
+  setTimeout(async () => {
+    const route = useRoute();
+    if (route.name === newTab) return;
+    await navigateTo(newTab);
+  }, 0);
+});
 </script>
 <template>
   <div :class="`${isDarkActive ? 'bg-grey-9' : 'bg-white'}`">
@@ -43,11 +35,35 @@ const scroll = (info: any) => {
         :active-color="`green-3`"
         :indicator-color="`green-3`"
       >
-        <q-route-tab to="/team" label="Team" style="flex: 1" no-caps />
-        <q-route-tab to="/blog" label="Blog" style="flex: 1" no-caps />
-        <q-route-tab to="/post" label="Post" style="flex: 1" no-caps />
-        <q-route-tab to="/stat" label="Stat" style="flex: 1" no-caps />
-        <q-route-tab to="/my" style="flex: 1" no-caps>
+        <q-route-tab
+          name="team"
+          to="/team"
+          label="Team"
+          no-caps
+          style="flex: 1"
+        />
+        <q-route-tab
+          name="blog"
+          to="/blog"
+          label="Blog"
+          no-caps
+          style="flex: 1"
+        />
+        <q-route-tab
+          name="post"
+          to="/post"
+          label="Post"
+          no-caps
+          style="flex: 1"
+        />
+        <q-route-tab
+          name="stat"
+          to="/stat"
+          label="Stat"
+          no-caps
+          style="flex: 1"
+        />
+        <q-route-tab name="my" to="/my" no-caps style="flex: 1">
           <q-btn v-if="isExistsUser" flat round>
             <q-avatar size="28px">
               <q-img :src="user.profileImage" />
@@ -56,27 +72,28 @@ const scroll = (info: any) => {
           <q-btn v-else icon="account_circle" flat round />
         </q-route-tab>
       </q-tabs>
-      <q-scroll-area
-        @scroll="scroll"
-        ref="mainScrollAreaRef"
-        :visible="false"
-        style="height: calc(100vh - 100px); overflow: hidden"
-      >
-        <q-layout class="max-width">
-          <q-page-container style="min-height: 0; padding: 0">
-            <q-page>
-              <slot></slot>
-              <q-page-scroller
-                position="bottom-right"
-                :scroll-offset="150"
-                :offset="[18, 18]"
-              >
-                <q-btn fab icon="keyboard_arrow_up" color="green-5" />
-              </q-page-scroller>
-            </q-page>
-          </q-page-container>
-        </q-layout>
-      </q-scroll-area>
+      <q-tab-panels v-model="tab" animated swipeable class="my-panels">
+        <q-tab-panel name="team" class="q-pa-none">
+          <slot />
+        </q-tab-panel>
+        <q-tab-panel name="blog" class="q-pa-none">
+          <slot />
+        </q-tab-panel>
+        <q-tab-panel name="post" class="q-pa-none">
+          <slot />
+        </q-tab-panel>
+        <q-tab-panel name="stat" class="q-pa-none">
+          <slot />
+        </q-tab-panel>
+        <q-tab-panel name="my" class="q-pa-none">
+          <slot />
+        </q-tab-panel>
+      </q-tab-panels>
     </q-layout>
   </div>
 </template>
+<style>
+.my-panels .q-panel.scroll {
+  overflow: hidden;
+}
+</style>

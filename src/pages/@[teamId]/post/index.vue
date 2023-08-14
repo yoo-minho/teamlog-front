@@ -27,7 +27,7 @@ const {
 watch(
   _posts,
   () => {
-    savePosts(page.value === 1, _posts.value);
+    savePosts(page.value === 1, _posts.value || []);
     isExistsNextPage.value = _posts.value?.length === 10;
   },
   { immediate: true }
@@ -46,11 +46,6 @@ const next = () => {
   refreshPostData({ init: false });
 };
 
-const refresh = async (done: () => void) => {
-  await refreshPostData({ init: true });
-  done();
-};
-
 watch([() => currentTeam.value?.lastPostCreatedAt], async (_, oldVal) => {
   if (!oldVal[0]) return; //lastPostCreatedAt 최초 할당시에는 미동작
   isScrapRefresh.value = true;
@@ -60,28 +55,25 @@ watch([() => currentTeam.value?.lastPostCreatedAt], async (_, oldVal) => {
 
 definePageMeta({
   layout: "in-team",
-  middleware: ["team-slide"],
 });
 </script>
 <template>
-  <q-pull-to-refresh @refresh="refresh">
-    <template v-if="pending && page === 1 && !isScrapRefresh">
-      <PostListSkeletonItem v-for="i in 12" :key="i" />
+  <template v-if="pending && page === 1 && !isScrapRefresh">
+    <PostListSkeletonItem v-for="i in 12" :key="i" />
+  </template>
+  <template v-else>
+    <template v-if="posts.length > 0">
+      <PostListItem v-for="(post, i) in posts" :key="i" :post="post" />
     </template>
     <template v-else>
-      <template v-if="posts.length > 0">
-        <PostListItem v-for="(post, i) in posts" :key="i" :post="post" />
-      </template>
-      <template v-else>
-        <SearchEmpty mode="SEARCH" />
-      </template>
-      <ClientOnly>
-        <template v-if="isExistsNextPage">
-          <ScrollObserver @trigger-intersected="next">
-            <PostListSkeletonItem />
-          </ScrollObserver>
-        </template>
-      </ClientOnly>
+      <SearchEmpty mode="SEARCH" />
     </template>
-  </q-pull-to-refresh>
+    <ClientOnly>
+      <template v-if="isExistsNextPage">
+        <ScrollObserver @trigger-intersected="next">
+          <PostListSkeletonItem />
+        </ScrollObserver>
+      </template>
+    </ClientOnly>
+  </template>
 </template>

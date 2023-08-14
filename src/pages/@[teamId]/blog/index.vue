@@ -21,7 +21,6 @@ const getLabel = (type: string) =>
 
 definePageMeta({
   layout: "in-team",
-  middleware: ["team-slide"],
 });
 </script>
 <template>

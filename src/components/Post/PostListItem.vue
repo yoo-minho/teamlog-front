@@ -28,13 +28,14 @@ const { post } = toRefs(props);
             v-if="isTextImage(post.link.imagePath)"
             color="black"
             text-color="white"
-            size="24px"
+            size="20px"
+            rounded
           >
             <div class="non-selectable" style="font-size: 12px">
               {{ post.link.title.substring(0, 2) }}
             </div>
           </q-avatar>
-          <q-avatar v-else size="24px" class="shadow-2">
+          <q-avatar v-else size="20px" class="shadow-2" rounded>
             <q-img
               :src="post.link.imagePath"
               :alt="post.link.title"
@@ -54,11 +55,11 @@ const { post } = toRefs(props);
             </q-img>
           </q-avatar>
           <q-item-label class="text-grey-5 ellipsis q-mx-sm" style="flex: 1">
-            <span class="text-weight-bold">{{
-              skipBlogName(post.link.title)
-            }}</span>
+            <span class="text-weight-bold">
+              {{ skipBlogName(post.link.title) }}
+            </span>
           </q-item-label>
-          <q-avatar rounded size="24px">
+          <q-avatar rounded size="20px">
             <q-img
               :src="getImageByBlogType(post.link.type)"
               :alt="post.link.title"

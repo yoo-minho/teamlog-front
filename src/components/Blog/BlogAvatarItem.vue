@@ -14,14 +14,20 @@ const blogIcon = getImageByBlogType(type.value);
 <template>
   <div>
     <template v-if="isTextImage(imagePath)">
-      <q-avatar size="64px" color="black" text-color="white" class="shadow-1">
+      <q-avatar
+        size="64px"
+        color="black"
+        text-color="white"
+        class="shadow-1"
+        rounded
+      >
         <div class="text-h5 non-selectable">
           {{ title.substring(0, 2) }}
         </div>
       </q-avatar>
     </template>
     <template v-else>
-      <q-avatar size="64px" class="shadow-1">
+      <q-avatar size="64px" class="shadow-1" rounded>
         <q-img
           :src="imagePath"
           :alt="title"
@@ -38,7 +44,7 @@ const blogIcon = getImageByBlogType(type.value);
         </q-img>
       </q-avatar>
     </template>
-    <q-avatar class="blog-icon shadow-2" size="18px">
+    <q-avatar class="blog-icon shadow-2" size="18px" rounded>
       <q-img :src="blogIcon" :alt="title" :no-transition="true" />
     </q-avatar>
   </div>

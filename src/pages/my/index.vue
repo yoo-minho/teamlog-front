@@ -8,25 +8,28 @@ const userStore = useUserStore();
 const { isExistsUser, user } = storeToRefs(userStore);
 
 definePageMeta({
-  pageTransition: { mode: "out-in" },
-  middleware: ["main-slide"],
+  layout: "default",
 });
 </script>
 
 <template>
-  <q-page>
-    <template v-if="isExistsUser">
-      <MyInnerPage
-        :id="user.id"
-        :name="user.name"
-        :email="user.email"
-        :profile-image="user.profileImage"
-      />
-    </template>
-    <template v-else>
-      <LoginPage />
-    </template>
-  </q-page>
+  <q-layout class="max-width">
+    <q-page-container>
+      <q-page>
+        <template v-if="isExistsUser">
+          <MyInnerPage
+            :id="user.id"
+            :name="user.name"
+            :email="user.email"
+            :profile-image="user.profileImage"
+          />
+        </template>
+        <template v-else>
+          <LoginPage />
+        </template>
+      </q-page>
+    </q-page-container>
+  </q-layout>
 </template>
 <style lang="scss" scoped>
 .button-wrap {

@@ -5,7 +5,6 @@ import LotRanker from "./components/Ranker/LotRanker.vue";
 
 definePageMeta({
   layout: "in-team",
-  middleware: ["team-slide"],
 });
 </script>
 
@@ -19,6 +18,13 @@ definePageMeta({
           <LotRanker />
           <q-separator class="q-my-md" />
           <LastRanker />
+          <q-separator class="q-my-md" />
+          <q-item-label
+            class="text-weight-bolder q-ma-md"
+            style="font-size: 20px; font-style: italic"
+          >
+            어떤 통계가 동기부여가 될까요? ✍
+          </q-item-label>
         </div>
       </div>
     </q-item-section>

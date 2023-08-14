@@ -23,7 +23,7 @@ defineProps<{
 }>();
 </script>
 <template>
-  <q-card>
+  <q-card class="ranker">
     <q-card-section>
       <q-list>
         <template v-if="pending">
@@ -96,5 +96,9 @@ defineProps<{
       text-align: right;
     }
   }
+}
+
+.ranker .q-separator:last-child {
+  display: none;
 }
 </style>
