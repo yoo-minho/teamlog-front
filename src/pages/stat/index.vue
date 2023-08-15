@@ -2,9 +2,19 @@
 import PostAPI from "@/api/postApi";
 import JandiContents from "@/components/Jandi/JandiContents.vue";
 import JandiBottomTip from "@/components/Jandi/JandiBottomTip.vue";
+import { BLOG_TAG } from "@/constants";
+import GroupApi from "@/api/groupApi";
 
 const jandi = ref();
 const _totalJandiCnt = ref(0);
+
+const getLabel = (type: string) =>
+  BLOG_TAG.find((v) => v.type === type)?.label || "All";
+
+const { data } = await GroupApi.count();
+const { groupCount, linkCount, postCount, linkCountByPlatform } =
+  data.value || {};
+
 const { data: _jandis, pending } = await PostAPI.countByDate();
 watch(
   _jandis,
@@ -16,32 +26,128 @@ watch(
   { immediate: true }
 );
 
+const teamCounter = ref(0);
+const blogCounter = ref(0);
+const postCounter = ref(0);
+onMounted(() => {
+  const teamCounterAnimate = () => {
+    if (teamCounter.value >= (groupCount || 0)) return;
+    teamCounter.value++;
+    requestAnimationFrame(teamCounterAnimate);
+  };
+  const blogCounterAnimate = () => {
+    const max = linkCount || 0;
+    if (blogCounter.value >= max) return;
+    blogCounter.value = blogCounter.value + 5;
+    if (max < blogCounter.value) blogCounter.value = max;
+    requestAnimationFrame(blogCounterAnimate);
+  };
+  const postCounterAnimate = () => {
+    const max = postCount || 0;
+    if (postCounter.value >= max) return;
+    postCounter.value = postCounter.value + 100;
+    if (max < postCounter.value) postCounter.value = max;
+    requestAnimationFrame(postCounterAnimate);
+  };
+  requestAnimationFrame(teamCounterAnimate);
+  requestAnimationFrame(blogCounterAnimate);
+  requestAnimationFrame(postCounterAnimate);
+});
+
 definePageMeta({
   layout: "default",
 });
 </script>
 <template>
-  <q-item class="q-pa-none q-mt-sm" style="min-height: 0">
-    <q-item-section>
-      <div class="max-width">
-        <div class="q-px-md q-pb-md q-mt-sm stat-area">
-          <q-item-label
-            class="text-weight-bolder q-mb-md"
-            style="font-size: 20px; font-style: italic"
-          >
-            팀로그의 누군가는 계속 포스팅하고 있습니다 ✍
-          </q-item-label>
-          <q-card>
-            <q-card-section class="row jandi-zone">
-              <JandiContents :loading="pending" :data="jandi" />
-              <JandiBottomTip :count="_totalJandiCnt" />
-            </q-card-section>
-          </q-card>
+  <q-scroll-area style="height: calc(100vh - 100px)" :visible="false">
+    <q-list>
+      <div>
+        <q-item-label header class="q-pb-sm">누적 카운트</q-item-label>
+        <div class="row q-px-md q-mb-md">
+          <div class="col-4">
+            <div class="text-bold text-h6 counter">
+              {{ teamCounter?.toLocaleString() }}
+            </div>
+            팀
+          </div>
+          <div class="col-4">
+            <div class="text-bold text-h6">
+              {{ blogCounter?.toLocaleString() }}
+            </div>
+            블로그
+          </div>
+          <div class="col-4">
+            <div class="text-bold text-h6">
+              {{ postCounter?.toLocaleString() }}
+            </div>
+            포스트
+          </div>
         </div>
       </div>
-    </q-item-section>
-  </q-item>
+      <q-separator spaced />
+      <div>
+        <q-item-label header class="platform-area">
+          플랫폼 분포
+          <q-chip size="12px" clickable @click="navigateTo('setting/platform')">
+            허용가능한 블로그?
+          </q-chip>
+        </q-item-label>
+        <div class="row q-px-md q-mb-md">
+          <q-chip
+            v-for="(tag, i) in linkCountByPlatform"
+            :key="i"
+            outline
+            square
+            clickable
+            color="dark"
+            style="opacity: 0.8"
+          >
+            <q-avatar size="18px">
+              <q-img
+                :src="getImage(`platform/${tag.type?.toLowerCase()}.png`)"
+                :no-transition="true"
+              />
+            </q-avatar>
+            {{ getLabel(tag.type) }}
+            <div class="text-bold q-ml-sm">{{ tag._count }}</div>
+          </q-chip>
+        </div>
+      </div>
+      <q-separator spaced />
+      <q-item class="q-pa-none q-mt-sm" style="min-height: 0">
+        <q-item-section>
+          <div class="max-width">
+            <q-item-label header class="q-pb-sm">모든 이들의 잔디</q-item-label>
+            <div class="q-px-md q-pb-md q-mt-sm stat-area">
+              <q-item-label
+                class="text-weight-bolder q-mb-md"
+                style="font-size: 16px; font-style: italic"
+              >
+                "팀로그의 누군가는 계속 포스팅하고 있습니다 ✍"
+              </q-item-label>
+              <q-card>
+                <q-card-section class="row jandi-zone">
+                  <JandiContents :loading="pending" :data="jandi" />
+                  <JandiBottomTip :count="_totalJandiCnt" />
+                </q-card-section>
+              </q-card>
+            </div>
+          </div>
+        </q-item-section>
+      </q-item>
+      <q-separator spaced />
+    </q-list>
+  </q-scroll-area>
 </template>
+<style scope>
+.platform-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+</style>
 <style lang="scss">
 @charset "UTF-8";
 

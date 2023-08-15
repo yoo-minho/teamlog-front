@@ -3,7 +3,7 @@
     <q-item>
       <q-item-section side>
         <q-item-section avatar>
-          <q-skeleton type="QAvatar" size="64px" class="shadow-1" />
+          <q-skeleton size="64px" class="shadow-1" />
         </q-item-section>
       </q-item-section>
       <q-item-section class="q-ml-sm">

@@ -10,7 +10,7 @@ export default {
     });
   },
   count() {
-    return useAPIFetch<TeamCountResultType>("group/counts");
+    return useAPIFetch<TeamCountResultType>("group/counts", { lazy: true });
   },
   findAllTag() {
     return useAPIFetch<Tag[]>("tag", { lazy: true });

@@ -3,6 +3,7 @@ import platformArray from "@/data/platform.json";
 import DataCard from "../components/DataCard.vue";
 
 definePageMeta({
+  layout: "setting",
   title: "허용가능한 플랫폼",
 });
 </script>

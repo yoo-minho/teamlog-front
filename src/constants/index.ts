@@ -1,11 +1,13 @@
 export const POST_TAG = [
-  { label: "GPT", value: "gpt" },
   { label: "회고", value: "회고|결산|.log|정산" },
+  { label: "gpt", value: "gpt" },
   { label: "인프콘", value: "인프콘" },
   { label: "글또", value: "글또" },
   { label: "이직", value: "이직" },
-  { label: "테스트", value: "테스트|test" },
+  { label: "테스트", value: "테스트|test|tdd" },
   { label: "sql", value: "sql|쿼리|query" },
+  { label: "git", value: "git|깃" },
+  { label: "aws", value: "aws|아마존" },
 ];
 export const BLOG_TAG = [
   { type: "TISTORY", label: "티스토리", color: "#E74F05" },

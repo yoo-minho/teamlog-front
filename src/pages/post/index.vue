@@ -10,10 +10,11 @@ import SearchEmpty from "@/components/Empty/SearchEmpty.vue";
 const route = useRoute();
 const page = ref(1);
 const selectTag = ref(String(route.query.tag || "All"));
+const selectTagVal = ref(String(route.query.tag || "All"));
 const isExistsNextPage = ref(false);
 const tags = ref(POST_TAG.map((v) => ({ id: v.label, name: v.label })));
 const currentPosts = ref();
-const response = await PostApi.findPosts({ page, tag: selectTag });
+const response = await PostApi.findPosts({ page, tag: selectTagVal });
 const { data: _posts, refresh: refreshPost, pending } = response;
 
 watch(
@@ -34,7 +35,10 @@ const refreshPostData = async ({ init = false } = {}) => {
 };
 const next = () => refreshPostData({ init: false });
 const refresh = (dn: () => void) => refreshPostData({ init: true }).then(dn);
-const filterTag = (tagName: string) => (selectTag.value = tagName);
+const filterTag = (tagName: string) => {
+  selectTag.value = tagName;
+  selectTagVal.value = POST_TAG.find((v) => v.label === tagName)?.value || "";
+};
 watch([selectTag], () => refreshPostData({ init: true }));
 
 definePageMeta({
@@ -62,6 +66,7 @@ definePageMeta({
                   v-for="(post, i) in currentPosts"
                   :key="i"
                   :post="post"
+                  :selected-tag="selectTagVal"
                 />
                 <ClientOnly>
                   <template v-if="isExistsNextPage">

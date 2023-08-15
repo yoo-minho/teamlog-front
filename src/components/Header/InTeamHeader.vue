@@ -6,7 +6,7 @@ import GroupApi from "@/api/groupApi";
 
 const props = defineProps<{
   teamId?: number;
-  teamTitle?: string;
+  teamTitle: string;
   createrId?: string;
 }>();
 const { teamId } = toRefs(props);
@@ -59,12 +59,16 @@ const _openEditor = () => {
 </script>
 
 <template>
-  <q-header bordered class="text-white max-width" style="position: relative">
+  <q-header
+    bordered
+    class="bg-white text-dark max-width"
+    style="position: relative"
+    :style="{ border: teamTitle ? '' : 0 }"
+  >
     <q-toolbar>
       <q-btn icon="keyboard_backspace" flat round dense @click="goMain()" />
-      <q-toolbar-title class="name ellipsis">
-        <!-- {{ groupTitle }} -->
-      </q-toolbar-title>
+      <div class="name ellipsis">{{ teamTitle }}</div>
+      <q-toolbar-title></q-toolbar-title>
       <template v-if="isMyContents(createrId)">
         <q-btn icon="edit" flat round dense @click="_openEditor" />
         <q-btn icon="delete" flat round dense @click="deleteTeam" />
@@ -77,7 +81,6 @@ const _openEditor = () => {
 <style scope lang="scss">
 .name {
   align-items: center;
-  color: white;
   font-size: 20px;
   margin-left: 4px;
   font-weight: bold;

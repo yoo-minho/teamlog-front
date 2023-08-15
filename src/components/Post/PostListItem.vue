@@ -5,8 +5,12 @@ import { getDateString } from "@/plugin/dayjs";
 import { skipBlogName } from "@/utils/NameUtil";
 import { getImageByBlogType, isTextImage } from "@/utils/ImageUtil";
 
-const props = defineProps<{ post: Post }>();
+const props = defineProps<{ post: Post; selectedTag?: string }>();
 const { post } = toRefs(props);
+const changeTitle = (title: string) => {
+  if (!props.selectedTag || props.selectedTag === "All") return title;
+  return changeMarkContents(title, props.selectedTag);
+};
 </script>
 
 <template>
@@ -15,7 +19,7 @@ const { post } = toRefs(props);
       <q-item-section>
         <div
           class="label text-weight-bold ellipsis text-subtitle2"
-          v-html="post.title"
+          v-html="changeTitle(post.title)"
         ></div>
         <div class="label ellipsis-2-lines" style="line-height: 20px">
           {{ post.description || "" }}

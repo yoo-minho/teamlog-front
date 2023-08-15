@@ -3,7 +3,6 @@ import { storeToRefs } from "pinia";
 import { usePostStore } from "@/stores/post";
 import { useTeamStore } from "@/stores/team";
 
-import SearchEmpty from "@/components/Empty/SearchEmpty.vue";
 import ScrollObserver from "@/components/Observer/ScrollObserver.vue";
 import PostApi from "@/api/postApi";
 
@@ -64,9 +63,6 @@ definePageMeta({
   <template v-else>
     <template v-if="posts.length > 0">
       <PostListItem v-for="(post, i) in posts" :key="i" :post="post" />
-    </template>
-    <template v-else>
-      <SearchEmpty mode="SEARCH" />
     </template>
     <ClientOnly>
       <template v-if="isExistsNextPage">

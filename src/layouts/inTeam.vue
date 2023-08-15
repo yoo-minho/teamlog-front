@@ -34,6 +34,7 @@ const refresh = (done: () => void) => {
 };
 
 const { data: team, pending } = await GroupApi.findByDomain(teamId.value);
+const teamTitle = ref("");
 
 watch(
   team,
@@ -60,17 +61,28 @@ const handleSwipe = async (v: any) => {
   await navigateTo(newTab);
   tab.value = newTab;
 };
+
+const scroll = (info: any) => {
+  if (info.verticalPosition > 20) {
+    if (teamTitle.value === "") {
+      teamTitle.value = currentTeam.value.title;
+    }
+  } else {
+    teamTitle.value = "";
+  }
+};
 </script>
 <template>
   <q-layout>
     <div :class="`${isDark ? 'bg-grey-9' : 'bg-white'}`">
       <InTeamHeader
         :team-id="team?.id"
-        :team-title="team?.title"
+        :team-title="teamTitle"
         :createrId="team?.createrId"
       />
       <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
         <q-scroll-area
+          @scroll="scroll"
           class="max-width without-header in-team"
           :visible="false"
           style="height: calc(100vh - 50px); overflow: hidden"

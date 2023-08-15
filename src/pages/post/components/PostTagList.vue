@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Tag } from "@/types/common";
 
-const router = useRouter();
 const route = useRoute();
 const totalTag = { id: "All", name: "All" };
 const props = defineProps<{ tags: Tag[] | null; activeTagName: string }>();

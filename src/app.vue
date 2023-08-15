@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/user";
-import { savePrompt } from "@/composables/useInstallBottomSheet";
+import { savePrompt, installed } from "@/composables/useInstallBottomSheet";
 import UserApi from "@/api/userApi";
 import GroupApi from "@/api/groupApi";
 
@@ -41,7 +41,7 @@ onMounted(() => {
     savePrompt(e as BeforeInstallPromptEvent);
   });
   window.addEventListener("appinstalled", () => {
-    // console.log("PWA was installed");
+    installed();
   });
 });
 </script>
