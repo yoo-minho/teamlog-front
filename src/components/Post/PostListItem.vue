@@ -35,7 +35,7 @@ const changeTitle = (title: string) => {
             size="20px"
             rounded
           >
-            <div class="non-selectable" style="font-size: 12px">
+            <div class="non-selectable">
               {{ post.link.title.substring(0, 2) }}
             </div>
           </q-avatar>

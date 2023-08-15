@@ -83,6 +83,7 @@ const refreshJandiData = async (selected: { value: number }) => {
       </q-card-section>
     </q-card>
   </div>
+  <q-separator class="q-my-md" />
   <q-item-label class="text-grey-5 q-mt-md">
     <q-chip
       square
