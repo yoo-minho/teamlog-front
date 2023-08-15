@@ -58,7 +58,7 @@ watch(
 const handleSwipe = async (v: any) => {
   const isScrollTop = teamTitle.value === "";
   const newTab = getNextTab(v, ["blog", "post", "stat"]);
-  if (!newTab || isScrollTop) return;
+  if (!newTab || !isScrollTop) return;
   await navigateTo(newTab, { replace: true });
   tab.value = newTab;
 };

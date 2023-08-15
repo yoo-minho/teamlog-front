@@ -62,7 +62,10 @@ const changeTitle = (title: string) => {
             <span class="text-weight-bold ellipsis text-grey-5">
               {{ skipBlogName(post.link.title) }}
             </span>
-            <div class="text-grey-5 q-mt-xs">
+            <div
+              v-if="post.link.groups?.length > 0"
+              class="text-grey-5 q-mt-xs"
+            >
               in
               <span
                 class="ellipsis"

@@ -38,13 +38,13 @@ const dateString = getFormatString(
         <q-item-label class="text-grey-5">
           {{ dateString }}
         </q-item-label>
-        <div class="text-grey-5 q-mt-xs">
+        <div v-if="link.groups?.length > 0" class="text-grey-5 q-mt-xs">
           in
           <span
             class="ellipsis"
             style="font-size: 12px; letter-spacing: -0.5px"
           >
-            {{ link.groups.map(({ group }) => group.title).join(", ") }}
+            {{ link.groups?.map(({ group }) => group.title).join(", ") }}
           </span>
         </div>
       </q-item-section>
