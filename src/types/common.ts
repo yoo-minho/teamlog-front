@@ -9,6 +9,7 @@ export type Link = {
   imagePath?: string;
   scrapAt?: Date;
   lastPostCreatedAt?: Date;
+  groups: { group: { title: string } }[];
 };
 export type LinkWrap = { link: Link };
 export type GroupTagWrap = {

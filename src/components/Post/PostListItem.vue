@@ -58,10 +58,21 @@ const changeTitle = (title: string) => {
               >
             </q-img>
           </q-avatar>
-          <q-item-label class="text-grey-5 ellipsis q-mx-sm" style="flex: 1">
-            <span class="text-weight-bold">
+          <q-item-label class="q-mx-sm" style="flex: 1">
+            <span class="text-weight-bold ellipsis text-grey-5">
               {{ skipBlogName(post.link.title) }}
             </span>
+            <div class="text-grey-5 q-mt-xs">
+              in
+              <span
+                class="ellipsis"
+                style="font-size: 12px; letter-spacing: -0.5px"
+              >
+                {{
+                  post.link.groups.map(({ group }) => group.title).join(", ")
+                }}
+              </span>
+            </div>
           </q-item-label>
           <q-avatar rounded size="20px">
             <q-img
