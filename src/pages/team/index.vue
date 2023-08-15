@@ -95,13 +95,13 @@ watch(scrollRef, (scrollDom) => {
 });
 </script>
 <template>
-  <q-pull-to-refresh @refresh="refresh">
-    <q-scroll-area
-      @scroll="scroll"
-      ref="scrollRef"
-      style="height: calc(100vh - 100px)"
-      :visible="false"
-    >
+  <q-scroll-area
+    @scroll="scroll"
+    ref="scrollRef"
+    style="height: calc(100vh - 100px)"
+    :visible="false"
+  >
+    <q-pull-to-refresh @refresh="refresh">
       <q-layout class="max-width">
         <q-page-container>
           <q-page>
@@ -111,7 +111,6 @@ watch(scrollRef, (scrollDom) => {
               :active-tag-name="lastSelectTag"
             />
             <q-separator spaced style="margin-bottom: 0" />
-
             <q-select
               v-model="selectedOrderModel"
               :options="options"
@@ -155,6 +154,6 @@ watch(scrollRef, (scrollDom) => {
           </q-page>
         </q-page-container>
       </q-layout>
-    </q-scroll-area>
-  </q-pull-to-refresh>
+    </q-pull-to-refresh>
+  </q-scroll-area>
 </template>
