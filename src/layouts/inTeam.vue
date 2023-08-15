@@ -130,7 +130,7 @@ const scroll = (info: any) => {
                   v-model="tab"
                   animated
                   class="my-panels"
-                  v-touch-swipe.mouse="handleSwipe"
+                  v-touch-swipe.mouse.horizontal="handleSwipe"
                 >
                   <q-tab-panel name="blog" class="q-pa-none">
                     <slot />
