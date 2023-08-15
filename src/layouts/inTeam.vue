@@ -56,9 +56,10 @@ watch(
 );
 
 const handleSwipe = async (v: any) => {
+  const isScrollTop = teamTitle.value === "";
   const newTab = getNextTab(v, ["blog", "post", "stat"]);
-  if (!newTab) return;
-  await navigateTo(newTab);
+  if (!newTab || isScrollTop) return;
+  await navigateTo(newTab, { replace: true });
   tab.value = newTab;
 };
 
@@ -80,13 +81,13 @@ const scroll = (info: any) => {
         :team-title="teamTitle"
         :createrId="team?.createrId"
       />
-      <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
-        <q-scroll-area
-          @scroll="scroll"
-          class="max-width without-header in-team"
-          :visible="false"
-          style="height: calc(100vh - 50px); overflow: hidden"
-        >
+      <q-scroll-area
+        @scroll="scroll"
+        class="max-width without-header in-team"
+        :visible="false"
+        style="height: calc(100vh - 50px); overflow: hidden"
+      >
+        <q-pull-to-refresh @refresh="refresh" class="q-mt-xs">
           <q-layout class="max-width">
             <q-page-container>
               <q-page>
@@ -147,13 +148,13 @@ const scroll = (info: any) => {
                   :scroll-offset="150"
                   :offset="[18, 18]"
                 >
-                  <q-btn fab icon="keyboard_arrow_up" color="green-4" />
+                  <q-btn fab icon="keyboard_arrow_up" color="green-3" />
                 </q-page-scroller>
               </q-page>
             </q-page-container>
           </q-layout>
-        </q-scroll-area>
-      </q-pull-to-refresh>
+        </q-pull-to-refresh>
+      </q-scroll-area>
     </div>
   </q-layout>
 </template>

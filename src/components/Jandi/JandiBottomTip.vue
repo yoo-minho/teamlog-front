@@ -10,6 +10,11 @@ const props = defineProps<{ count: number }>();
       <div class="jandi bg-green-3"></div>
       <div class="jandi bg-green-4"></div>
       <div class="jandi bg-green-5"></div>
+      <div class="jandi bg-green-6"></div>
+      <div class="jandi bg-green-7"></div>
+      <div class="jandi bg-green-8"></div>
+      <div class="jandi bg-green-9"></div>
+      <div class="jandi bg-green-10"></div>
       <div class="text-grey-1">More</div>
     </div>
     <div class="row q-gutter-xs items-center q-mt-xs">

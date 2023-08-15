@@ -19,7 +19,7 @@ watch(
 const handleSwipe = async (v: any) => {
   const newTab = getNextTab(v, ["team", "blog", "post", "stat", "my"]);
   if (!newTab) return;
-  await navigateTo(newTab);
+  await navigateTo(newTab, { replace: true });
   tab.value = newTab;
 };
 </script>
@@ -38,6 +38,7 @@ const handleSwipe = async (v: any) => {
           name="team"
           to="/team"
           label="Team"
+          :replace="true"
           no-caps
           style="flex: 1"
         />
@@ -45,6 +46,7 @@ const handleSwipe = async (v: any) => {
           name="blog"
           to="/blog"
           label="Blog"
+          :replace="true"
           no-caps
           style="flex: 1"
         />
@@ -52,6 +54,7 @@ const handleSwipe = async (v: any) => {
           name="post"
           to="/post"
           label="Post"
+          :replace="true"
           no-caps
           style="flex: 1"
         />
@@ -59,10 +62,11 @@ const handleSwipe = async (v: any) => {
           name="stat"
           to="/stat"
           label="Stat"
+          :replace="true"
           no-caps
           style="flex: 1"
         />
-        <q-route-tab name="my" to="/my" no-caps style="flex: 1">
+        <q-route-tab name="my" to="/my" :replace="true" style="flex: 1">
           <q-btn v-if="isExistsUser" flat round>
             <q-avatar size="28px">
               <q-img :src="user.profileImage" />

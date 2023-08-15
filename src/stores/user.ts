@@ -11,6 +11,7 @@ export const useUserStore = defineStore("user", {
     searchWord: "",
     mainScrollAreaRef: null as unknown as QScrollArea,
     tags: [] as Tag[],
+    isExistsPwaPrompt: false,
   }),
   getters: {
     isExistsUser: (state) => !!state.user?.id,

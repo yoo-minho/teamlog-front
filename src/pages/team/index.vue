@@ -149,7 +149,7 @@ watch(scrollRef, (scrollDom) => {
               :scroll-offset="150"
               :offset="[18, 18]"
             >
-              <q-btn fab icon="keyboard_arrow_up" color="green-5" />
+              <q-btn fab icon="keyboard_arrow_up" color="green-3" />
             </q-page-scroller>
           </q-page>
         </q-page-container>

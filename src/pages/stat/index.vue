@@ -6,14 +6,46 @@ import { BLOG_TAG } from "@/constants";
 import GroupApi from "@/api/groupApi";
 
 const jandi = ref();
+const teamCounter = ref(0);
+const blogCounter = ref(0);
+const postCounter = ref(0);
 const _totalJandiCnt = ref(0);
 
 const getLabel = (type: string) =>
   BLOG_TAG.find((v) => v.type === type)?.label || "All";
 
-const { data } = await GroupApi.count();
-const { groupCount, linkCount, postCount, linkCountByPlatform } =
-  data.value || {};
+const { data: _counts } = await GroupApi.count();
+watch(
+  _counts,
+  (newCounts) => {
+    const teamCounterAnimate = () => {
+      if (teamCounter.value >= (newCounts?.groupCount || 0)) return;
+      teamCounter.value++;
+      requestAnimationFrame(teamCounterAnimate);
+    };
+    const blogCounterAnimate = () => {
+      const max = newCounts?.linkCount || 0;
+      if (blogCounter.value >= max) return;
+      blogCounter.value = blogCounter.value + 5;
+      if (max < blogCounter.value) blogCounter.value = max;
+      requestAnimationFrame(blogCounterAnimate);
+    };
+    const postCounterAnimate = () => {
+      const max = newCounts?.postCount || 0;
+      if (postCounter.value >= max) return;
+      postCounter.value = postCounter.value + 100;
+      if (max < postCounter.value) postCounter.value = max;
+      requestAnimationFrame(postCounterAnimate);
+    };
+    setTimeout(() => {
+      if (!window?.requestAnimationFrame) return;
+      requestAnimationFrame(teamCounterAnimate);
+      requestAnimationFrame(blogCounterAnimate);
+      requestAnimationFrame(postCounterAnimate);
+    }, 0);
+  },
+  { immediate: true }
+);
 
 const { data: _jandis, pending } = await PostAPI.countByDate();
 watch(
@@ -25,34 +57,6 @@ watch(
   },
   { immediate: true }
 );
-
-const teamCounter = ref(0);
-const blogCounter = ref(0);
-const postCounter = ref(0);
-onMounted(() => {
-  const teamCounterAnimate = () => {
-    if (teamCounter.value >= (groupCount || 0)) return;
-    teamCounter.value++;
-    requestAnimationFrame(teamCounterAnimate);
-  };
-  const blogCounterAnimate = () => {
-    const max = linkCount || 0;
-    if (blogCounter.value >= max) return;
-    blogCounter.value = blogCounter.value + 5;
-    if (max < blogCounter.value) blogCounter.value = max;
-    requestAnimationFrame(blogCounterAnimate);
-  };
-  const postCounterAnimate = () => {
-    const max = postCount || 0;
-    if (postCounter.value >= max) return;
-    postCounter.value = postCounter.value + 100;
-    if (max < postCounter.value) postCounter.value = max;
-    requestAnimationFrame(postCounterAnimate);
-  };
-  requestAnimationFrame(teamCounterAnimate);
-  requestAnimationFrame(blogCounterAnimate);
-  requestAnimationFrame(postCounterAnimate);
-});
 
 definePageMeta({
   layout: "default",
@@ -94,7 +98,7 @@ definePageMeta({
         </q-item-label>
         <div class="row q-px-md q-mb-md">
           <q-chip
-            v-for="(tag, i) in linkCountByPlatform"
+            v-for="(tag, i) in _counts?.linkCountByPlatform"
             :key="i"
             outline
             square

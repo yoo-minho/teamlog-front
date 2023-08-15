@@ -3,7 +3,7 @@ import { isTodayByString } from "@/plugin/dayjs";
 import { DaysCount } from "@/types/common";
 
 const props = defineProps<{ loading?: boolean; data: DaysCount<number>[] }>();
-const countClass = (count: number) => `bg-green-${(count > 4 ? 4 : count) + 1}`;
+const countClass = (count: number) => `bg-green-${(count > 9 ? 9 : count) + 1}`;
 const tooltip = ({ count, date }: DaysCount<number>) =>
   `${count === 0 ? "No" : count} posting on ${date} ${
     isTodayByString(date) ? "(Today)" : ""

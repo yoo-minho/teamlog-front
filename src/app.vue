@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/user";
-import { savePrompt, installed } from "@/composables/useInstallBottomSheet";
+import { savePrompt } from "@/composables/useInstallBottomSheet";
 import UserApi from "@/api/userApi";
 import GroupApi from "@/api/groupApi";
 
 const $q = useQuasar();
 const isDarkActive = ref($q.dark.isActive);
 const userStore = useUserStore();
-const { user, atk, tags } = storeToRefs(userStore);
+const { user, atk, tags, isExistsPwaPrompt } = storeToRefs(userStore);
 const route = useRoute();
 const code = String(route.query.code || "");
 
@@ -38,10 +38,9 @@ watch(
 onMounted(() => {
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
-    savePrompt(e as BeforeInstallPromptEvent);
-  });
-  window.addEventListener("appinstalled", () => {
-    installed();
+    savePrompt(e);
+    isExistsPwaPrompt.value = true;
+    console.log("beforeinstallprompt");
   });
 });
 </script>
@@ -146,13 +145,5 @@ body {
 
 .q-separator--horizontal:last-child {
   margin-bottom: 0 !important;
-}
-.page-enter-active,
-.page-leave-active {
-  transition: all 0.4s;
-}
-.page-enter-from,
-.page-leave-to {
-  opacity: 0.5;
 }
 </style>
