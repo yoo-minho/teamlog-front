@@ -42,8 +42,8 @@ definePageMeta({
 });
 </script>
 <template>
-  <q-pull-to-refresh @refresh="refresh">
-    <q-scroll-area style="height: calc(100vh - 100px)" :visible="false">
+  <q-scroll-area style="height: calc(100vh - 100px)" :visible="false">
+    <q-pull-to-refresh @refresh="refresh">
       <q-layout class="max-width">
         <q-page-container>
           <q-page>
@@ -85,6 +85,6 @@ definePageMeta({
           </q-page>
         </q-page-container>
       </q-layout>
-    </q-scroll-area>
-  </q-pull-to-refresh>
+    </q-pull-to-refresh>
+  </q-scroll-area>
 </template>

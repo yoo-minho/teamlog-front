@@ -2,27 +2,26 @@
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/user";
 import MainHeader from "@/components/Header/MainHeader.vue";
+import { getNextTab } from "@/composables/useRouteTabSwipe";
 
 const $q = useQuasar();
 const isDarkActive = ref($q.dark.isActive);
 const userStore = useUserStore();
-const { isExistsUser, user, mainScrollAreaRef } = storeToRefs(userStore);
+const { isExistsUser, user } = storeToRefs(userStore);
 const route = useRoute();
-
 const tab = ref(String(route.name));
+
 watch(
   () => $q.dark.isActive,
   (val) => (isDarkActive.value = val)
 );
 
-watch(tab, (newTab) => {
-  if (newTab === null) return;
-  setTimeout(async () => {
-    const route = useRoute();
-    if (route.name === newTab) return;
-    await navigateTo(newTab);
-  }, 0);
-});
+const handleSwipe = async (v: any) => {
+  const newTab = getNextTab(v, ["team", "blog", "post", "stat", "my"]);
+  if (!newTab) return;
+  await navigateTo(newTab);
+  tab.value = newTab;
+};
 </script>
 <template>
   <div :class="`${isDarkActive ? 'bg-grey-9' : 'bg-white'}`">
@@ -72,7 +71,12 @@ watch(tab, (newTab) => {
           <q-btn v-else icon="account_circle" flat round />
         </q-route-tab>
       </q-tabs>
-      <q-tab-panels v-model="tab" animated swipeable class="my-panels">
+      <q-tab-panels
+        v-model="tab"
+        animated
+        class="my-panels"
+        v-touch-swipe.mouse="handleSwipe"
+      >
         <q-tab-panel name="team" class="q-pa-none">
           <slot />
         </q-tab-panel>
@@ -92,7 +96,7 @@ watch(tab, (newTab) => {
     </q-layout>
   </div>
 </template>
-<style>
+<style scoped>
 .my-panels .q-panel.scroll {
   overflow: hidden;
 }

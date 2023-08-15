@@ -54,13 +54,12 @@ watch(
   (val) => (isDark.value = val)
 );
 
-watch(tab, (newTab) => {
-  setTimeout(async () => {
-    const route = useRoute();
-    if (route.name === newTab) return;
-    await navigateTo(newTab);
-  }, 0);
-});
+const handleSwipe = async (v: any) => {
+  const newTab = getNextTab(v, ["blog", "post", "stat"]);
+  if (!newTab) return;
+  await navigateTo(newTab);
+  tab.value = newTab;
+};
 </script>
 <template>
   <q-layout>
@@ -118,8 +117,8 @@ watch(tab, (newTab) => {
                 <q-tab-panels
                   v-model="tab"
                   animated
-                  swipeable
                   class="my-panels"
+                  v-touch-swipe.mouse="handleSwipe"
                 >
                   <q-tab-panel name="blog" class="q-pa-none">
                     <slot />
@@ -146,3 +145,8 @@ watch(tab, (newTab) => {
     </div>
   </q-layout>
 </template>
+<style scoped>
+.my-panels .q-panel.scroll {
+  overflow: hidden;
+}
+</style>
