@@ -6,7 +6,11 @@ import UserApi from "../api/userApi";
 const isProd = process.env.NODE_ENV === "production";
 
 export const useAPIFetch = <ResT>(path: string, opts = {}) => {
-  return useAPIFetchWithGuard<ResT>(path, opts);
+  const config = useRuntimeConfig();
+  const baseURL = config.public.apiBase[isProd ? "prod" : "dev"];
+  const { atk } = storeToRefs(useUserStore());
+  const headers = ref({ Authorization: `Bearer ${atk.value}` });
+  return useFetch<ResT>(path, { baseURL, ...opts, headers });
 };
 
 export const useAPIFetchWithGuard = <T>(path: string, opts = {}) => {

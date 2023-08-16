@@ -69,10 +69,7 @@ watch(
     setTimeout(() => {
       teams.value = currentTeams.value;
       isExistsNextPage.value =
-        currentTeams.value === undefined
-          ? false
-          : currentTeams.value.length > 0 &&
-            currentTeams.value?.length % 10 === 0;
+        currentTeams.value.length > 0 && currentTeams.value?.length % 10 === 0;
     }, 100); //하이드레이션 이슈가 생겨!
   },
   { immediate: !isCached() }
