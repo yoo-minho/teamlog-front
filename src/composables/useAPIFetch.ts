@@ -9,7 +9,7 @@ export const useAPIFetch = <ResT>(path: string, opts = {}) => {
   const config = useRuntimeConfig();
   const baseURL = config.public.apiBase[isProd ? "prod" : "dev"];
   const { atk } = storeToRefs(useUserStore());
-  const headers = ref({ Authorization: `Bearer ${atk.value}` });
+  const headers = { Authorization: `Bearer ${atk.value}` };
   return useFetch<ResT>(path, { baseURL, ...opts, headers });
 };
 

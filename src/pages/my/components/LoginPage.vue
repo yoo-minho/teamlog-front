@@ -3,7 +3,6 @@ import { QSpinnerIos } from "quasar";
 import ApiArr from "@/data/login-api.json";
 import FeatureInfo from "./FeatureInfo.vue";
 
-const $q = useQuasar();
 const isProd = process.env.NODE_ENV === "production";
 
 const tryLogin = (e: MouseEvent, id: string) => {
