@@ -3,6 +3,7 @@ import { Tag } from "@/types/common";
 
 const route = useRoute();
 const totalTag = { id: "All", name: "All" };
+const myTag = { id: "My", name: "내가만든" };
 const props = defineProps<{ tags: Tag[] | null; activeTagName: string }>();
 const emits = defineEmits<{ (eventName: "clickTag", tagName: string): void }>();
 const isActiveTag = (tagName: string) => {
@@ -20,7 +21,7 @@ const clickTag = async (tagName: string) => {
 <template>
   <div v-if="tags" class="tag-scroll row q-mx-sm items-center wrap">
     <q-chip
-      v-for="(tag, i) in [totalTag, ...tags]"
+      v-for="(tag, i) in [totalTag, myTag, ...tags]"
       :key="i"
       :class="{ active: isActiveTag(tag.name) }"
       outline

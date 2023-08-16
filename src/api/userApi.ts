@@ -9,7 +9,7 @@ export default {
     });
   },
   logoutUser(id: string) {
-    useAPIFetch("auth/logout", { params: { id } });
+    return useAPIFetch("auth/logout", { params: { id } });
   },
   async reissue() {
     return await useFetch<TokenType>("/api/reissue");

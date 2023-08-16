@@ -13,7 +13,7 @@ const _fromRouteName = useState<string>("fromRouteName");
 const teamStore = useTeamStore();
 const { teams, lastSelectTag } = storeToRefs(teamStore);
 const userStore = useUserStore();
-const { tags } = storeToRefs(userStore);
+const { tags, isExistsUser } = storeToRefs(userStore);
 
 if (!lastSelectTag.value) {
   lastSelectTag.value = String(route.query.tag || "All");
@@ -33,6 +33,14 @@ const selectedOrderModel = ref(
   options.filter((v) => v.value === savedSortVal)[0]
 );
 const selectedOrder = ref(savedSortVal);
+
+const openNewTeam = () => {
+  if (isExistsUser.value) {
+    navigateTo({ path: "/new/team" });
+    return;
+  }
+  showAuthDialog({ to: "/new/team" });
+};
 
 const isCached = () =>
   _fromRouteName.value !== "team" && teams.value.length > 0;
@@ -60,7 +68,11 @@ watch(
     _fromRouteName.value = "team";
     setTimeout(() => {
       teams.value = currentTeams.value;
-      isExistsNextPage.value = currentTeams.value?.length % 10 === 0;
+      isExistsNextPage.value =
+        currentTeams.value === undefined
+          ? false
+          : currentTeams.value.length > 0 &&
+            currentTeams.value?.length % 10 === 0;
     }, 100); //하이드레이션 이슈가 생겨!
   },
   { immediate: !isCached() }
@@ -91,7 +103,8 @@ const scroll = (info: any) => {
 };
 const scrollRef = ref();
 watch(scrollRef, (scrollDom) => {
-  scrollDom.setScrollPosition("vertical", _teamScrollVPos.value, 0);
+  const value = _teamScrollVPos.value <= 200 ? 0 : _teamScrollVPos.value;
+  scrollDom.setScrollPosition("vertical", value, 0);
 });
 </script>
 <template>
@@ -130,14 +143,41 @@ watch(scrollRef, (scrollDom) => {
               </template>
             </template>
             <template v-else>
-              <TeamListItem
-                where="MAIN"
-                v-for="team in currentTeams"
-                :key="team.id"
-                :team="team"
-              />
+              <template v-if="currentTeams.length > 0">
+                <TeamListItem
+                  where="MAIN"
+                  v-for="team in currentTeams"
+                  :key="team.id"
+                  :team="team"
+                />
+              </template>
+              <template v-else>
+                <q-item-label class="q-mx-sm">
+                  <q-item class="q-px-sm justify-center text-center">
+                    <div>
+                      <div class="text-subtitle2 q-pt-md">
+                        아직 만든 팀 블로그가 없군요.
+                      </div>
+                      <div class="text-weight-bold text-subtitle1 q-pb-md">
+                        당신만의 팀 블로그를 만들어볼래요?
+                      </div>
+                      <q-img
+                        :src="getImage('undraw_project_team.svg')"
+                        :fit="'fill'"
+                      />
+                      <q-btn
+                        class="q-mt-md"
+                        align="around"
+                        color="green-4"
+                        label="팀 블로그 만들기"
+                        @click="openNewTeam()"
+                      />
+                    </div>
+                  </q-item>
+                </q-item-label>
+              </template>
               <ClientOnly>
-                <template v-if="isExistsNextPage">
+                <template v-if="!pending && isExistsNextPage">
                   <ScrollObserver @trigger-intersected="next">
                     <TeamListSkeletonItem />
                   </ScrollObserver>

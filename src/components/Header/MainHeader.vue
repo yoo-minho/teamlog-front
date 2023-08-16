@@ -4,19 +4,11 @@ import { useUserStore } from "@/stores/user";
 import { TAB_LABEL } from "@/constants";
 import { showBottomSheet } from "@/composables/useSnsBottomSheet";
 import { showInstallBottomSheet } from "@/composables/useInstallBottomSheet";
-import { showAuthDialog } from "@/composables/useAuthDialog";
 
 const userStore = useUserStore();
-const { isExistsUser, isExistsPwaPrompt } = storeToRefs(userStore);
+const { isExistsPwaPrompt } = storeToRefs(userStore);
 const route = useRoute();
 const _openSettingMain = () => navigateTo({ name: "setting" });
-const _openNewTeam = () => {
-  if (isExistsUser.value) {
-    navigateTo({ path: "/new/team" });
-    return;
-  }
-  showAuthDialog({ to: "/new/team" });
-};
 
 const _clickNoti = () => {
   Notify.create({
@@ -27,13 +19,11 @@ const _clickNoti = () => {
 
 const routeName = String(route.name || "team");
 const title = ref(TAB_LABEL[routeName] || "팀로그");
-const isShowNewTeamBtn = ref(false);
 
 watch(
   () => route.name,
   (_routeName) => {
     const routeName = String(_routeName || "team");
-    isShowNewTeamBtn.value = routeName === "team";
     title.value = TAB_LABEL[routeName] || "팀로그";
   }
 );
@@ -42,9 +32,6 @@ watch(
   <q-header bordered class="max-width">
     <q-toolbar>
       <q-toolbar-title class="name">{{ title }}</q-toolbar-title>
-      <template v-if="isShowNewTeamBtn">
-        <q-btn icon="add" flat round dense @click="_openNewTeam()" />
-      </template>
       <q-btn icon="share" flat round dense @click="showBottomSheet()" />
       <q-btn icon="notifications" flat round dense @click="_clickNoti()" />
       <q-btn icon="menu" flat round dense @click="_openSettingMain" />

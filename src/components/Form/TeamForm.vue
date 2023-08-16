@@ -48,10 +48,10 @@ const linksCountLabel = computed(() =>
   links.value.length > 0 ? `(${links.value.length}/10)` : ""
 );
 const titleRules = [
-  (val: string) => val?.length > 0 || "팀 이름을 입력해주세요!",
+  (val: string) => val?.length > 2 || "팀 이름을 3자 이상 입력해주세요!",
 ];
 const idRules = [
-  (val: string) => val?.length > 0 || "도메인을 입력해주세요!",
+  (val: string) => val?.length > 2 || "도메인을 3자 이상 입력해주세요!",
   (val: string) =>
     new RegExp(/^[A-Za-z0-9_+]*$/).test(val) ||
     "대소문자, 숫자, 언더바를 활용하여 입력해주세요!",

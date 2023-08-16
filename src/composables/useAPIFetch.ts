@@ -6,9 +6,7 @@ import UserApi from "../api/userApi";
 const isProd = process.env.NODE_ENV === "production";
 
 export const useAPIFetch = <ResT>(path: string, opts = {}) => {
-  const config = useRuntimeConfig();
-  const baseURL = config.public.apiBase[isProd ? "prod" : "dev"];
-  return useFetch<ResT>(path, { baseURL, ...opts });
+  return useAPIFetchWithGuard<ResT>(path, opts);
 };
 
 export const useAPIFetchWithGuard = <T>(path: string, opts = {}) => {
