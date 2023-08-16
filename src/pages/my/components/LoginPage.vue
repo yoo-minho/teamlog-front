@@ -10,7 +10,7 @@ const tryLogin = (e: MouseEvent, id: string) => {
   const config = useRuntimeConfig();
   const baseURL = config.public.apiBase[isProd ? "prod" : "dev"];
   if (id === "kakao") {
-    $q.loading.show({
+    Loading.show({
       spinner: QSpinnerIos,
       spinnerColor: "white",
       spinnerSize: 140,
@@ -19,12 +19,14 @@ const tryLogin = (e: MouseEvent, id: string) => {
       messageColor: "white",
     });
     location.href = baseURL + "auth/kakao";
+    setTimeout(() => {
+      Loading.hide();
+    }, 1000);
     return e;
   }
   return e;
 };
 </script>
-
 <template>
   <q-page class="q-pa-lg">
     <ul class="q-ma-none">
