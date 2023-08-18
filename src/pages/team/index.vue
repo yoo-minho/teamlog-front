@@ -100,7 +100,12 @@ const scroll = (info: any) => {
 };
 const scrollRef = ref();
 watch(scrollRef, (scrollDom) => {
-  const value = _teamScrollVPos.value <= 200 ? 0 : _teamScrollVPos.value;
+  let value;
+  if (_fromRouteName.value.includes("@teamId")) {
+    value = _teamScrollVPos.value <= 200 ? 0 : _teamScrollVPos.value;
+  } else {
+    value = 0;
+  }
   scrollDom.setScrollPosition("vertical", value, 0);
 });
 </script>

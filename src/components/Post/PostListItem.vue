@@ -40,7 +40,13 @@ const changeTitle = (title: string) => {
             </div>
           </q-avatar>
           <q-avatar v-else size="20px" class="shadow-2" rounded>
-            <q-img
+            <nuxt-img
+              :src="post.link.imagePath"
+              width="200"
+              height="100"
+              format="webp"
+            ></nuxt-img>
+            <!-- <q-img
               :src="post.link.imagePath"
               :alt="post.link.title"
               class="image-24"
@@ -56,7 +62,7 @@ const changeTitle = (title: string) => {
                   {{ post.link.title.substring(0, 1) }}
                 </div></template
               >
-            </q-img>
+            </q-img> -->
           </q-avatar>
           <q-item-label class="q-mx-sm" style="flex: 1">
             <span class="text-weight-bold ellipsis text-grey-5">

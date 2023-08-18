@@ -8,7 +8,7 @@ export default defineNuxtConfig({
         "user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width",
     },
   },
-  modules: ["nuxt-quasar-ui", "@pinia/nuxt", "@vite-pwa/nuxt"],
+  modules: ["nuxt-quasar-ui", "@pinia/nuxt", "@vite-pwa/nuxt", "@nuxt/image"],
   pwa: {
     registerType: "autoUpdate",
     injectRegister: "auto", //default
