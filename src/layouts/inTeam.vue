@@ -73,25 +73,17 @@ const scroll = (info: any) => {
   }
 };
 
+const title = `${currentTeam.value.title} | Teamlog`;
+const desc = `${currentTeam.value.description} | 주간 게시물 : ${currentTeam.value.weeklyAvgPost}건`;
 useHead({
-  title: "${currentTeam.value.title} - 팀로그 title",
+  title,
   meta: [
-    {
-      property: "description",
-      content: `${currentTeam.value.title} - 팀로그짱 description`,
-    },
-    {
-      property: "og:title",
-      content: `${currentTeam.value.title} - The Intuitive Web Framework`,
-    },
-    {
-      property: "og:description",
-      content:
-        "Build your next Vue.js application with confidence using Nuxt...",
-    },
+    { property: "description", content: desc },
+    { property: "og:title", content: title },
+    { property: "og:description", content: desc },
     { property: "og:type", content: "website" },
-    { property: "og:url", content: "https://nuxt.com" },
-    { property: "og:locale", content: "en_US" },
+    { property: "og:url", content: `https://teamlog.team/@${teamId.value}` },
+    { property: "og:locale", content: "ko_KR" },
     { property: "og:image", content: "https://nuxt.com/social.jpg" },
   ],
 });

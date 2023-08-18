@@ -22,6 +22,21 @@ const handleSwipe = async (v: any) => {
   await navigateTo(newTab, { replace: true });
   tab.value = newTab;
 };
+
+const title = `팀로그 - ${tab.value}`;
+const desc = `모아보자, 즐겨찾는 블로그를!`;
+useHead({
+  title,
+  meta: [
+    { property: "description", content: desc },
+    { property: "og:title", content: title },
+    { property: "og:description", content: desc },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: `https://teamlog.team/${tab.value}` },
+    { property: "og:locale", content: "ko_KR" },
+    { property: "og:image", content: "https://nuxt.com/social.jpg" },
+  ],
+});
 </script>
 <template>
   <div :class="`${isDarkActive ? 'bg-grey-9' : 'bg-white'}`">
