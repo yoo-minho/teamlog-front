@@ -23,8 +23,8 @@ const handleSwipe = async (v: any) => {
   tab.value = newTab;
 };
 
-const title = `팀로그${tab.value ? ` - ${tab.value}` : ""}`;
-const desc = `모아보자, 즐겨찾는 블로그를!`;
+const title = `팀로그 | 보기 좋은 팀 블로그 플랫폼`;
+const desc = "마음에 드는 블로그 모았더니 팀이 되어버렸네!";
 useHead({
   title,
   meta: [

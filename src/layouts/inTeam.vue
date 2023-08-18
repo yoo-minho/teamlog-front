@@ -74,7 +74,9 @@ const scroll = (info: any) => {
 };
 
 const title = `${currentTeam.value.title} | Teamlog`;
-const desc = `${currentTeam.value.description} | 주간 게시물 : ${currentTeam.value.weeklyAvgPost}건`;
+const desc = `주간게시물 : ${currentTeam.value.weeklyAvgPost}건 | ${
+  currentTeam.value.description || "여러분의 팀도 블로그로 만나봐요!"
+}`;
 useHead({
   title,
   meta: [
