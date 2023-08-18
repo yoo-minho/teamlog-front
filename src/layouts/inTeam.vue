@@ -84,7 +84,7 @@ useHead({
     { property: "og:type", content: "website" },
     { property: "og:url", content: `https://teamlog.team/@${teamId.value}` },
     { property: "og:locale", content: "ko_KR" },
-    { property: "og:image", content: "https://nuxt.com/social.jpg" },
+    { property: "og:image", content: "https://teamlog.team/og2.png" },
   ],
 });
 </script>

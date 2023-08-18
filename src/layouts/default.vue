@@ -9,7 +9,7 @@ const isDarkActive = ref($q.dark.isActive);
 const userStore = useUserStore();
 const { isExistsUser, user } = storeToRefs(userStore);
 const route = useRoute();
-const tab = ref(String(route.name));
+const tab = ref(String(route.name || ""));
 
 watch(
   () => $q.dark.isActive,
@@ -23,7 +23,7 @@ const handleSwipe = async (v: any) => {
   tab.value = newTab;
 };
 
-const title = `팀로그 - ${tab.value}`;
+const title = `팀로그${tab.value ? ` - ${tab.value}` : ""}`;
 const desc = `모아보자, 즐겨찾는 블로그를!`;
 useHead({
   title,
@@ -34,7 +34,7 @@ useHead({
     { property: "og:type", content: "website" },
     { property: "og:url", content: `https://teamlog.team/${tab.value}` },
     { property: "og:locale", content: "ko_KR" },
-    { property: "og:image", content: "https://nuxt.com/social.jpg" },
+    { property: "og:image", content: "https://teamlog.team/og2.png" },
   ],
 });
 </script>
