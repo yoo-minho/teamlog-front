@@ -2,32 +2,28 @@
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/user";
 import { showBottomSheet } from "@/composables/useSnsBottomSheet";
+import { useTeamStore } from "@/stores/team";
 import GroupApi from "@/api/groupApi";
 
-const props = defineProps<{
-  teamId?: number;
-  teamTitle: string;
-  createrId?: string;
-}>();
-const { teamId } = toRefs(props);
+defineProps<{ top: boolean }>();
 
 const userStore = useUserStore();
 const { isExistsUser } = storeToRefs(userStore);
-const { initSearchData, isMyContents } = userStore;
-const route = useRoute();
+const { isMyContents } = userStore;
+const teamStore = useTeamStore();
+const { currentTeam } = storeToRefs(teamStore);
+
 const _openSettingMain = () => navigateTo({ name: "setting" });
-const isPost = ref(false);
-
-watch(
-  () => route.name,
-  (rn) => {
-    isPost.value = rn === "@teamId-post";
-    if (!isPost.value) initSearchData();
-  },
-  { immediate: true }
-);
-
 const goMain = () => navigateTo({ path: "/team" }, { replace: true });
+const _openEditor = () => {
+  if (isExistsUser.value) return navigateTo("edit", { replace: true });
+  showAuthDialog({ to: "edit" });
+};
+const shareUrl = () => {
+  const { title, description, weeklyAvgPost } = currentTeam.value;
+  showBottomSheet({ title, description, weeklyAvgPost });
+};
+
 const deleteTeam = async () => {
   Dialog.create({
     title: "삭제하기",
@@ -35,8 +31,7 @@ const deleteTeam = async () => {
     ok: "삭제하기",
     cancel: "취소",
   }).onOk(async () => {
-    const { error } = await GroupApi.delete(teamId?.value);
-    console.log(error.value);
+    const { error } = await GroupApi.delete(currentTeam.value.id);
     if (error.value?.statusCode === 401) {
       Notify.create({
         type: "negative",
@@ -49,13 +44,6 @@ const deleteTeam = async () => {
     goMain();
   });
 };
-const _openEditor = () => {
-  if (isExistsUser.value) {
-    navigateTo("edit", { replace: true });
-    return;
-  }
-  showAuthDialog({ to: "edit" });
-};
 </script>
 
 <template>
@@ -63,17 +51,17 @@ const _openEditor = () => {
     bordered
     class="bg-white text-dark max-width"
     style="position: relative"
-    :style="{ border: teamTitle ? '' : 0 }"
+    :style="{ border: top ? 0 : '' }"
   >
     <q-toolbar>
       <q-btn icon="keyboard_backspace" flat round dense @click="goMain()" />
-      <div class="name ellipsis">{{ teamTitle }}</div>
+      <div class="name ellipsis">{{ top ? "" : currentTeam.title }}</div>
       <q-toolbar-title></q-toolbar-title>
-      <template v-if="isMyContents(createrId)">
+      <template v-if="isMyContents(currentTeam.createrId)">
         <q-btn icon="edit" flat round dense @click="_openEditor" />
         <q-btn icon="delete" flat round dense @click="deleteTeam" />
       </template>
-      <q-btn icon="share" flat round dense @click="showBottomSheet()" />
+      <q-btn icon="share" flat round dense @click="shareUrl()" />
       <q-btn icon="menu" flat round dense @click="_openSettingMain" />
     </q-toolbar>
   </q-header>
