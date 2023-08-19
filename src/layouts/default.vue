@@ -47,7 +47,6 @@ useHead({
 });
 </script>
 <template>
-  {{ postTag }} {{ isTagPost }}
   <div :class="`${isDarkActive ? 'bg-grey-9' : 'bg-white'}`">
     <q-layout>
       <MainHeader style="position: relative" />
