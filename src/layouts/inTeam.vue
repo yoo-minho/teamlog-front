@@ -70,6 +70,7 @@ const scroll = (info: any) => {
 const { title: ttl, weeklyAvgPost: wap, description } = currentTeam.value;
 const title = teamSeoTitle(ttl);
 const desc = teamSeoDesc(wap, description);
+const route = useRoute();
 useHead({
   title,
   meta: [
@@ -77,7 +78,7 @@ useHead({
     { property: "og:title", content: title },
     { property: "og:description", content: desc },
     { property: "og:type", content: "website" },
-    { property: "og:url", content: `https://teamlog.team/@${teamId.value}` },
+    { property: "og:url", content: `https://teamlog.team${route.fullPath}` },
     { property: "og:locale", content: "ko_KR" },
     { property: "og:image", content: "https://teamlog.team/og2.png" },
   ],

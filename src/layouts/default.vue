@@ -40,7 +40,7 @@ useHead({
     { property: "og:title", content: title },
     { property: "og:description", content: desc },
     { property: "og:type", content: "website" },
-    { property: "og:url", content: `https://teamlog.team/${tab.value}` },
+    { property: "og:url", content: `https://teamlog.team${route.fullPath}` },
     { property: "og:locale", content: "ko_KR" },
     { property: "og:image", content: "https://teamlog.team/og2.png" },
   ],
