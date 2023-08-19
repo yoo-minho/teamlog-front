@@ -1,13 +1,21 @@
 import { getImage } from "@/utils/ImageUtil";
 import { shareKakao } from "./useKakaoApi";
 import { BottomSheet, Notify } from "quasar";
+import { teamSeoDesc, teamSeoTitle } from "@/constants/seo";
 
-export const showBottomSheet = ({
-  title,
-  description,
-}: { title?: string; description?: string } = {}) => {
+type SeoType = { title: string; description?: string; weeklyAvgPost?: number };
+
+export const showBottomSheet = (props: SeoType) => {
+  const { title, description, weeklyAvgPost } = props;
+  const route = useRoute();
+  const routeName = String(route.name || "");
+  let sharedUrl = location.href;
+  if (routeName === "team") sharedUrl = sharedUrl.replace("/team", "");
+  if (routeName === "@teamId-post") sharedUrl = sharedUrl.replace("/post", "");
+  const seoTitle = teamSeoTitle(title);
+  const seoDesc = teamSeoDesc(weeklyAvgPost, description);
   BottomSheet.create({
-    message: "공유하기",
+    message: `공유하기 | ${sharedUrl}`,
     grid: false,
     actions: [
       {
@@ -43,70 +51,69 @@ export const showBottomSheet = ({
       },
     ],
   }).onOk((action) => {
-    const sharedUrl = encodeURIComponent(location.href);
-    const _title = encodeURIComponent(
-      title || "팀로그(teamlog) - 세상의 모든 블로그 한번에 모아보기"
-    );
-    const _description =
-      description ||
-      "티스토리, 미디엄, 브런치, 벨로그, 네이버블로그 상관없이 팀 블로그를 만들 수 있어요!";
+    const _sharedUrl = encodeURIComponent(sharedUrl);
+    const _title = encodeURIComponent(seoTitle);
+    const _description = seoDesc;
     switch (action.id) {
       case "kakao":
         shareKakao({ title: _title, description: _description });
         return;
       case "facebook":
         window.open(
-          `http://www.facebook.com/sharer/sharer.php?u=${sharedUrl}`,
+          `http://www.facebook.com/sharer/sharer.php?u=${_sharedUrl}`,
           "",
           "width=400, height=500"
         );
         return;
       case "twitter":
         window.open(
-          `http://twitter.com/share?url=${sharedUrl}&text=${_title}`,
+          `http://twitter.com/share?url=${_sharedUrl}&text=${_title}`,
           "tweetPop",
           "width=400, height=500, scrollbars=yes"
         );
         return;
       case "band":
         window.open(
-          `http://www.band.us/plugin/share?body=${_title}&route=${sharedUrl}`,
+          `http://www.band.us/plugin/share?body=${_title}&route=${_sharedUrl}`,
           "shareBand",
           "width=400, height=500, resizable=yes"
         );
         return;
       case "copy":
-        copyUrl();
+        copyUrl(_sharedUrl);
         return;
       case "share":
       default:
-        shareUrl();
+        shareUrl(_sharedUrl);
         return;
     }
   });
 };
 
-const shareUrl = () => {
+const shareUrl = (_sharedUrl: string) => {
   if (typeof navigator.share === "undefined") {
-    Notify.create({ type: "nagative", message: "Non-shareable environment!" });
+    Notify.create({
+      type: "nagative",
+      message: "자동 공유가 제한되는 브라우져입니다!",
+    });
     return;
   }
   navigator.share({
-    title: location.href,
-    url: location.href,
+    title: _sharedUrl,
+    url: _sharedUrl,
   });
 };
 
-const copyUrl = async () => {
+const copyUrl = async (_sharedUrl: string) => {
   if (typeof navigator.clipboard === "undefined") {
     const dummy = document.createElement("input");
     document.body.appendChild(dummy);
-    dummy.value = location.href;
+    dummy.value = _sharedUrl;
     dummy.select();
     document.execCommand("copy");
     document.body.removeChild(dummy);
   } else {
-    await navigator.clipboard.writeText(location.href);
+    await navigator.clipboard.writeText(_sharedUrl);
   }
-  Notify.create({ type: "positive", message: "Copy Completed!" });
+  Notify.create({ type: "positive", message: "URL 복사 완료!" });
 };

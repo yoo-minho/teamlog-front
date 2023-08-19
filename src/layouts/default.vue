@@ -3,6 +3,12 @@ import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/user";
 import MainHeader from "@/components/Header/MainHeader.vue";
 import { getNextTab } from "@/composables/useRouteTabSwipe";
+import {
+  mainSeoTitle,
+  mainSeoDesc,
+  tagPostSeoTitle,
+  tagPostSeoDesc,
+} from "@/constants/seo";
 
 const $q = useQuasar();
 const isDarkActive = ref($q.dark.isActive);
@@ -23,8 +29,10 @@ const handleSwipe = async (v: any) => {
   tab.value = newTab;
 };
 
-const title = `팀로그 | 보기 좋은 팀 블로그 플랫폼`;
-const desc = "마음에 드는 블로그 모았더니 팀이 되어버렸네!";
+const postTag = String(route.query.tag || "");
+const isTagPost = postTag !== "" && postTag !== "All";
+const title = isTagPost ? tagPostSeoTitle(postTag) : mainSeoTitle();
+const desc = isTagPost ? tagPostSeoDesc() : mainSeoDesc();
 useHead({
   title,
   meta: [
@@ -39,6 +47,7 @@ useHead({
 });
 </script>
 <template>
+  {{ postTag }} {{ isTagPost }}
   <div :class="`${isDarkActive ? 'bg-grey-9' : 'bg-white'}`">
     <q-layout>
       <MainHeader style="position: relative" />

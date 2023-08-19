@@ -7,10 +7,14 @@ import PostApi from "@/api/postApi";
 import { POST_TAG } from "@/constants";
 import SearchEmpty from "@/components/Empty/SearchEmpty.vue";
 
+const convertTagVal = (tagName: string) =>
+  POST_TAG.find((v) => v.label === tagName)?.value || "";
+
 const route = useRoute();
 const page = ref(1);
-const selectTag = ref(String(route.query.tag || "All"));
-const selectTagVal = ref(String(route.query.tag || "All"));
+const routeTag = String(route.query.tag || "All");
+const selectTag = ref(routeTag);
+const selectTagVal = ref(convertTagVal(routeTag));
 const isExistsNextPage = ref(false);
 const tags = ref(POST_TAG.map((v) => ({ id: v.label, name: v.label })));
 const currentPosts = ref();
@@ -37,7 +41,7 @@ const next = () => refreshPostData({ init: false });
 const refresh = (dn: () => void) => refreshPostData({ init: true }).then(dn);
 const filterTag = (tagName: string) => {
   selectTag.value = tagName;
-  selectTagVal.value = POST_TAG.find((v) => v.label === tagName)?.value || "";
+  selectTagVal.value = convertTagVal(tagName);
 };
 watch([selectTag], () => refreshPostData({ init: true }));
 

@@ -28,7 +28,6 @@ const blogIcon = getImageByBlogType(type.value);
     </template>
     <template v-else>
       <q-avatar size="64px" class="shadow-1" rounded>
-        <nuxt-img :src="imagePath"></nuxt-img>
         <q-img
           :src="imagePath"
           :alt="title"

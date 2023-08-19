@@ -8,6 +8,7 @@ import { LinkWrap, Team, TeamStatType } from "@/types/common";
 import { isTodayByDate } from "@/plugin/dayjs";
 import TeamListItem from "@/pages/team/components/TeamListItem.vue";
 import TeamListSkeletonItem from "@/pages/team/components/TeamListSkeletonItem.vue";
+import { teamSeoTitle, teamSeoDesc } from "@/constants/seo";
 
 const $q = useQuasar();
 const teamId = useState<string>("teamId");
@@ -34,7 +35,7 @@ const refresh = (done: () => void) => {
 };
 
 const { data: team, pending } = await GroupApi.findByDomain(teamId.value);
-const teamTitle = ref("");
+const top = ref(true);
 
 watch(
   team,
@@ -56,27 +57,19 @@ watch(
 );
 
 const handleSwipe = async (v: any) => {
-  const isScrollTop = teamTitle.value === "";
   const newTab = getNextTab(v, ["blog", "post", "stat"]);
-  if (!newTab || !isScrollTop) return;
+  if (!newTab || !top.value) return;
   await navigateTo(newTab, { replace: true });
   tab.value = newTab;
 };
 
 const scroll = (info: any) => {
-  if (info.verticalPosition > 20) {
-    if (teamTitle.value === "") {
-      teamTitle.value = currentTeam.value.title;
-    }
-  } else {
-    teamTitle.value = "";
-  }
+  top.value = info.verticalPosition <= 20;
 };
 
-const title = `${currentTeam.value.title} | Teamlog`;
-const desc = `주간게시물 : ${currentTeam.value.weeklyAvgPost}건 | ${
-  currentTeam.value.description || "여러분의 팀도 블로그로 만나봐요!"
-}`;
+const { title: ttl, weeklyAvgPost: wap, description } = currentTeam.value;
+const title = teamSeoTitle(ttl);
+const desc = teamSeoDesc(wap, description);
 useHead({
   title,
   meta: [
@@ -93,11 +86,7 @@ useHead({
 <template>
   <q-layout>
     <div :class="`${isDark ? 'bg-grey-9' : 'bg-white'}`">
-      <InTeamHeader
-        :team-id="team?.id"
-        :team-title="teamTitle"
-        :createrId="team?.createrId"
-      />
+      <InTeamHeader :top="top" />
       <q-scroll-area
         @scroll="scroll"
         class="max-width without-header in-team"

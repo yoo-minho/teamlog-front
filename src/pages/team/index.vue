@@ -179,7 +179,7 @@ watch(scrollRef, (scrollDom) => {
                 </q-item-label>
               </template>
               <ClientOnly>
-                <template v-if="!pending && isExistsNextPage">
+                <template v-if="isExistsNextPage">
                   <ScrollObserver @trigger-intersected="next">
                     <TeamListSkeletonItem />
                   </ScrollObserver>
