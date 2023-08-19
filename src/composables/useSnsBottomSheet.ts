@@ -80,17 +80,17 @@ export const showBottomSheet = (props: SeoType) => {
         );
         return;
       case "copy":
-        copyUrl(_sharedUrl);
+        copyUrl(sharedUrl);
         return;
       case "share":
       default:
-        shareUrl(_sharedUrl);
+        shareUrl(sharedUrl);
         return;
     }
   });
 };
 
-const shareUrl = (_sharedUrl: string) => {
+const shareUrl = (sharedUrl: string) => {
   if (typeof navigator.share === "undefined") {
     Notify.create({
       type: "nagative",
@@ -99,21 +99,21 @@ const shareUrl = (_sharedUrl: string) => {
     return;
   }
   navigator.share({
-    title: _sharedUrl,
-    url: _sharedUrl,
+    title: sharedUrl,
+    url: sharedUrl,
   });
 };
 
-const copyUrl = async (_sharedUrl: string) => {
+const copyUrl = async (sharedUrl: string) => {
   if (typeof navigator.clipboard === "undefined") {
     const dummy = document.createElement("input");
     document.body.appendChild(dummy);
-    dummy.value = _sharedUrl;
+    dummy.value = sharedUrl;
     dummy.select();
     document.execCommand("copy");
     document.body.removeChild(dummy);
   } else {
-    await navigator.clipboard.writeText(_sharedUrl);
+    await navigator.clipboard.writeText(sharedUrl);
   }
   Notify.create({ type: "positive", message: "URL 복사 완료!" });
 };

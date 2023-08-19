@@ -1,6 +1,7 @@
 export const mainSeoTitle = () => `Teamlog | 모아보기 좋은 블로그 플랫폼`;
 export const mainSeoDesc = () => "맘에 드는 블로그 모으니 팀이 되었네!";
-export const teamSeoTitle = (title: string) => `${title} | Teamlog`;
+export const teamSeoTitle = (title: string) =>
+  `${encodeURIComponent(title)} | Teamlog`;
 export const teamSeoDesc = (weeklyAvgPost?: number, description?: string) => {
   const wap = weeklyAvgPost || 0;
   return (
@@ -9,5 +10,5 @@ export const teamSeoDesc = (weeklyAvgPost?: number, description?: string) => {
   );
 };
 export const tagPostSeoTitle = (tag: string) =>
-  `${tag} | 블로그 포스트 in 팀로그`;
+  `${encodeURIComponent(tag)} | 블로그 포스트 in 팀로그`;
 export const tagPostSeoDesc = () => "키워드로 블로그 포스트 모아보기";
