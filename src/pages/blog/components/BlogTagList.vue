@@ -7,23 +7,32 @@ import BlogApi from "@/api/blogApi";
 import RssApi from "@/api/rssApi";
 
 const route = useRoute();
-const totalTag = { id: "All", name: "All" };
-const props = defineProps<{ tags: Tag[] | null; activeTagName: string }>();
-const emits = defineEmits<{ (eventName: "clickTag", tagName: string): void }>();
-const isActiveTag = (tagName: string) => {
-  const _activeTagName = props.activeTagName;
-  if (_activeTagName === "" && tagName === "All") return true;
-  return _activeTagName === tagName;
-};
+const totalTag = { id: "All", name: "전체 플랫폼" };
+const props = defineProps<{
+  tags: Tag[] | null;
+  activeTagName: string;
+  isWithTeam: boolean;
+}>();
+const { isWithTeam } = toRefs(props);
+const emits = defineEmits<{
+  (eventName: "clickTag", tagName: string): void;
+  (eventName: "clickWithTeamFilter", is?: boolean): void;
+  (eventName: "refresh", options: { init: boolean }): void;
+}>();
 
 const clickTag = async (tagName: string) => {
+  if (tagName === totalTag.name) {
+    await navigateTo({ path: "blog" });
+    emits("clickTag", "");
+    return;
+  }
   await navigateTo({ path: "blog", query: { ...route.query, tag: tagName } });
   emits("clickTag", tagName);
 };
 
-const getLabel = (type: string) => {
-  return BLOG_TAG.find((v) => v.type === type)?.label || "All";
-};
+const clickWithTeamFilter = () => emits("clickWithTeamFilter");
+const getLabel = (type: string) =>
+  BLOG_TAG.find((v) => v.type === type)?.label || totalTag.name;
 
 const linkDisplay = ref(false);
 const showLinkEditor = () => (linkDisplay.value = true);
@@ -43,42 +52,70 @@ const saveLink = async (linkSelectData: Link) => {
   await RssApi.scrapPost(linkId, rssUrl || url);
   Notify.create({ type: "success", message: "등록되었습니다." });
   hideLinkEditor();
+  emits("refresh", { init: true });
 };
 </script>
 
 <template>
-  <div v-if="tags" class="tag-scroll row q-mx-sm items-center wrap">
-    <q-chip
-      v-for="(tag, i) in [totalTag, ...tags]"
-      :key="i"
-      :class="{ active: isActiveTag(tag.name) }"
-      outline
-      square
-      clickable
-      color="dark"
-      style="opacity: 0.8"
-      @click="clickTag(tag.name || '')"
+  <div
+    class="q-px-md q-gutter-sm"
+    style="padding-top: 12px; padding-bottom: 4px"
+  >
+    <q-btn-dropdown
+      color="primary"
+      :label="getLabel(activeTagName)"
+      dense
+      size="12px"
+      rounded
+      style="padding-left: 1em; height: 28px"
     >
-      <q-avatar v-if="tag.name !== 'All'" size="18px">
-        <q-img
-          :src="getImage(`platform/${tag.name.toLowerCase()}.png`)"
-          :no-transition="true"
-        />
-      </q-avatar>
-      {{ getLabel(tag.name) }}
-    </q-chip>
-    <q-chip
+      <q-list v-if="tags">
+        <q-item
+          v-for="(tag, i) in [totalTag, ...tags]"
+          clickable
+          v-close-popup
+          @click="clickTag(tag.name || '')"
+        >
+          <q-item-section avatar>
+            <q-avatar size="18px" rounded>
+              <q-img
+                :src="getImage(`platform/${tag.name.toLowerCase()}.png`)"
+                :no-transition="true"
+              />
+            </q-avatar>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ getLabel(tag.name) }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-btn-dropdown>
+    <q-btn
+      rounded
+      dense
+      size="12px"
+      style="padding-left: 1em; padding-right: 1em; height: 28px"
+      no-caps
+      :icon-right="`toggle_${isWithTeam ? 'on' : 'off'}`"
+      color="primary"
+      @click="clickWithTeamFilter"
+    >
+      {{ isWithTeam ? "with" : "without" }} Team　
+    </q-btn>
+    <q-btn
       icon="add"
-      outline
-      square
       clickable
-      color="green-5"
-      style="opacity: 0.8"
+      rounded
+      dense
+      size="12px"
+      color="green-4"
+      style="padding-left: 0.5em; padding-right: 1em; height: 28px"
       @click="showLinkEditor()"
     >
       블로그 등록하기
-    </q-chip>
+    </q-btn>
   </div>
+
   <LinkDialog
     :show="linkDisplay"
     @hide="hideLinkEditor()"

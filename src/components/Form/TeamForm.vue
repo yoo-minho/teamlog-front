@@ -75,10 +75,10 @@ const submitForm = () => {
     domainRef.value?.focus();
     return;
   }
-  if (!links.value || links.value.length === 0) {
+  if (!links.value || links.value.length < 2) {
     Notify.create({
       type: "negative",
-      message: "최소 1개의 url이 필요합니다.",
+      message: "최소 2개의 url이 필요합니다.",
     });
     return;
   }

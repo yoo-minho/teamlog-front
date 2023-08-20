@@ -21,7 +21,11 @@ export type TeamCountResultType = {
   linkCountByPlatform: { _count: number; type: BlogType }[];
 };
 
-export type BlogFilter = { tag?: Ref<string>; page?: Ref<number> };
+export type BlogFilter = {
+  tag?: Ref<string>;
+  page?: Ref<number>;
+  withTeam?: Ref<boolean>;
+};
 
 export type OGSResultType = {
   ogTitle: string;
