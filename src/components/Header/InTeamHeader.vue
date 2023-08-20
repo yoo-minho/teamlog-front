@@ -4,6 +4,7 @@ import { useUserStore } from "@/stores/user";
 import { showBottomSheet } from "@/composables/useSnsBottomSheet";
 import { useTeamStore } from "@/stores/team";
 import GroupApi from "@/api/groupApi";
+import { teamSeoDesc, teamSeoTitle } from "@/constants/seo";
 
 defineProps<{ top: boolean }>();
 
@@ -21,7 +22,9 @@ const _openEditor = () => {
 };
 const shareUrl = () => {
   const { title, description, weeklyAvgPost } = currentTeam.value;
-  showBottomSheet({ title, description, weeklyAvgPost });
+  const seoTitle = teamSeoTitle(title);
+  const seoDesc = teamSeoDesc(weeklyAvgPost, description);
+  showBottomSheet({ seoTitle, seoDesc });
 };
 
 const deleteTeam = async () => {

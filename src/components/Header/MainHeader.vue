@@ -4,6 +4,12 @@ import { useUserStore } from "@/stores/user";
 import { TAB_LABEL } from "@/constants";
 import { showBottomSheet } from "@/composables/useSnsBottomSheet";
 import { showInstallBottomSheet } from "@/composables/useInstallBottomSheet";
+import {
+  mainSeoDesc,
+  mainSeoTitle,
+  tagPostSeoDesc,
+  tagPostSeoTitle,
+} from "@/constants/seo";
 
 const userStore = useUserStore();
 const { isExistsPwaPrompt } = storeToRefs(userStore);
@@ -27,12 +33,23 @@ watch(
     title.value = TAB_LABEL[routeName] || "팀로그";
   }
 );
+
+const postTag = String(route.query.tag || "");
+const isTagPost = postTag !== "" && postTag !== "All";
+const seoTitle = isTagPost ? tagPostSeoTitle(postTag) : mainSeoTitle();
+const seoDesc = isTagPost ? tagPostSeoDesc() : mainSeoDesc();
 </script>
 <template>
   <q-header bordered class="max-width">
     <q-toolbar>
       <q-toolbar-title class="name">{{ title }}</q-toolbar-title>
-      <q-btn icon="share" flat round dense @click="showBottomSheet()" />
+      <q-btn
+        icon="share"
+        flat
+        round
+        dense
+        @click="showBottomSheet({ seoTitle, seoDesc })"
+      />
       <q-btn icon="notifications" flat round dense @click="_clickNoti()" />
       <q-btn icon="menu" flat round dense @click="_openSettingMain" />
       <q-btn

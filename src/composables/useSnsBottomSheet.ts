@@ -1,19 +1,15 @@
 import { getImage } from "@/utils/ImageUtil";
 import { shareKakao } from "./useKakaoApi";
-import { BottomSheet, Notify } from "quasar";
-import { teamSeoDesc, teamSeoTitle } from "@/constants/seo";
 
-type SeoType = { title: string; description?: string; weeklyAvgPost?: number };
+type SeoType = { seoTitle: string; seoDesc: string };
 
 export const showBottomSheet = (props: SeoType) => {
-  const { title, description, weeklyAvgPost } = props;
+  const { seoTitle, seoDesc } = props;
   const route = useRoute();
   const routeName = String(route.name || "");
   let sharedUrl = location.href;
   if (routeName === "team") sharedUrl = sharedUrl.replace("/team", "");
   if (routeName === "@teamId-post") sharedUrl = sharedUrl.replace("/post", "");
-  const seoTitle = teamSeoTitle(title);
-  const seoDesc = teamSeoDesc(weeklyAvgPost, description);
   BottomSheet.create({
     message: `공유하기 | ${sharedUrl}`,
     grid: false,
