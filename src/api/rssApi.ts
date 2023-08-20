@@ -28,6 +28,15 @@ export default {
     if (items.length === 0) return;
     await PostAPI.createPosts(_link.id, convertItem(items, scrapUrl));
   },
+  async scrapPost(linkId: number, url: string, lastPostCreatedAt?: Date) {
+    const config = useRuntimeConfig();
+    const data = await $fetch("rss/post", {
+      baseURL: config.public.apiBase[isProd ? "prod" : "dev"],
+      method: "post",
+      body: { linkId, url, lastPostCreatedAt },
+    });
+    console.log({ data });
+  },
 };
 
 function convertItem(_items: RssItem[], scrapUrl: string): ScrapItem[] {

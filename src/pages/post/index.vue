@@ -13,7 +13,7 @@ const convertTagVal = (tagName: string) =>
 const route = useRoute();
 const page = ref(1);
 const routeTag = String(route.query.tag || "All");
-const selectTag = ref(routeTag);
+const selectTag = ref(convertTagVal(routeTag) === "" ? "All" : routeTag);
 const selectTagVal = ref(convertTagVal(routeTag));
 const isExistsNextPage = ref(false);
 const tags = ref(POST_TAG.map((v) => ({ id: v.label, name: v.label })));

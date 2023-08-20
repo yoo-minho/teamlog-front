@@ -2,7 +2,6 @@
 import { ErrorMessage, Link } from "@/types/common";
 import { scrapOGS } from "@/composables/useOgs";
 
-const $q = useQuasar();
 const props = defineProps<{ show: boolean }>();
 const emits = defineEmits<{ (eventName: "saveLink", link: Link): void }>();
 const show = toRef(props, "show");
@@ -61,7 +60,7 @@ const checkUrl = () => {
 const saveLink = async () => {
   const errMessage = getErrorMessage(url.value);
   if ("" !== errMessage) {
-    $q.notify({ type: "negative", message: errMessage });
+    Notify.create({ type: "negative", message: errMessage });
     return;
   }
 
@@ -69,18 +68,20 @@ const saveLink = async () => {
   const { error, errorMessage } = response;
   const { url: ogsUrl, type, title, description, imagePath } = response;
   if (error) {
-    $q.notify({ type: "negative", message: errorMessage });
+    Notify.create({ type: "negative", message: errorMessage });
     return;
   }
 
+  const addSlash = (str: string) =>
+    (str.endsWith("/") ? str : str + "/").replace(/\/+$/, "/");
   const link = {
     rssUrl: rssUrl.value,
-    url: ogsUrl,
+    url: addSlash(ogsUrl),
     type,
     title,
     description,
     imagePath,
-  };
+  } as Link;
   emits("saveLink", link);
 };
 </script>
