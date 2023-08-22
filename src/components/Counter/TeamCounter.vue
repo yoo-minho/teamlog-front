@@ -11,19 +11,19 @@ defineProps<{
     <q-badge
       class="small-badge"
       outline
-      color="green-5"
+      color="green-6"
       :label="'주간 게시물 ' + (weeklyAvgPost || 0) + '건'"
     />
     <q-badge
       class="small-badge"
       outline
-      color="green-4"
+      color="green-5"
       :label="'today ' + (todayViews || 0)"
     />
     <q-badge
       class="small-badge"
       outline
-      color="green-3"
+      color="green-4"
       :label="'total ' + ((totalViews || 0) + (todayViews || 0))"
     />
   </div>

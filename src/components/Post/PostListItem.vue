@@ -17,10 +17,16 @@ const changeTitle = (title: string) => {
   <q-item-label class="cursor-pointer" @click="openUrl(post.url)">
     <q-item>
       <q-item-section>
-        <div
-          class="label text-weight-bold ellipsis text-subtitle2"
-          v-html="changeTitle(post.title)"
-        ></div>
+        <template v-if="!props.selectedTag || props.selectedTag === 'All'">
+          <h3 style="font-size: 16px">{{ post.title }}</h3>
+        </template>
+        <template v-else>
+          <div
+            class="label text-weight-bold ellipsis text-subtitle2"
+            v-html="changeTitle(post.title)"
+          ></div>
+        </template>
+
         <div class="label ellipsis-2-lines" style="line-height: 20px">
           {{ post.description || "" }}
         </div>
@@ -60,7 +66,7 @@ const changeTitle = (title: string) => {
           </q-avatar>
           <q-item-label class="q-mx-sm" style="flex: 1">
             <span class="text-weight-bold ellipsis text-grey-5">
-              {{ skipBlogName(post.link.title) }}
+              <h4>{{ skipBlogName(post.link.title) }}</h4>
             </span>
             <div v-if="post.link.groups?.length > 0" class="text-grey-5">
               in

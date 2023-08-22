@@ -100,9 +100,22 @@ const submitForm = () => {
   >
     <q-header bordered class="max-width bg-primary text-white">
       <q-toolbar>
-        <q-btn flat round dense icon="close" @click="router.back()" />
+        <q-btn
+          area-label="close"
+          flat
+          round
+          dense
+          icon="close"
+          @click="router.back()"
+        />
         <q-toolbar-title>{{ route.meta.title }}</q-toolbar-title>
-        <q-btn flat round icon="done" @click="() => submitForm()" />
+        <q-btn
+          area-label="submitForm"
+          flat
+          round
+          icon="done"
+          @click="() => submitForm()"
+        />
       </q-toolbar>
     </q-header>
     <q-page-container class="max-width">
@@ -158,7 +171,7 @@ const submitForm = () => {
             <q-btn
               color="primary"
               class="full-width"
-              label="블로그 링크 추가"
+              area-label="addLink"
               @click="showLink = true"
             >
               <span class="q-ml-sm">{{ linksCountLabel }}</span>

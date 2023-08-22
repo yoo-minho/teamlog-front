@@ -121,7 +121,7 @@ const saveLink = async () => {
         </q-input>
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn flat label="OK" color="primary" @click="saveLink" />
+        <q-btn aria-label="saveLink" flat color="primary" @click="saveLink" />
       </q-card-actions>
     </q-card>
   </q-dialog>

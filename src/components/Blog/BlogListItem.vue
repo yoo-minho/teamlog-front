@@ -28,8 +28,8 @@ const dateString = getFormatString(
       </q-item-section>
       <q-item-section>
         <q-item-label class="text-weight-bold ellipsis text-subtitle2">
-          <q-icon name="launch" />
-          {{ blogName }}
+          <q-icon name="launch" class="q-mr-xs" />
+          <h3 style="font-size: 16px">{{ blogName }}</h3>
         </q-item-label>
         <q-item-label class="ellipsis-2-lines text-grey-7">
           {{ blogDesc }}
@@ -44,7 +44,9 @@ const dateString = getFormatString(
             class="ellipsis"
             style="font-size: 12px; letter-spacing: -0.5px"
           >
-            {{ link.groups?.map(({ group }) => group.title).join(", ") }}
+            <h4>
+              {{ link.groups?.map(({ group }) => group.title).join(", ") }}
+            </h4>
           </span>
         </div>
       </q-item-section>

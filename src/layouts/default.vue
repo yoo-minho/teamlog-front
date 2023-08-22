@@ -16,6 +16,10 @@ const userStore = useUserStore();
 const { isExistsUser, user } = storeToRefs(userStore);
 const route = useRoute();
 const tab = ref(String(route.name || ""));
+const postTag = ref(String(route.query.tag || ""));
+const isTagPost = computed(
+  () => postTag.value !== "" && postTag.value !== "All"
+);
 
 watch(
   () => $q.dark.isActive,
@@ -29,14 +33,19 @@ const handleSwipe = async (v: any) => {
   tab.value = newTab;
 };
 
-const postTag = String(route.query.tag || "");
-const isTagPost = postTag !== "" && postTag !== "All";
-const title = isTagPost ? tagPostSeoTitle(postTag) : mainSeoTitle();
-const desc = isTagPost ? tagPostSeoDesc() : mainSeoDesc();
+watch(
+  () => String(route.query.tag),
+  (tag) => (postTag.value = tag || "")
+);
+
+const title = computed(() =>
+  isTagPost.value ? tagPostSeoTitle(postTag.value) : mainSeoTitle(tab.value)
+);
+const desc = isTagPost.value ? tagPostSeoDesc() : mainSeoDesc();
 useHead({
   title,
   meta: [
-    { property: "description", content: desc },
+    { name: "description", content: desc },
     { property: "og:title", content: title },
     { property: "og:description", content: desc },
     { property: "og:type", content: "website" },
@@ -90,12 +99,12 @@ useHead({
           style="flex: 1"
         />
         <q-route-tab name="my" to="/my" :replace="true" style="flex: 1">
-          <q-btn v-if="isExistsUser" flat round>
+          <q-btn v-if="isExistsUser" flat round area-label="profileImage">
             <q-avatar size="28px">
               <q-img :src="user.profileImage" />
             </q-avatar>
           </q-btn>
-          <q-btn v-else icon="account_circle" flat round />
+          <q-btn v-else icon="account_circle" flat round area-label="account" />
         </q-route-tab>
       </q-tabs>
       <q-tab-panels

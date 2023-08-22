@@ -1,4 +1,2 @@
-{
-  UserAgent: '*',
-  Disallow: ''
-}
+User-agent: *
+Disallow:

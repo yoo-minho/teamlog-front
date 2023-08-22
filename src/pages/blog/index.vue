@@ -100,7 +100,12 @@ definePageMeta({
               :scroll-offset="150"
               :offset="[18, 18]"
             >
-              <q-btn fab icon="keyboard_arrow_up" color="green-3" />
+              <q-btn
+                fab
+                icon="keyboard_arrow_up"
+                color="green-3"
+                area-label="scrollTop"
+              />
             </q-page-scroller>
           </q-page>
         </q-page-container>

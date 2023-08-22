@@ -91,6 +91,7 @@ const saveLink = async (linkSelectData: Link) => {
       </q-list>
     </q-btn-dropdown>
     <q-btn
+      area-label="withTeamFilter"
       rounded
       dense
       size="12px"
@@ -103,6 +104,7 @@ const saveLink = async (linkSelectData: Link) => {
       {{ isWithTeam ? "with" : "without" }} Team　
     </q-btn>
     <q-btn
+      area-label="showLinkEditor"
       icon="add"
       clickable
       rounded

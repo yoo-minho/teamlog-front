@@ -57,15 +57,50 @@ const deleteTeam = async () => {
     :style="{ border: top ? 0 : '' }"
   >
     <q-toolbar>
-      <q-btn icon="keyboard_backspace" flat round dense @click="goMain()" />
+      <q-btn
+        area-label="goMain"
+        icon="keyboard_backspace"
+        flat
+        round
+        dense
+        @click="goMain()"
+      />
       <div class="name ellipsis">{{ top ? "" : currentTeam.title }}</div>
       <q-toolbar-title></q-toolbar-title>
       <template v-if="isMyContents(currentTeam.createrId)">
-        <q-btn icon="edit" flat round dense @click="_openEditor" />
-        <q-btn icon="delete" flat round dense @click="deleteTeam" />
+        <q-btn
+          area-label="openEditor"
+          icon="edit"
+          flat
+          round
+          dense
+          @click="_openEditor"
+        />
+        <q-btn
+          area-label="deleteTeam"
+          icon="delete"
+          flat
+          round
+          dense
+          @click="deleteTeam"
+        />
       </template>
-      <q-btn icon="share" flat round dense @click="shareUrl()" />
-      <q-btn icon="menu" flat round dense @click="_openSettingMain" />
+      <q-btn
+        area-label="shareUrl"
+        icon="share"
+        flat
+        round
+        dense
+        @click="shareUrl()"
+      />
+      <q-btn
+        area-label="openSettingMain"
+        icon="menu"
+        flat
+        round
+        dense
+        @click="_openSettingMain"
+      />
     </q-toolbar>
   </q-header>
 </template>

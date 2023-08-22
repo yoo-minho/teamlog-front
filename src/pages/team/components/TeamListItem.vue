@@ -75,16 +75,17 @@ const moveTeam = () => {
     <q-item class="q-px-sm q-pt-sm">
       <q-item-section>
         <q-item-label class="text-weight-bolder row" style="font-size: 20px">
-          <span>{{ team?.title || "" }}</span>
+          <h1 v-if="where === 'IN_TEAM'">{{ team?.title || "" }}</h1>
+          <h3 v-else>{{ team?.title || "" }}</h3>
           <span class="text-grey-5 q-mx-sm">{{ team?.links?.length }}</span>
         </q-item-label>
         <q-item-label class="ellipsis-2-lines">{{
           team?.description
         }}</q-item-label>
         <q-item-label class="text-grey-5 q-pt-sm">
-          <span v-for="tag in team?.tags || []" class="q-mr-xs"
-            >#{{ tag.tag.name }}</span
-          >
+          <span v-for="tag in team?.tags || []" class="q-mr-xs">
+            #{{ tag.tag.name }}
+          </span>
         </q-item-label>
         <q-item-label class="text-grey-5">
           {{

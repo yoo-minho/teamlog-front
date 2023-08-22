@@ -18,7 +18,14 @@ watch(
   >
     <q-header bordered class="bg-primary text-white max-width">
       <q-toolbar>
-        <q-btn flat round dense icon="keyboard_backspace" @click="back()" />
+        <q-btn
+          area-label="back"
+          flat
+          round
+          dense
+          icon="keyboard_backspace"
+          @click="back()"
+        />
         <q-toolbar-title>{{ route.meta.title }}</q-toolbar-title>
       </q-toolbar>
     </q-header>

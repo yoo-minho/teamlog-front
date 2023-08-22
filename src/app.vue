@@ -47,6 +47,7 @@ onMounted(() => {
 <template>
   <div :class="`max-width ${isDarkActive ? 'bg-grey-9' : 'bg-white'}`">
     <VitePwaManifest />
+    <SeoKit />
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
@@ -101,6 +102,23 @@ body {
   font-family: "Pretendard-Regular", "Noto Sans KR", Avenir, Helvetica, Arial,
     sans-serif;
   background-color: $grey-4;
+}
+
+h1,
+h3 {
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 24px;
+  margin: 0;
+  display: inline-block;
+}
+
+h4 {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 12px;
+  margin: 0;
+  display: inline-block;
 }
 
 .max-width {

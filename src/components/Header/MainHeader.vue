@@ -36,24 +36,42 @@ watch(
 
 const postTag = String(route.query.tag || "");
 const isTagPost = postTag !== "" && postTag !== "All";
-const seoTitle = isTagPost ? tagPostSeoTitle(postTag) : mainSeoTitle();
+const seoTitle = isTagPost ? tagPostSeoTitle(postTag) : mainSeoTitle(routeName);
 const seoDesc = isTagPost ? tagPostSeoDesc() : mainSeoDesc();
 </script>
 <template>
   <q-header bordered class="max-width">
     <q-toolbar>
-      <q-toolbar-title class="name">{{ title }}</q-toolbar-title>
+      <q-toolbar-title class="name">
+        <h1>{{ title }}</h1>
+      </q-toolbar-title>
       <q-btn
+        area-label="shareBottomSheet"
         icon="share"
         flat
         round
         dense
         @click="showBottomSheet({ seoTitle, seoDesc })"
       />
-      <q-btn icon="notifications" flat round dense @click="_clickNoti()" />
-      <q-btn icon="menu" flat round dense @click="_openSettingMain" />
+      <q-btn
+        area-label="clickNoti"
+        icon="notifications"
+        flat
+        round
+        dense
+        @click="_clickNoti()"
+      />
+      <q-btn
+        area-laabel="openSettingMain"
+        icon="menu"
+        flat
+        round
+        dense
+        @click="_openSettingMain"
+      />
       <q-btn
         v-if="isExistsPwaPrompt"
+        area-label="installBottomSheet"
         icon="add_to_home_screen"
         flat
         round

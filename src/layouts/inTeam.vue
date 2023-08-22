@@ -16,8 +16,32 @@ const tabId = useState<string>("tabId");
 
 const tab = ref(tabId.value);
 const teamStore = useTeamStore();
-const { currentTeam } = storeToRefs(teamStore);
+const { currentTeam, teams } = storeToRefs(teamStore);
 const isDark = ref($q.dark.isActive);
+const route = useRoute();
+
+const useHeadFunc = (props: any) => {
+  const { ttl, wap, desc } = props;
+  const _title = teamSeoTitle(ttl);
+  const _desc = teamSeoDesc(wap, desc);
+
+  useHead({
+    title: _title,
+    meta: [
+      { name: "description", content: _desc },
+      { property: "og:title", content: _title },
+      { property: "og:description", content: _desc },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: `https://teamlog.team${route.fullPath}` },
+      { property: "og:locale", content: "ko_KR" },
+      { property: "og:image", content: "https://teamlog.team/og2.png" },
+    ],
+  });
+};
+
+const tempTeam = teams.value.find((t) => t.domain === teamId.value);
+const { title, weeklyAvgPost: wap, description } = tempTeam || {};
+useHeadFunc({ ttl: title, wap, desc: description });
 
 const scrapPosts = async (id: number, links: LinkWrap[]) => {
   if (links.length === 0) return;
@@ -42,6 +66,8 @@ watch(
   () => {
     if (!team.value) return;
     currentTeam.value = team.value;
+    const { title, weeklyAvgPost: wap, description } = currentTeam.value;
+    useHeadFunc({ ttl: title, wap, desc: description });
     const { id = -1, links = [] } = currentTeam.value || {};
     const filterLinks = links?.filter(
       ({ link }) => !isTodayByDate(link.scrapAt)
@@ -66,23 +92,6 @@ const handleSwipe = async (v: any) => {
 const scroll = (info: any) => {
   top.value = info.verticalPosition <= 20;
 };
-
-const { title: ttl, weeklyAvgPost: wap, description } = currentTeam.value;
-const title = teamSeoTitle(ttl);
-const desc = teamSeoDesc(wap, description);
-const route = useRoute();
-useHead({
-  title,
-  meta: [
-    { property: "description", content: desc },
-    { property: "og:title", content: title },
-    { property: "og:description", content: desc },
-    { property: "og:type", content: "website" },
-    { property: "og:url", content: `https://teamlog.team${route.fullPath}` },
-    { property: "og:locale", content: "ko_KR" },
-    { property: "og:image", content: "https://teamlog.team/og2.png" },
-  ],
-});
 </script>
 <template>
   <q-layout>
@@ -155,7 +164,12 @@ useHead({
                   :scroll-offset="150"
                   :offset="[18, 18]"
                 >
-                  <q-btn fab icon="keyboard_arrow_up" color="green-3" />
+                  <q-btn
+                    fab
+                    icon="keyboard_arrow_up"
+                    color="green-3"
+                    label="scrollTop"
+                  />
                 </q-page-scroller>
               </q-page>
             </q-page-container>
