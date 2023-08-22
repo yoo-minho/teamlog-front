@@ -68,6 +68,12 @@ export default defineNuxtConfig({
         dev: "http://localhost:5000/api/",
         prod: "https://teamlog.team/api/",
       },
+      siteUrl: "https://teamlog.team",
+      trailingSlash: true,
+      titleSeparator: "",
+      siteName: "",
+      siteDescription:
+        "맘에 드는 블로그 모으니 팀 블로그가 되었네! 티스토리, 벨로그, 브런치, 미디엄, 네이버블로그, 유튜브 상관없이 팀 블로그 만드는 방법",
       language: "ko",
     },
   },
