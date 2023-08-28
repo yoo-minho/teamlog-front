@@ -29,7 +29,7 @@ const dateString = getFormatString(
       <q-item-section>
         <q-item-label class="text-weight-bold ellipsis text-subtitle2">
           <q-icon name="launch" class="q-mr-xs" />
-          <h3 style="font-size: 16px">{{ blogName }}</h3>
+          <h2 style="font-size: 16px">{{ blogName }}</h2>
         </q-item-label>
         <q-item-label class="ellipsis-2-lines text-grey-7">
           {{ blogDesc }}

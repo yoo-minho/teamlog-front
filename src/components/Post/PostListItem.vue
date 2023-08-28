@@ -5,7 +5,7 @@ import { getDateString } from "@/plugin/dayjs";
 import { skipBlogName } from "@/utils/NameUtil";
 import { getImageByBlogType, isTextImage } from "@/utils/ImageUtil";
 
-const props = defineProps<{ post: Post; selectedTag?: string }>();
+const props = defineProps<{ post: Post; selectedTag?: string; idx?: number }>();
 const { post } = toRefs(props);
 const changeTitle = (title: string) => {
   if (!props.selectedTag || props.selectedTag === "All") return title;
@@ -14,11 +14,15 @@ const changeTitle = (title: string) => {
 </script>
 
 <template>
-  <q-item-label class="cursor-pointer" @click="openUrl(post.url)">
+  <q-item-label
+    class="cursor-pointer"
+    :class="{ 'q-mt-xs': idx === 0 }"
+    @click="openUrl(post.url)"
+  >
     <q-item>
       <q-item-section>
         <template v-if="!props.selectedTag || props.selectedTag === 'All'">
-          <h3 style="font-size: 16px">{{ post.title }}</h3>
+          <h2 style="font-size: 16px">{{ post.title }}</h2>
         </template>
         <template v-else>
           <div
@@ -47,7 +51,7 @@ const changeTitle = (title: string) => {
           </q-avatar>
           <q-avatar v-else size="20px" class="shadow-2" rounded>
             <q-img
-              :src="post.link.imagePath"
+              :src="thumbImg(post.link.imagePath, 24)"
               :alt="post.link.title"
               class="image-24"
               no-spinner

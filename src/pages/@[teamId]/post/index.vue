@@ -62,7 +62,7 @@ definePageMeta({
   </template>
   <template v-else>
     <template v-if="posts.length > 0">
-      <PostListItem v-for="(post, i) in posts" :key="i" :post="post" />
+      <PostListItem v-for="(post, i) in posts" :key="i" :post="post" :idx="i" />
     </template>
     <ClientOnly>
       <template v-if="isExistsNextPage">

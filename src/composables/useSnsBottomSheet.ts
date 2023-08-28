@@ -1,5 +1,4 @@
 import { getImage } from "@/utils/ImageUtil";
-import { shareKakao } from "./useKakaoApi";
 
 type SeoType = { seoTitle: string; seoDesc: string };
 
@@ -14,11 +13,6 @@ export const showBottomSheet = (props: SeoType) => {
     message: `공유하기 | ${sharedUrl}`,
     grid: false,
     actions: [
-      {
-        label: "Kakaotalk (카카오톡)",
-        img: getImage("sns/kakao.png"),
-        id: "kakao",
-      },
       {
         label: "Facebook (페이스북)",
         img: getImage("sns/facebook.png"),
@@ -51,9 +45,6 @@ export const showBottomSheet = (props: SeoType) => {
     const _title = encodeURIComponent(seoTitle);
     const _description = seoDesc;
     switch (action.id) {
-      case "kakao":
-        shareKakao({ title: _title, description: _description });
-        return;
       case "facebook":
         window.open(
           `http://www.facebook.com/sharer/sharer.php?u=${_sharedUrl}`,

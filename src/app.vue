@@ -105,6 +105,7 @@ body {
 }
 
 h1,
+h2,
 h3 {
   font-size: 20px;
   font-weight: 900;

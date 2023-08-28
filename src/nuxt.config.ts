@@ -6,10 +6,15 @@ export default defineNuxtConfig({
       charset: "utf-8",
       viewport:
         "user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width",
+      link: [
+        { rel: "icon", type: "image/png", href: "favicon.ico" },
+        { rel: "apple-touch-icon", href: "og-image.png" },
+      ],
     },
   },
   extends: ["nuxt-seo-kit"],
   modules: ["nuxt-quasar-ui", "@pinia/nuxt", "@vite-pwa/nuxt", "nuxt-gtag"],
+
   gtag: {
     id: "G-MRERLPYY1H",
   },
@@ -71,7 +76,7 @@ export default defineNuxtConfig({
       siteUrl: "https://teamlog.team",
       trailingSlash: true,
       titleSeparator: "",
-      siteName: "",
+      siteName: " ",
       siteDescription:
         "맘에 드는 블로그 모으니 팀 블로그가 되었네! 티스토리, 벨로그, 브런치, 미디엄, 네이버블로그, 유튜브 상관없이 팀 블로그 만드는 방법",
       language: "ko",

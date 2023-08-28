@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Tag } from "@/types/common";
+import { POST_TAG } from "@/constants";
 
 const route = useRoute();
 const totalTag = { id: "All", name: "All" };
@@ -12,8 +13,9 @@ const isActiveTag = (tagName: string) => {
 };
 
 const clickTag = async (tagName: string) => {
-  await navigateTo({ path: "post", query: { ...route.query, tag: tagName } });
-  emits("clickTag", tagName);
+  const tagUrl = POST_TAG.find((v) => v.label === tagName)?.url || "";
+  await navigateTo({ path: "post", query: { ...route.query, tag: tagUrl } });
+  emits("clickTag", tagUrl);
 };
 </script>
 

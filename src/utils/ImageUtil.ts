@@ -23,6 +23,7 @@ export const getImageByBlogType = (type: BlogType): string =>
 
 export const isTextImage = (url?: string) => {
   if (!url) return true;
+  if (url.endsWith(".ico")) return true;
   switch (url) {
     case "https://images.velog.io/velog.png":
     case "https://t1.daumcdn.net/tistory_admin/static/images/openGraph/opengraph.png":
@@ -31,4 +32,12 @@ export const isTextImage = (url?: string) => {
     default:
       return false;
   }
+};
+
+export const thumbImg = (url?: string, size = 32) => {
+  if (!url) return "";
+  if (!url.includes("http")) return url;
+  url = url.replace("//img1.daumcdn.net/thumb/C400x400/?fname=", "");
+  url = url.replace("//img1.daumcdn.net/thumb/C400x400.fjpg/?fname=", "");
+  return `https://img1.daumcdn.net/thumb/C${size}x${size}/?fname=${url}`;
 };

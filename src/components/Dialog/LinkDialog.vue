@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ErrorMessage, Link } from "@/types/common";
 import { scrapOGS } from "@/composables/useOgs";
+import { BLOG_TAG, BLOG_EXPRESSION } from "@/constants";
+import { QInput } from "quasar";
 
 const props = defineProps<{ show: boolean }>();
 const emits = defineEmits<{ (eventName: "saveLink", link: Link): void }>();
@@ -9,17 +11,6 @@ const _show = ref(false);
 watch(show, (value) => {
   _show.value = value;
 });
-
-const BLOG_EXPRESSION = {
-  NAVER: /https:\/\/blog.naver.com\/([0-9a-zA-Z_-]*)(\/)?([0-9a-zA-Z]*)/gi,
-  TISTORY: /https:\/\/([0-9a-zA-Z_-]*)\.tistory.com(\/)?([0-9a-zA-Z]*)/gi,
-  VELOG: /https:\/\/velog.io\/@([0-9a-zA-Z_-]*)(\/)?([0-9a-zA-Z]*)/gi,
-  BRUNCH: /https:\/\/brunch.co.kr\/@([0-9a-zA-Z_-]*)(\/)?([0-9a-zA-Z]*)/gi,
-  MEDIUM: /https:\/\/medium.com\/([0-9a-zA-Z_-]*)(\/)?([0-9a-zA-Z]*)/gi,
-  YOUTUBE:
-    /https:\/\/www.youtube.com\/channel\/([0-9a-zA-Z_-]*)(\/)?([0-9a-zA-Z]*)/gi,
-  TWITCH: /https:\/\/www.twitch.tv\/([0-9a-zA-Z_-]*)/gi,
-};
 
 const linkRules = [
   (val: string): ErrorMessage =>
@@ -84,13 +75,55 @@ const saveLink = async () => {
   } as Link;
   emits("saveLink", link);
 };
+
+const linkInput = ref<QInput>();
+const tags = BLOG_TAG.map((v) => ({ id: v.type, name: v.type }));
+const getLabel = (type: string) => BLOG_TAG.find((v) => v.type === type)?.label;
+const clickTag = (tagName: string) => {
+  const getUrl = (type: string) => {
+    if ("TISTORY" === type) return "https://domain.tistory.com/";
+    if ("VELOG" === type) return "https://velog.io/@domain/";
+    if ("BRUNCH" === type) return "https://brunch.co.kr/@domain/";
+    if ("MEDIUM" === type) return "https://medium.com/@domain/";
+    if ("NAVER" === type) return "https://blog.naver.com/@domain/";
+    if ("YOUTUBE" === type) return "https://www.youtube.com/channel/domain/";
+    return "https://";
+  };
+  url.value = getUrl(tagName);
+  linkInput.value?.focus();
+};
 </script>
 <template>
-  <q-dialog v-model="_show" @before-show="() => initRef()">
-    <q-card style="width: 100vw">
-      <q-card-section>
+  <q-dialog
+    v-model="_show"
+    position="top"
+    @before-show="() => initRef()"
+    class="link-dialog"
+  >
+    <q-card style="width: 100vw; max-width: 420px; min-width: 360px">
+      <q-card-section class="q-pb-none">
         <div class="text-h6">블로그 URL 추가</div>
       </q-card-section>
+      <div class="row q-pa-sm">
+        <q-chip
+          v-for="(tag, i) in tags"
+          :key="i"
+          outline
+          square
+          clickable
+          color="dark"
+          style="opacity: 0.8"
+          @click="clickTag(tag.name)"
+        >
+          <q-avatar size="18px">
+            <q-img
+              :src="getImage(`platform/${tag.name.toLowerCase()}.png`)"
+              :no-transition="true"
+            />
+          </q-avatar>
+          {{ getLabel(tag.name) }}
+        </q-chip>
+      </div>
       <q-card-section class="q-pt-none">
         <q-input
           v-model.trim="url"
@@ -100,6 +133,7 @@ const saveLink = async () => {
           label="링크"
           autofocus
           :rules="linkRules"
+          ref="linkInput"
           @update:model-value="checkUrl"
         >
           <template #hint>
@@ -121,10 +155,15 @@ const saveLink = async () => {
         </q-input>
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn aria-label="saveLink" flat color="primary" @click="saveLink" />
+        <q-btn aria-label="saveLink" color="primary" @click="saveLink">
+          추가
+        </q-btn>
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
-
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.link-dialog .q-dialog__inner {
+  top: 100px !important;
+}
+</style>

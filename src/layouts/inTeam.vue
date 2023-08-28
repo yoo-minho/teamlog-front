@@ -7,18 +7,17 @@ import { useTeamStore } from "@/stores/team";
 import { LinkWrap, Team, TeamStatType } from "@/types/common";
 import { isTodayByDate } from "@/plugin/dayjs";
 import TeamListItem from "@/pages/team/components/TeamListItem.vue";
-import TeamListSkeletonItem from "@/pages/team/components/TeamListSkeletonItem.vue";
 import { teamSeoTitle, teamSeoDesc } from "@/constants/seo";
 
 const $q = useQuasar();
 const teamId = useState<string>("teamId");
 const tabId = useState<string>("tabId");
-
 const tab = ref(tabId.value);
 const teamStore = useTeamStore();
 const { currentTeam, teams } = storeToRefs(teamStore);
 const isDark = ref($q.dark.isActive);
 const route = useRoute();
+const top = ref(true);
 
 const useHeadFunc = (props: any) => {
   const { ttl, wap, desc } = props;
@@ -39,10 +38,6 @@ const useHeadFunc = (props: any) => {
   });
 };
 
-const tempTeam = teams.value.find((t) => t.domain === teamId.value);
-const { title, weeklyAvgPost: wap, description } = tempTeam || {};
-useHeadFunc({ ttl: title, wap, desc: description });
-
 const scrapPosts = async (id: number, links: LinkWrap[]) => {
   if (links.length === 0) return;
   await Promise.allSettled(links.map(({ link }) => RssApi.scrap(link)));
@@ -58,8 +53,13 @@ const refresh = (done: () => void) => {
   scrapPosts(id, links).then(done);
 };
 
-const { data: team, pending } = await GroupApi.findByDomain(teamId.value);
-const top = ref(true);
+const { data: team } = await GroupApi.findByDomain(teamId.value);
+const tempTeam = teams.value.find((t) => t.domain === teamId.value);
+if (tempTeam) {
+  const { title, weeklyAvgPost: wap, description } = tempTeam || {};
+  useHeadFunc({ ttl: title, wap, desc: description });
+  team.value = tempTeam as Team;
+}
 
 watch(
   team,
@@ -107,8 +107,7 @@ const scroll = (info: any) => {
           <q-layout class="max-width">
             <q-page-container>
               <q-page>
-                <TeamListSkeletonItem v-if="pending" />
-                <TeamListItem v-else :team="(team as Team)" where="IN_TEAM" />
+                <TeamListItem :team="(team as Team)" where="IN_TEAM" />
                 <q-tabs
                   v-model="tab"
                   dense
@@ -168,7 +167,7 @@ const scroll = (info: any) => {
                     fab
                     icon="keyboard_arrow_up"
                     color="green-3"
-                    label="scrollTop"
+                    area-label="scrollTop"
                   />
                 </q-page-scroller>
               </q-page>

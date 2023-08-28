@@ -9,6 +9,7 @@ import {
   tagPostSeoTitle,
   tagPostSeoDesc,
 } from "@/constants/seo";
+import { POST_TAG } from "@/constants";
 
 const $q = useQuasar();
 const isDarkActive = ref($q.dark.isActive);
@@ -17,9 +18,8 @@ const { isExistsUser, user } = storeToRefs(userStore);
 const route = useRoute();
 const tab = ref(String(route.name || ""));
 const postTag = ref(String(route.query.tag || ""));
-const isTagPost = computed(
-  () => postTag.value !== "" && postTag.value !== "All"
-);
+const isTagPost = ref(postTag.value !== "" && postTag.value !== "All");
+const routeName = ref(String(route.name || ""));
 
 watch(
   () => $q.dark.isActive,
@@ -34,14 +34,25 @@ const handleSwipe = async (v: any) => {
 };
 
 watch(
-  () => String(route.query.tag),
-  (tag) => (postTag.value = tag || "")
+  [() => String(route.query.tag || ""), () => String(route.name || "")],
+  ([tag, routeNm]) => {
+    postTag.value = tag;
+    isTagPost.value = postTag.value !== "" && postTag.value !== "All";
+    routeName.value = routeNm;
+  }
 );
 
-const title = computed(() =>
-  isTagPost.value ? tagPostSeoTitle(postTag.value) : mainSeoTitle(tab.value)
-);
-const desc = isTagPost.value ? tagPostSeoDesc() : mainSeoDesc();
+const title = computed(() => {
+  const convertTagVal = (tagUrl: string) =>
+    POST_TAG.find((v) => v.url === tagUrl) || { label: "", value: "", url: "" };
+  return isTagPost.value
+    ? tagPostSeoTitle(
+        routeName.value,
+        convertTagVal(postTag.value).label || postTag.value
+      )
+    : mainSeoTitle(tab.value);
+});
+const desc = isTagPost.value ? tagPostSeoDesc(routeName.value) : mainSeoDesc();
 useHead({
   title,
   meta: [

@@ -23,21 +23,23 @@ const _clickNoti = () => {
   });
 };
 
-const routeName = String(route.name || "team");
-const title = ref(TAB_LABEL[routeName] || "팀로그");
+const routeName = ref(String(route.name || "team"));
+const title = ref(TAB_LABEL[routeName.value] || "팀로그");
 
 watch(
   () => route.name,
   (_routeName) => {
-    const routeName = String(_routeName || "team");
-    title.value = TAB_LABEL[routeName] || "팀로그";
+    routeName.value = String(_routeName || "team");
+    title.value = TAB_LABEL[routeName.value] || "팀로그";
   }
 );
 
 const postTag = String(route.query.tag || "");
 const isTagPost = postTag !== "" && postTag !== "All";
-const seoTitle = isTagPost ? tagPostSeoTitle(postTag) : mainSeoTitle(routeName);
-const seoDesc = isTagPost ? tagPostSeoDesc() : mainSeoDesc();
+const seoTitle = isTagPost
+  ? tagPostSeoTitle(routeName.value, postTag)
+  : mainSeoTitle(routeName.value);
+const seoDesc = isTagPost ? tagPostSeoDesc(routeName.value) : mainSeoDesc();
 </script>
 <template>
   <q-header bordered class="max-width">

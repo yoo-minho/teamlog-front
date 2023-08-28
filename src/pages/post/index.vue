@@ -7,14 +7,15 @@ import PostApi from "@/api/postApi";
 import { POST_TAG } from "@/constants";
 import SearchEmpty from "@/components/Empty/SearchEmpty.vue";
 
-const convertTagVal = (tagName: string) =>
-  POST_TAG.find((v) => v.label === tagName)?.value || "";
+const convertTagVal = (tagUrl: string) =>
+  POST_TAG.find((v) => v.url === tagUrl) || { label: "", value: "", url: "" };
 
 const route = useRoute();
 const page = ref(1);
 const routeTag = String(route.query.tag || "All");
-const selectTag = ref(convertTagVal(routeTag) === "" ? "All" : routeTag);
-const selectTagVal = ref(convertTagVal(routeTag));
+const tag = convertTagVal(routeTag);
+const selectTag = ref(tag.label || "All");
+const selectTagVal = ref(tag.value);
 const isExistsNextPage = ref(false);
 const tags = ref(POST_TAG.map((v) => ({ id: v.label, name: v.label })));
 const currentPosts = ref();
@@ -39,9 +40,10 @@ const refreshPostData = async ({ init = false } = {}) => {
 };
 const next = () => refreshPostData({ init: false });
 const refresh = (dn: () => void) => refreshPostData({ init: true }).then(dn);
-const filterTag = (tagName: string) => {
-  selectTag.value = tagName;
-  selectTagVal.value = convertTagVal(tagName);
+const filterTag = (tagUrl: string) => {
+  const tag = convertTagVal(tagUrl);
+  selectTag.value = tag.label;
+  selectTagVal.value = tag.value;
 };
 watch([selectTag], () => refreshPostData({ init: true }));
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BlogType } from "@/types/common";
-import { getImageByBlogType, isTextImage } from "@/utils/ImageUtil";
+import { getImageByBlogType, isTextImage, thumbImg } from "@/utils/ImageUtil";
 
 const props = defineProps<{
   title: string;
@@ -29,7 +29,7 @@ const blogIcon = getImageByBlogType(type.value);
     <template v-else>
       <q-avatar size="64px" class="shadow-1" rounded>
         <q-img
-          :src="imagePath"
+          :src="thumbImg(imagePath, 64)"
           :alt="title"
           class="image-64"
           no-spinner
@@ -53,8 +53,8 @@ const blogIcon = getImageByBlogType(type.value);
 <style scoped>
 .blog-icon {
   position: relative;
-  top: 24px;
-  right: 12px;
+  top: 32px;
+  right: 9px;
 }
 
 .blog-icon.links {

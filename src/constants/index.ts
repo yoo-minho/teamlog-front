@@ -1,13 +1,15 @@
 export const POST_TAG = [
-  { label: "회고", value: "회고|결산|.log|정산" },
-  { label: "gpt", value: "gpt" },
-  { label: "infcon", value: "인프콘|infcon" },
-  { label: "글또", value: "글또" },
-  { label: "이직", value: "이직" },
-  { label: "테스트", value: "테스트|test|tdd" },
-  { label: "sql", value: "sql|쿼리|query" },
-  { label: "git", value: "git|깃" },
-  { label: "aws", value: "aws|아마존" },
+  { label: "회고", value: "회고|결산|.log|정산", url: "retrospect" },
+  { label: "gpt", value: "gpt", url: "gpt" },
+  { label: "인프콘", value: "인프콘|infcon", url: "infcon" },
+  { label: "글또", value: "글또", url: "geultto" },
+  { label: "이직", value: "이직", url: "change-job" },
+  { label: "퇴사", value: "퇴사", url: "leave" },
+  { label: "테스트", value: "테스트|test|tdd", url: "test" },
+  { label: "sql", value: "sql|쿼리|query|데이터베이스", url: "sql" },
+  { label: "git", value: "git|깃", url: "git" },
+  { label: "aws", value: "aws|아마존", url: "aws" },
+  { label: "번역", value: "번역", url: "translate" },
 ];
 export const BLOG_TAG = [
   { type: "TISTORY", label: "티스토리", color: "#E74F05" },
@@ -18,6 +20,17 @@ export const BLOG_TAG = [
   { type: "YOUTUBE", label: "유튜브", color: "#FE3333" },
   { type: "RSS", label: "RSS", color: "#FFB833" },
 ];
+export const BLOG_EXPRESSION = {
+  NAVER:
+    /https:\/\/(m\.)?blog.naver.com\/([0-9a-zA-Z_-]*)(\/)?([0-9a-zA-Z]*)/gi,
+  TISTORY: /https:\/\/([0-9a-zA-Z_-]*)\.tistory.com(\/)?([0-9a-zA-Z]*)/gi,
+  VELOG: /https:\/\/velog.io\/@([0-9a-zA-Z_-]*)(\/)?([0-9a-zA-Z]*)/gi,
+  BRUNCH: /https:\/\/brunch.co.kr\/@([0-9a-zA-Z_-]*)(\/)?([0-9a-zA-Z]*)/gi,
+  MEDIUM: /https:\/\/medium.com\/([0-9a-zA-Z_-]*)(\/)?([0-9a-zA-Z]*)/gi,
+  YOUTUBE:
+    /https:\/\/www.youtube.com\/channel\/([0-9a-zA-Z_-]*)(\/)?([0-9a-zA-Z]*)/gi,
+  TWITCH: /https:\/\/www.twitch.tv\/([0-9a-zA-Z_-]*)/gi,
+};
 export const MAINTAB_LABEL = [
   "팀로그",
   "블로그",
