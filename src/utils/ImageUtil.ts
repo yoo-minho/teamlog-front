@@ -39,5 +39,6 @@ export const thumbImg = (url?: string, size = 32) => {
   if (!url.includes("http")) return url;
   url = url.replace("//img1.daumcdn.net/thumb/C400x400/?fname=", "");
   url = url.replace("//img1.daumcdn.net/thumb/C400x400.fjpg/?fname=", "");
-  return `https://img1.daumcdn.net/thumb/C${size}x${size}/?fname=${url}`;
+  const s = size * 2;
+  return `https://img1.daumcdn.net/thumb/C${s}x${s}/?fname=${url}`;
 };
