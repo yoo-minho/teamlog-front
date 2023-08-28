@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Team } from "@/types/common";
-import { isTextImage } from "@/utils/ImageUtil";
+import { isTextImage, thumbImg } from "@/utils/ImageUtil";
 import { getFormatString } from "@/plugin/dayjs";
 import TeamCounter from "@/components/Counter/TeamCounter.vue";
 
@@ -53,7 +53,7 @@ const moveTeam = () => {
           class="shadow-1"
         >
           <q-img
-            :src="v.link.imagePath"
+            :src="thumbImg(v.link.imagePath || '')"
             :alt="v.link.title"
             class="image-32"
             no-spinner
@@ -76,7 +76,7 @@ const moveTeam = () => {
       <q-item-section>
         <q-item-label class="text-weight-bolder row" style="font-size: 20px">
           <h1 v-if="where === 'IN_TEAM'">{{ team?.title || "" }}</h1>
-          <h3 v-else>{{ team?.title || "" }}</h3>
+          <h2 v-else>{{ team?.title || "" }}</h2>
           <span class="text-grey-5 q-mx-sm">{{ team?.links?.length }}</span>
         </q-item-label>
         <q-item-label class="ellipsis-2-lines">{{
