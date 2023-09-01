@@ -102,7 +102,6 @@ export default defineNuxtConfig({
     },
   },
   vite: {
-    root: "@",
     css: {
       preprocessorOptions: {
         scss: {
