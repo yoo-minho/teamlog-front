@@ -1,3 +1,5 @@
+import { compression } from "vite-plugin-compression2";
+
 export default defineNuxtConfig({
   ssr: true,
   app: {
@@ -9,12 +11,29 @@ export default defineNuxtConfig({
       link: [
         { rel: "icon", type: "image/png", href: "favicon.ico" },
         { rel: "apple-touch-icon", href: "og-image.png" },
+        {
+          rel: "preload",
+          as: "font",
+          href: "/assets/fonts/Pretendard-Regular.woff2",
+          crossorigin: "anonymous",
+        },
+        {
+          rel: "preload",
+          as: "font",
+          href: "/assets/fonts/Pretendard-Regular.woff",
+          crossorigin: "anonymous",
+        },
+        {
+          rel: "preload",
+          as: "font",
+          href: "/assets/fonts/Pretendard-Regular.ttf",
+          crossorigin: "anonymous",
+        },
       ],
     },
   },
   extends: ["nuxt-seo-kit"],
   modules: ["nuxt-quasar-ui", "@pinia/nuxt", "@vite-pwa/nuxt", "nuxt-gtag"],
-
   gtag: {
     id: "G-MRERLPYY1H",
   },
@@ -83,6 +102,7 @@ export default defineNuxtConfig({
     },
   },
   vite: {
+    root: "@",
     css: {
       preprocessorOptions: {
         scss: {
@@ -90,10 +110,11 @@ export default defineNuxtConfig({
         },
       },
     },
+    plugins: [compression()],
   },
   nitro: {
     prerender: {
-      crawlLinks: true,
+      crawlLinks: false,
       failOnError: false,
     },
   },
