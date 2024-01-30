@@ -90,9 +90,9 @@ export default defineNuxtConfig({
     public: {
       apiBase: {
         dev: "http://localhost:5000/api/",
-        prod: "https://teamlog.team/api/",
+        prod: "https://teamlog.cc/api/",
       },
-      siteUrl: "https://teamlog.team",
+      siteUrl: "https://teamlog.cc",
       trailingSlash: true,
       titleSeparator: "",
       siteName: " ",

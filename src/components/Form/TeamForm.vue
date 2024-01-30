@@ -142,7 +142,7 @@ const submitForm = () => {
               counter
               maxlength="20"
               placeholder="전용 링크 추가"
-              prefix="https://teamlog.team/@"
+              prefix="https://teamlog.cc/@"
               :rules="idRules"
             />
             <q-input

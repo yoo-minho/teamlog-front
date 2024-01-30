@@ -31,9 +31,9 @@ const useHeadFunc = (props: any) => {
       { property: "og:title", content: _title },
       { property: "og:description", content: _desc },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: `https://teamlog.team${route.fullPath}` },
+      { property: "og:url", content: `https://teamlog.cc${route.fullPath}` },
       { property: "og:locale", content: "ko_KR" },
-      { property: "og:image", content: "https://teamlog.team/og2.png" },
+      { property: "og:image", content: "https://teamlog.cc/og2.png" },
     ],
   });
 };
